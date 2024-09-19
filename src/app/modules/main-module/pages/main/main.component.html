@@ -1,0 +1,13 @@
+<!-- cabecalho -->
+<app-menu-lateral>
+  <main class="c-app_conteudo">
+    <div class="padding">
+      <div class="c-app_container">
+        <div class="logo-container" *ngIf="isHomeRoute">
+          <img src="/assets/logo.svg" class="logo" />
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+</app-menu-lateral>

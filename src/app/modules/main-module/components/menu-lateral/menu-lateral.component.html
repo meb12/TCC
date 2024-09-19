@@ -1,0 +1,92 @@
+<div class="container" [ngClass]="openMenu ? 'container-menu' : ''">
+  <div class="hidden-menu"></div>
+  <div class="menu">
+    <div class="body-menu" [ngClass]="openMenu ? 'menu-open' : ''">
+      <div class="menu-button" (click)="openAndCloseMenu()">
+        <img
+          src="assets/img/menu-abrir.svg"
+          class="img-menu"
+          alt="aaa"
+          *ngIf="!openMenu"
+        />
+        <img
+          src="assets/img/menu-fechar.svg"
+          class="img-menu"
+          *ngIf="openMenu"
+        />
+      </div>
+
+      <div class="desktop" (click)="navegarHome()">
+        <div class="logo">
+          <img src="assets/img/Logo.svg" />
+        </div>
+      </div>
+
+      <div class="mobile" *ngIf="openMenu" (click)="navegarHome()">
+        <div class="logo">
+          <img src="assets/img/Logo.svg" />
+        </div>
+      </div>
+
+      <div class="container-menu1 desktop">
+        <div
+          class="titleMenus"
+          *ngFor="let item of listMenu"
+          [ngClass]="item.open ? 'menu-selecionado' : ''"
+        >
+          <app-titulo-menu
+            type="principal"
+            [src]="item.src"
+            [name]="item.modulo"
+            [open]="item.open"
+            (click)="selecionarMenu(item)"
+          >
+          </app-titulo-menu>
+          <div class="sub-menu" *ngIf="item.open">
+            <app-titulo-menu
+              type="subtitulo"
+              *ngFor="let subItem of item.listSubmenu"
+              [src]="subItem.src"
+              [name]="subItem.menu"
+              [sair]="subItem.manutencao"
+              [open]="subItem.selecionado"
+              (click)="navegar(subItem)"
+            ></app-titulo-menu>
+          </div>
+        </div>
+      </div>
+      <div class="container-menu1 mobile" *ngIf="openMenu">
+        <div
+          class="titleMenus"
+          *ngFor="let item of listMenu"
+          [ngClass]="item.open ? 'menu-selecionado' : ''"
+        >
+          <app-titulo-menu
+            type="principal"
+            class="titleMenu"
+            [src]="item.src"
+            [name]="item.modulo"
+            [open]="item.open"
+            (click)="selecionarMenu(item)"
+          >
+          </app-titulo-menu>
+          <div class="sub-menu" *ngIf="item.open">
+            <app-titulo-menu
+              type="subtitulo"
+              *ngFor="let subItem of item.listSubmenu"
+              [src]="subItem.src"
+              [name]="subItem.menu"
+              [sair]="subItem.manutencao"
+              [open]="subItem.selecionado"
+              (click)="navegar(subItem)"
+            ></app-titulo-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="conteudo" [ngClass]="openMenu ? 'menu-conteudo' : ''">
+    <app-cabecalho></app-cabecalho>
+    <ng-content></ng-content>
+  </div>
+</div>

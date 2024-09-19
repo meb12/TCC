@@ -1,0 +1,10 @@
+<div *ngIf="control.invalid && control.touched">
+  <ng-container *ngFor="let error of control.errors | keyvalue">
+    <mat-error
+      style="margin: 0; padding: 0"
+      *ngIf="control.hasError(error.key)"
+    >
+      {{ getErrorMessage(error.key) }}
+    </mat-error>
+  </ng-container>
+</div>

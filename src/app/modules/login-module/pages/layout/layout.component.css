@@ -1,0 +1,218 @@
+:host {
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .side-one {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100vh;
+    position: relative;
+    background-color: #307ac1;
+    float: left;
+
+    .icone-logo {
+      height: 20%;
+    }
+
+    @media (max-width: 1101px) {
+      display: none;
+    }
+  }
+
+  .logo-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100%;
+    padding-top: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .side-one-logo {
+    max-width: 100%;
+  }
+
+  .side-one-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 0 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @media (max-width: 1101px) {
+      width: 100%;
+    }
+  }
+
+  .side-two {
+    width: 50%;
+    height: 100vh;
+    position: relative;
+    background-color: #fff;
+    float: left;
+
+    @media (max-width: 1101px) {
+      width: 100%;
+    }
+  }
+
+  .container-login {
+    width: 70%;
+    max-width: 700px;
+    height: 50vh;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    @media (max-width: 1101px) {
+      width: 85%;
+      height: 60vh;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    font-weight: 400;
+    color: #38cb89;
+    transition: color 0.3s ease;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 25px;
+  }
+
+  .input-form {
+    width: 100%;
+  }
+
+  .label-form {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: start;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .remember-forgot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .remember-checkbox {
+    display: flex;
+    align-items: center;
+
+    input {
+      opacity: 0;
+      position: absolute;
+    }
+  }
+
+  .custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input:checked + & {
+      background-color: #000;
+      border-color: #000;
+    }
+
+    .custom-checkbox-icon {
+      color: #fff;
+      font-size: 12px;
+      display: none;
+
+      input:checked + & {
+        display: block;
+      }
+    }
+  }
+
+  .forgot-password-link {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #004080;
+    }
+  }
+
+  .button-login {
+    width: 100%;
+    margin-bottom: 1.25rem;
+  }
+
+  .form-text {
+    text-align: start !important;
+    margin-bottom: 1rem;
+  }
+
+  .form {
+    :is(-headers) {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    :is(-icon) {
+      cursor: pointer;
+    }
+  }
+
+  .langs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    :is(-links) {
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+  }
+}
+
+mat-form-field.mat-mdc-form-field.input-form.ng-tns-c1798928316-0.mat-mdc-form-field-type-mat-input.mat-form-field-appearance-fill.mat-primary.ng-untouched.ng-pristine.ng-invalid.ng-star-inserted {
+  border-bottom: none;
+}
+
+@media (max-width: 1300px) {
+  .side-two {
+    height: 70vh !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .side-two {
+    height: 90vh !important;
+  }
+}

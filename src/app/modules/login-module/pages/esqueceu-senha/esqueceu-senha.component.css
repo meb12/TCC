@@ -1,0 +1,73 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  .form-grid-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    * {
+      width: 100%;
+    }
+  }
+
+  .descricao {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: start;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .add {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .divAbas {
+    display: flex;
+    flex-direction: row;
+  }
+  .abaTabela {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 116px;
+    height: 39px;
+    margin-right: 8px;
+    border-radius: 6px 6px 0px 0px;
+    color: white;
+    background-color: #ec5225;
+  }
+
+  .error {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    color: red;
+    font-size: 13px;
+    font-weight: 400;
+    span {
+      text-align: start;
+      padding: 0 16px;
+      margin: -20px 0;
+    }
+  }
+  .divTextSenha {
+    /* position: absolute; */
+    width: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* //margin: 130px 0 20px 0px; */
+    p {
+      font-size: 12px;
+    }
+  }
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
+}

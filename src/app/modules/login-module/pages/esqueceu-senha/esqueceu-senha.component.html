@@ -1,0 +1,87 @@
+<app-titulo
+  title="Redefinir senha"
+  subtitle="Digite e confirme sua senha"
+></app-titulo>
+<form [formGroup]="form" *ngIf="form">
+  <div class="form-grid-item">
+    <label class="c-app-form_label" for="senha">
+      <span class="descricao">Digite sua nova senha</span>
+      <mat-form-field class="c-app-form_field">
+        <input
+          [type]="hideSenha ? 'password' : 'text'"
+          matInput
+          name="senha"
+          formControlName="senha"
+          placeholder="Digite sua Senha"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="toggleHideSenha()"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hideSenha"
+        >
+          <mat-icon>{{ hideSenha ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.controls['senha'].errors?.['required']">
+          Obrigatório
+        </mat-error>
+        <mat-error *ngIf="form.controls['senha'].errors?.['senhaFraca']">
+          Senha fraca
+        </mat-error>
+      </mat-form-field>
+      <div class="divTextSenha">
+        <p>
+          A senha deve conter pelo menos 8 dígitos, 1 letra maiúscula, 1 letra
+          minúscula, 1 número e 1 caractere especial
+        </p>
+      </div>
+    </label>
+  </div>
+
+  <div class="form-grid-item">
+    <label class="c-app-form_label" for="confirmarSenha">
+      <span class="descricao">Confirmar sua senha</span>
+      <div>
+        <mat-form-field class="c-app-form_field">
+          <input
+            [type]="hide ? 'password' : 'text'"
+            matInput
+            name="confirmarSenha"
+            formControlName="confirmarSenha"
+            placeholder="Confirme sua Senha"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="toggleHide()"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide"
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <div class="error">
+          <span
+            *ngIf="
+              form.value.senha != form.value.confirmarSenha &&
+              form.value.confirmarSenha != ''
+            "
+            >Senhas não correspondem</span
+          >
+        </div>
+      </div>
+    </label>
+  </div>
+
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="form.invalid"
+    (click)="mudarSenha()"
+    type="submit"
+    class="btn-padrao1 button-login"
+  >
+    Mudar senha
+  </button>
+</form>

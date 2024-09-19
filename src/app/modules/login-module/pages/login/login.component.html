@@ -1,0 +1,45 @@
+<div>
+  <h1>Bem-vindo!</h1>
+  <p>Insira os dados de acesso no formulário abaixo</p>
+  <form [formGroup]="form">
+    <app-input-component
+      name="email"
+      [control]="form.get('email')!"
+      label="Email"
+      type="email"
+      placeholder="Digite seu email"
+      [isRequired]="true"
+    >
+    </app-input-component>
+    <app-input-component
+      name="password"
+      [control]="form.get('senha')!"
+      label="Senha:"
+      type="password"
+      placeholder="Digite sua senha"
+      [isRequired]="true"
+    >
+    </app-input-component>
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+      type="submit"
+      class="btn-padrao1 button-login"
+    >
+      Entrar
+    </button>
+  </form>
+  <div class="remember-forgot" style="text-align: end">
+    <a
+      [routerLink]="['solicitarRedefinicaoSenha']"
+      class="forgot-password-link"
+      href="#"
+      >Esqueceu a senha?</a
+    >
+  </div>
+</div>
+
+<style></style>
