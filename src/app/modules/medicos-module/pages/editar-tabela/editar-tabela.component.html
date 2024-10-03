@@ -1,0 +1,36 @@
+<!-- calendar.component.html -->
+<div class="calendar-container">
+  <!-- Lista de médicos com checkboxes -->
+  <div class="doctor-filter">
+    <h3>Médicos</h3>
+    <div *ngFor="let doctor of doctors">
+      <input
+        type="checkbox"
+        [(ngModel)]="doctor.checked"
+        (change)="filterAppointments()"
+      />
+      {{ doctor.name }}
+    </div>
+  </div>
+
+  <!-- Filtros de mês e ano -->
+  <div class="calendar-selects">
+    <select [(ngModel)]="selectedMonth" (change)="updateCalendar()">
+      <option
+        *ngFor="let month of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+        [value]="month"
+      >
+        {{ month }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="selectedYear" (change)="updateCalendar()">
+      <option *ngFor="let year of [2023, 2024, 2025]" [value]="year">
+        {{ year }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Calendário -->
+  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+</div>

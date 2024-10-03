@@ -1,0 +1,46 @@
+.sidebar {
+  float: left;
+  width: 200px;
+  height: 100vh;
+  overflow: auto;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+full-calendar {
+  margin-left: 220px;
+  width: calc(100% - 220px); /* Adjust the width */
+}
+
+h2 {
+  font-size: 16px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.doctor-filter {
+  margin-right: 20px;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.calendar-container {
+  position: relative;
+}
+
+.calendar-selects {
+  position: absolute;
+  top: 10px; /* Alinhar com o calendário */
+  right: 10px; /* Alinhar à direita */
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-selects select {
+  padding: 5px;
+  font-size: 14px;
+}
