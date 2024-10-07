@@ -1,0 +1,78 @@
+#pdf-content {
+  width: 190mm; /* Ligeiramente menor para acomodar a borda */
+  height: 270mm; /* Ligeiramente menor que o tamanho total da página A4 para garantir que caiba */
+  padding: 20mm; /* Margem interna */
+  margin: 10mm auto; /* Centralizado com margens externas */
+  font-family: "Arial", sans-serif;
+  position: relative; /* Para posicionar o símbolo fixamente */
+  box-sizing: border-box;
+  border: 1px solid black; /* Borda fina ao redor do documento */
+}
+
+.header {
+  text-align: left; /* Alinha o texto à esquerda */
+  margin-top: 20mm; /* Ajuste de margem superior */
+}
+
+.header h1 {
+  font-size: 24pt;
+  font-weight: bold;
+  margin: 0;
+  color: #2e2e2e;
+}
+
+.header h2 {
+  font-size: 16pt;
+  font-weight: normal;
+  color: #1a7f5a; /* Cor verde similar à do exemplo */
+  margin: 5mm 0;
+}
+
+.prescription-area {
+  margin-top: 40mm;
+}
+
+.prescription-area textarea {
+  width: 100%;
+  height: 100mm;
+  font-size: 14pt;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none; /* Remove a borda por padrão */
+  background-color: transparent; /* Fundo transparente */
+  outline: none; /* Remove o contorno padrão */
+}
+
+.prescription-area textarea:focus {
+  border: 1px solid black; /* Mostra a borda ao focar */
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20mm;
+}
+
+.footer input {
+  font-size: 12pt;
+  text-align: center;
+  border: none; /* Remove a borda por padrão */
+  border-bottom: 1px solid transparent; /* Borda invisível */
+  width: 150mm;
+  background-color: transparent; /* Fundo transparente */
+  outline: none; /* Remove o contorno padrão */
+}
+
+.footer input:focus {
+  border-bottom: 1px solid black; /* Mostra a borda ao focar */
+}
+
+.symbol {
+  position: absolute;
+  bottom: 10mm; /* Posiciona o símbolo mais perto do final */
+  right: 10mm; /* Posiciona o símbolo mais à direita */
+}
+
+.symbol img {
+  max-width: 30mm; /* Tamanho da imagem ajustado para caber no layout */
+  max-height: 30mm;
+}

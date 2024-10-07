@@ -9,15 +9,27 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'another',
+        redirectTo: 'home',
         pathMatch: 'full',
       },
       {
-        path: 'another',
+        path: 'home',
         loadChildren: () =>
-          import('../another-module/another.module').then(
-            (m) => m.AnotherModule
-          ), // Certifique-se de que o nome do módulo está correto
+          import('../home-module/home.module').then((m) => m.HomeModule),
+      },
+      {
+        path: 'medicos',
+        loadChildren: () =>
+          import('../medicos-module/medicos-module.module').then(
+            (m) => m.MedicosModule
+          ),
+      },
+      {
+        path: 'cadastro',
+        loadChildren: () =>
+          import('../cadastro-module/cadastro-module.module').then(
+            (m) => m.CadastroModule
+          ),
       },
     ],
   },

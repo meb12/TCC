@@ -1,0 +1,36 @@
+<div class="paginacao">
+  <div class="page-buttons">
+    <button class="back-next-button" (click)="goToPreviousPage()">
+      Anterior
+    </button>
+  </div>
+  <div class="page-buttons">
+    <ng-container *ngFor="let pageNumber of getVisiblePages()">
+      <button
+        *ngIf="pageNumber >= 0"
+        class="page-number-button"
+        [class.page-active]="pageNumber === currentPage"
+        (click)="goToPage(pageNumber)"
+      >
+        {{ pageNumber + 1 }}
+      </button>
+      <button
+        *ngIf="pageNumber === -1"
+        class="page-number-button"
+        (click)="goPreviousDots()"
+      >
+        ...
+      </button>
+      <button
+        *ngIf="pageNumber === -2"
+        class="page-number-button"
+        (click)="goNextDots()"
+      >
+        ...
+      </button>
+    </ng-container>
+  </div>
+  <div class="page-buttons">
+    <button class="back-next-button" (click)="goToNextPage()">Próximo</button>
+  </div>
+</div>

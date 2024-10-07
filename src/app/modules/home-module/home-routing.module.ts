@@ -1,11 +1,11 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NovoCompoenteComponent } from './novo-compoente/novo-compoente.component';
+import { AcessoRapidoComponent } from './pages/acesso-rapido/acesso-rapido.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: NovoCompoenteComponent,
+    component: AcessoRapidoComponent,
   },
 ];
 
@@ -13,4 +13,4 @@ export const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AnotherRoutingModule {}
+export class HomeRoutingModule {}

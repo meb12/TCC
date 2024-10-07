@@ -6,7 +6,9 @@
         <div class="logo-container" *ngIf="isHomeRoute">
           <img src="/assets/logo.svg" class="logo" />
         </div>
-        <router-outlet></router-outlet>
+        <div class="outlet-container">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
   </main>

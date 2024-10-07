@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-novo-compoente',
-  templateUrl: './novo-compoente.component.html',
-  styleUrls: ['./novo-compoente.component.css'],
+  selector: 'app-acesso-rapido',
+  templateUrl: './acesso-rapido.component.html',
+  styleUrls: ['./acesso-rapido.component.css'],
 })
-export class NovoCompoenteComponent implements OnInit {
+export class AcessoRapidoComponent implements OnInit {
+  constructor(private router: Router) {}
   doctorAppointments = [
     {
       time: '10:30 - 12:30',
@@ -59,9 +61,10 @@ export class NovoCompoenteComponent implements OnInit {
     },
     // Adicione mais horários e médicos conforme necessário
   ];
-  constructor() {}
 
-  ngOnInit() {
-    console.log('carregou cs');
+  acessarLink() {
+    this.router.navigate(['medicos/listagem']);
   }
+
+  ngOnInit() {}
 }

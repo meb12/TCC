@@ -39,5 +39,25 @@ h6 {
   isolation: isolate;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: none; /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: blue; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 1px; /* creates padding around scroll thumb */
+}

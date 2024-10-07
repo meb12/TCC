@@ -17,7 +17,7 @@ export class MenuLateralComponent implements OnInit {
         {
           menu: 'Criar',
           src: 'bx bxs-dashboard',
-          route: 'recursos-humanos/dashboard',
+          route: 'cadastro/paciente',
           selecionado: false,
           manutencao: false,
         },
@@ -38,13 +38,19 @@ export class MenuLateralComponent implements OnInit {
         {
           menu: 'Criar',
           src: 'bx bxs-dashboard',
-          route: 'encarregado/dashboard',
+          route: 'cadastro/medico',
           selecionado: false,
         },
         {
           menu: 'Listagem',
+          src: 'bx bx-user',
+          route: 'medicos/listagem',
+          selecionado: false,
+        },
+        {
+          menu: 'Especialidade',
           src: 'bx bx-camera',
-          route: 'encarregado/ponto',
+          route: 'medicos/listagem',
           selecionado: false,
         },
       ],

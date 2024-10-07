@@ -1,36 +1,46 @@
-<!-- calendar.component.html -->
-<div class="calendar-container">
-  <!-- Lista de médicos com checkboxes -->
+<div class="calendar-layout">
   <div class="doctor-filter">
-    <h3>Médicos</h3>
-    <div *ngFor="let doctor of doctors">
-      <input
-        type="checkbox"
-        [(ngModel)]="doctor.checked"
-        (change)="filterAppointments()"
-      />
-      {{ doctor.name }}
+    <div class="testando">
+      <p>Médicos</p>
+      <div *ngFor="let doctor of doctors">
+        <input
+          type="checkbox"
+          [(ngModel)]="doctor.checked"
+          (change)="filterAppointments()"
+        />
+        {{ doctor.name }}
+      </div>
+    </div>
+    <div class="testando2">
+      <p>{{ selectedDate | date : "longDate" }}</p>
+      <div *ngFor="let appointment of displayedAppointments">
+        <div>
+          <p>{{ appointment.title }}</p>
+          <!-- Adicione mais detalhes conforme necessário -->
+        </div>
+      </div>
     </div>
   </div>
+  <!-- calendar.component.html -->
+  <div class="calendar-container">
+    <!-- Lista de médicos com checkboxes -->
 
-  <!-- Filtros de mês e ano -->
-  <div class="calendar-selects">
-    <select [(ngModel)]="selectedMonth" (change)="updateCalendar()">
-      <option
-        *ngFor="let month of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-        [value]="month"
-      >
-        {{ month }}
-      </option>
-    </select>
+    <!-- Filtros de mês e ano -->
+    <div #dateSelector class="date-selector">
+      <select [(ngModel)]="selectedMonth" (change)="onMonthYearChange()">
+        <option *ngFor="let month of monthOptions" [value]="month.value">
+          {{ month.label }}
+        </option>
+      </select>
 
-    <select [(ngModel)]="selectedYear" (change)="updateCalendar()">
-      <option *ngFor="let year of [2023, 2024, 2025]" [value]="year">
-        {{ year }}
-      </option>
-    </select>
+      <select [(ngModel)]="selectedYear" (change)="onMonthYearChange()">
+        <option *ngFor="let year of yearOptions" [value]="year.value">
+          {{ year.label }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Calendário -->
+    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
   </div>
-
-  <!-- Calendário -->
-  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>

@@ -1,0 +1,12 @@
+<div class="table-header">
+  <h1 class="table-title">Projetos</h1>
+  <div class="table-filters">
+    <app-input
+      type="search"
+      placeholder="Pesquisar"
+      icon="assets/img/search.svg"
+    ></app-input>
+  </div>
+</div>
+
+<app-tabela [data]="tableData" [columns]="tableColumns"></app-tabela>

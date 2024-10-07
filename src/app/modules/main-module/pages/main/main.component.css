@@ -46,3 +46,7 @@
   width: 50%;
   height: auto;
 }
+.outlet-container {
+  width: 80vw;
+  margin: 0 auto; /* Centraliza o conteúdo */
+}

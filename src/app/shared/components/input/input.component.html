@@ -1,0 +1,185 @@
+<div class="input" *ngIf="type === 'text'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <input
+    type="text"
+    autocomplete="off"
+    [placeholder]="placeholder"
+    [mask]="mask"
+    [attr.maxLength]="maxLength"
+    [style.width]="width"
+    [readOnly]="readOnly"
+    [disabled]="disabled"
+    [(ngModel)]="value"
+    (ngModelChange)="onValueChange($event)"
+  />
+</div>
+
+<div class="input" *ngIf="type === 'number'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <input
+    type="number"
+    [placeholder]="placeholder"
+    [mask]="mask"
+    [attr.maxLength]="maxLength"
+    [style.width]="width"
+    [readOnly]="readOnly"
+    [disabled]="disabled"
+    [(ngModel)]="value"
+    (ngModelChange)="onValueChange($event)"
+  />
+</div>
+
+<div class="input" *ngIf="type === 'password'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <input
+    [type]="passwordType"
+    [placeholder]="placeholder"
+    [mask]="mask"
+    [attr.maxLength]="maxLength"
+    [style.width]="width"
+    [readOnly]="readOnly"
+    [(ngModel)]="value"
+    (ngModelChange)="onValueChange($event)"
+  />
+  <img (click)="togglePassword()" [src]="eyeImage" class="eye" />
+</div>
+
+<div class="input" *ngIf="type === 'email'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <input
+    type="email"
+    [placeholder]="placeholder"
+    [mask]="mask"
+    [attr.maxLength]="maxLength"
+    [style.width]="width"
+    [readOnly]="readOnly"
+    [(ngModel)]="value"
+    (ngModelChange)="onValueChange($event)"
+  />
+</div>
+
+<div class="input" *ngIf="type === 'money'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="input-container">
+    <span class="currency-symbol">R$</span>
+    <input
+      type="number"
+      [placeholder]="placeholder"
+      [mask]="mask"
+      [attr.maxLength]="maxLength"
+      [style.width]="width"
+      [readOnly]="readOnly"
+      [(ngModel)]="value"
+      maxlength="10"
+      (ngModelChange)="onValueChange($event)"
+    />
+  </div>
+</div>
+
+<div class="input" *ngIf="type === 'date'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="search-container">
+    <img src="assets/img/calendario.svg" class="search-icon" />
+    <input
+      mask="00/00/0000"
+      class="search-input"
+      [placeholder]="placeholder"
+      [(ngModel)]="value"
+      (ngModelChange)="onDateValueChange($event, 'date')"
+      (blur)="onBlur()"
+    />
+  </div>
+</div>
+
+<div class="input" *ngIf="type == 'date-hour'">
+  <label
+    >{{ label }} <span *ngIf="requiredInput" class="required">*</span></label
+  >
+  <input
+    type="datetime-local"
+    [placeholder]="placeholder"
+    [(ngModel)]="value"
+    [mask]="mask"
+    [disabled]="disabled"
+    (keydown)="preventTyping($event)"
+    (click)="openCalendar($event)"
+    (ngModelChange)="onValueChange($event)"
+    (blur)="onBlur()"
+  />
+</div>
+
+<div class="input" *ngIf="type === 'textarea'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <textarea
+    [placeholder]="placeholder"
+    [attr.maxLength]="maxLength"
+    [style.width]="width"
+    [readOnly]="readOnly"
+    [(ngModel)]="value"
+    (ngModelChange)="onValueChange($event)"
+  ></textarea>
+</div>
+
+<div class="input" *ngIf="type == 'select'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="custom-select-container">
+    <input
+      type="text"
+      placeholder="Selecione"
+      [style.width]="width"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="filterOptions($event)"
+      (focus)="showOptions = true"
+      (blur)="hideOptions()"
+      [disabled]="disabled"
+    />
+    <div *ngIf="this.value && this.value > 0 && !disabled">
+      <img
+        src="assets/img/remove-select.svg"
+        class="remove-button"
+        (click)="removeValue()"
+      />
+    </div>
+
+    <ul *ngIf="showOptions && filteredOptions.length" class="custom-options">
+      <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
+        {{ option.name }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="input" *ngIf="type === 'search'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="search-container">
+    <img src="assets/img/search.svg" class="search-icon" />
+    <input
+      type="{{ this.typeSearch }}"
+      name="pesquisar"
+      class="search-input"
+      autocomplete="off"
+      [placeholder]="placeholder"
+      [style.width]="width"
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+    />
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="tabela">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns">
+          {{ column.header }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let item of data; let i = index"
+        [ngClass]="{
+          red: item.saida === '--',
+          selected: selectedRowIndex === i
+        }"
+        (click)="selectRow(i)"
+      >
+        <td *ngFor="let column of columns">
+          <ng-container [ngSwitch]="column.type">
+            <span *ngSwitchCase="'text'">{{
+              item[column.key] ?? "-----"
+            }}</span>
+
+            <div *ngSwitchCase="'textArray'">
+              <div class="text-array" *ngIf="column.keyArray">
+                <span>{{ item[column.keyArray[0]] }}</span>
+                <span class="text-blue">{{ item[column.keyArray[1]] }}</span>
+              </div>
+            </div>
+
+            <ng-container *ngSwitchCase="'select'">
+              <div class="custom-select">
+                <select
+                  [(ngModel)]="item[column.key]"
+                  (ngModelChange)="onSelectChange($event, item)"
+                >
+                  <option
+                    *ngFor="let option of column.options"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'buttons'">
+              <ng-container *ngFor="let btn of column.buttons">
+                <ng-container
+                  *ngIf="!condition ? btn.condition(item) : !btn.condition"
+                >
+                  <button (click)="btn.action(item)">
+                    <ng-container *ngIf="btn.img">
+                      <img class="img-icon" [src]="btn.img" />
+                    </ng-container>
+                    <ng-container *ngIf="!btn.img">
+                      <span class="button">{{
+                        btn.conditionSecLabel
+                          ? btn.conditionSecLabel(item)
+                            ? btn.secondaryLabel
+                            : btn.label
+                          : btn.label
+                      }}</span>
+                    </ng-container>
+                  </button>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="!(!condition ? btn.condition(item) : !btn.condition)"
+                >
+                  <button>
+                    <span class="button">--</span>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'checkbox'">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  [checked]="item[column.key]"
+                  (change)="column.action ? column.action(item) : null"
+                />
+              </label>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'switch'">
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="item[column.key]"
+                  (change)="column.action ? column.action(item) : null"
+                />
+                <span class="slider round"></span>
+              </label>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

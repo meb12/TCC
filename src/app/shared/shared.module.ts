@@ -30,9 +30,17 @@ import { ToastrModule } from 'ngx-toastr';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { APP_DATE_FORMATS } from '../core/constants/appDateFormats';
 import { AppPaginatorIntl } from '../core/utils/appPaginatorIntl';
+import { InputComponent } from './components/input/input.component';
+import { TabelaComponent } from './components/tabela/tabela.component';
+import { PaginacaoComponent } from './components/paginacao/paginacao.component';
+import { MatCardModule } from '@angular/material/card';
+import { FullCalendarModule } from '@fullcalendar/angular'; // import the FullCalendar module
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
+import timeGridPlugin from '@fullcalendar/timegrid'; // a plugin
+import interactionPlugin from '@fullcalendar/interaction'; // a plugin for draggable events
 
 @NgModule({
-  declarations: [],
+  declarations: [InputComponent, TabelaComponent, PaginacaoComponent],
   imports: [
     CommonModule,
     MatInputModule,
@@ -65,6 +73,10 @@ import { AppPaginatorIntl } from '../core/utils/appPaginatorIntl';
       tapToDismiss: false,
     }),
     MatButtonToggleModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FullCalendarModule,
   ],
   exports: [
     MatInputModule,
@@ -91,6 +103,13 @@ import { AppPaginatorIntl } from '../core/utils/appPaginatorIntl';
     OverlayModule,
     ToastrModule,
     MatButtonToggleModule,
+    InputComponent,
+    TabelaComponent,
+    PaginacaoComponent,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FullCalendarModule,
   ],
   providers: [
     provideNgxMask(), // Uso correto do provider

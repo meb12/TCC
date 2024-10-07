@@ -10,17 +10,27 @@ import { LoginModule } from './modules/login-module/login.module';
 import { AppRoutingModule } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MainModule } from './modules/main-module/main-module.module';
-import { AnotherModule } from './modules/another-module/another.module';
+import { MedicosModule } from './modules/medicos-module/medicos-module.module';
+import { HomeModule } from './modules/home-module/home.module';
+import { CadastroModule } from './modules/cadastro-module/cadastro-module.module';
+import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from './shared/shared.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     LoginModule,
     MainModule,
-    AnotherModule,
+    MedicosModule,
+    HomeModule,
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
+    CadastroModule,
+    SharedModule,
   ],
   bootstrap: [AppComponent],
   providers: [provideAnimationsAsync()],

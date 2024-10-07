@@ -1,0 +1,53 @@
+.form-container {
+  padding: 20px;
+  max-width: 100%; /* Expande o container ao máximo */
+  box-sizing: border-box; /* Garante que o padding e a borda não aumentem o tamanho */
+}
+
+h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    1fr
+  ); /* 4 colunas para informações pessoais */
+  gap: 10px; /* Espaçamento entre os inputs */
+  margin-bottom: 20px;
+}
+
+.form-row-profissionais {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  ); /* 3 colunas para informações profissionais */
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-standard {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

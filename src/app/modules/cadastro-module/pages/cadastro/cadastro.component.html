@@ -1,0 +1,164 @@
+<div class="form-container" [formGroup]="cadastroForm">
+  <h3>Informações Pessoais</h3>
+  <div class="form-row">
+    <app-input type="text" width="100%" label="Nome" name="Nome"></app-input>
+    <app-input
+      label="Sobrenome"
+      name="sobrenome"
+      formControlName="sobrenome"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="Data de Nascimento"
+      name="dataNascimento"
+      type="date"
+      formControlName="dataNascimento"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      type="select"
+      width="100%"
+      name="Nome"
+      label="Sexo"
+      [selectData]="sexoOptions"
+    ></app-input>
+  </div>
+
+  <div class="form-row">
+    <app-input
+      label="CPF"
+      name="cpf"
+      formControlName="cpf"
+      inputClassName="input-standard"
+      mask="000.000.000-00"
+    ></app-input>
+    <app-input
+      label="RG"
+      name="rg"
+      formControlName="rg"
+      mask="00.000.000-0"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="Telefone"
+      name="telefone"
+      formControlName="telefone"
+      inputClassName="input-standard"
+      mask="(00) 00000-0000"
+    ></app-input>
+    <app-input
+      label="Celular"
+      name="celular"
+      formControlName="celular"
+      inputClassName="input-standard"
+      [mask]="'(00) 00000-0000'"
+    ></app-input>
+  </div>
+
+  <div class="form-row">
+    <app-input
+      type="select"
+      width="100%"
+      name="Nome"
+      label="Nacionalidade"
+      [selectData]="nacionalidades"
+    ></app-input>
+    <app-input
+      label="E-mail"
+      name="email"
+      type="email"
+      formControlName="email"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="CEP"
+      name="cep"
+      formControlName="cep"
+      inputClassName="input-standard"
+      [mask]="'00000-000'"
+    ></app-input>
+    <app-input
+      label="Logradouro"
+      name="logradouro"
+      formControlName="logradouro"
+      inputClassName="input-standard"
+    ></app-input>
+  </div>
+
+  <div class="form-row">
+    <app-input
+      label="Número"
+      name="numero"
+      formControlName="numero"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="Bairro"
+      name="bairro"
+      formControlName="bairro"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="Cidade"
+      name="cidade"
+      formControlName="cidade"
+      inputClassName="input-standard"
+    ></app-input>
+    <app-input
+      label="UF"
+      name="uf"
+      formControlName="uf"
+      inputClassName="input-standard"
+    ></app-input>
+  </div>
+
+  <div *ngIf="tipoCadastro == 'medico'">
+    <h3>Informações Profissionais</h3>
+    <div class="form-row">
+      <app-input
+        label="Especialidade(s)"
+        name="especialidade"
+        formControlName="especialidade"
+        inputClassName="input-standard"
+      ></app-input>
+      <app-input
+        label="CRM"
+        name="crm"
+        formControlName="crm"
+        inputClassName="input-standard"
+      ></app-input>
+      <app-input
+        label="Qualificações adicionais"
+        name="qualificacoesAdicionais"
+        formControlName="qualificacoesAdicionais"
+        inputClassName="input-standard"
+      ></app-input>
+    </div>
+
+    <div class="form-row">
+      <app-input
+        label="Informações adicionais"
+        name="informacoesAdicionais"
+        formControlName="informacoesAdicionais"
+        inputClassName="input-standard"
+      ></app-input>
+      <app-input
+        label="Instituição de ensino"
+        name="instituicaoEnsino"
+        formControlName="instituicaoEnsino"
+        inputClassName="input-standard"
+      ></app-input>
+      <app-input
+        label="Ano de formação"
+        name="anoFormacao"
+        formControlName="anoFormacao"
+        inputClassName="input-standard"
+      ></app-input>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button (click)="handleCancel()">Cancelar</button>
+    <button (click)="handleConfirm()">Finalizar</button>
+  </div>
+</div>

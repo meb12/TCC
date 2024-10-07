@@ -1,0 +1,59 @@
+.paginacao {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+  margin-top: 20px;
+
+  .number-button {
+    padding: 12px;
+  }
+
+  .back-next-button {
+    padding: 12px 28px;
+  }
+
+  .page-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .page-active {
+    color: #fff;
+    background-color: #37aaf7;
+    border: 1px solid #37aaf7;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    padding: 12px;
+    line-height: 20px;
+    color: #27272a;
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 940px) {
+  .paginacao {
+    margin-bottom: 24px;
+    justify-content: center;
+
+    .back-next-button,
+    .page-number-button {
+      padding: 2px 8px;
+      font-size: 14px;
+    }
+
+    .page-buttons {
+      gap: 2px;
+    }
+  }
+}

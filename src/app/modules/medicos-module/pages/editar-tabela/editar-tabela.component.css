@@ -1,46 +1,94 @@
-.sidebar {
-  float: left;
-  width: 200px;
-  height: 100vh;
-  overflow: auto;
-  background-color: #f4f4f4;
-  padding: 20px;
-}
-
-full-calendar {
-  margin-left: 220px;
-  width: calc(100% - 220px); /* Adjust the width */
-}
-
-h2 {
-  font-size: 16px;
-}
-
-ul {
-  list-style-type: none;
-}
-
-.doctor-filter {
-  margin-right: 20px;
-}
-
-.filters {
-  margin-bottom: 20px;
-}
-
-.calendar-container {
-  position: relative;
-}
-
-.calendar-selects {
-  position: absolute;
-  top: 10px; /* Alinhar com o calendário */
-  right: 10px; /* Alinhar à direita */
+/* Define a estrutura geral para que a lista e o calendário fiquem lado a lado */
+.calendar-layout {
   display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Define o tamanho da lista de médicos */
+.doctor-filter {
+  display: flex;
+  flex-direction: column;
+  width: 200px; /* Largura fixa para a lista de médicos */
+  margin-right: 20px; /* Espaçamento entre a lista de médicos e o calendário */
+  justify-content: space-between;
+}
+
+/* Define o tamanho do contêiner do calendário */
+.calendar-container {
+  flex-grow: 1; /* O calendário ocupa o restante do espaço disponível */
+  max-width: 100%; /* Limita a largura máxima do calendário */
+}
+
+/* Ajuste para os selects de mês e ano */
+.date-selector {
+  display: flex;
+  justify-content: flex-end;
   gap: 10px;
 }
+full-calendar {
+  max-height: 75vh;
+}
 
-.calendar-selects select {
+/* Aumenta a altura e largura das células do calendário */
+.fc-daygrid-day {
+  min-height: 150px; /* Define uma altura mínima maior para cada célula do dia */
+}
+
+.fc-daygrid-day-frame {
+  padding: 10px; /* Ajusta o espaçamento dentro de cada célula */
+}
+
+.fc-col-header-cell {
+  height: 50px; /* Ajusta a altura das células do cabeçalho (dom., seg., ter., etc.) */
+}
+
+.fc-scrollgrid-sync-inner {
+  min-height: 120px; /* Aumenta a altura da linha para garantir que os dias tenham mais espaço */
+}
+
+fc .fc-daygrid-day-frame {
+  min-height: 120px;
+}
+
+.testando {
+  height: 200px;
+  overflow: auto;
+  border-bottom: 1px solid red;
+}
+
+.testando2 {
+  display: flex;
+  flex-direction: column;
+}
+
+.appointment-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.appointment-card img {
+  width: 40px; /* Tamanho ajustável conforme necessário */
+}
+
+.fc-daygrid-day {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.custom-day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #eff0f1;
+  border-radius: 8px;
   padding: 5px;
-  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 2px; // Margem para evitar sobreposição
 }
