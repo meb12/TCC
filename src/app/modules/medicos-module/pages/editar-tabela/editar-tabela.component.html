@@ -1,6 +1,7 @@
 <div class="calendar-layout">
   <div class="doctor-filter">
     <div class="testando">
+      <div class='testando-medicos'>
       <p>Médicos</p>
       <div *ngFor="let doctor of doctors">
         <input
@@ -11,11 +12,19 @@
         {{ doctor.name }}
       </div>
     </div>
+    </div>
     <div class="testando2">
       <p>{{ selectedDate | date : "longDate" }}</p>
       <div *ngFor="let appointment of displayedAppointments">
         <div>
-          <p>{{ appointment.title }}</p>
+          <p>
+            {{
+              "Consulta com " +
+                appointment.doctor.name +
+                "- " +
+                appointment.patient.name
+            }}
+          </p>
           <!-- Adicione mais detalhes conforme necessário -->
         </div>
       </div>

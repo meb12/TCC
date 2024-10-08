@@ -54,12 +54,16 @@ fc .fc-daygrid-day-frame {
 .testando {
   height: 200px;
   overflow: auto;
-  border-bottom: 1px solid red;
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .testando2 {
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  height: 480px;
+  margin-top: 10px;
 }
 
 .appointment-card {
@@ -81,14 +85,39 @@ fc .fc-daygrid-day-frame {
   background-size: contain;
 }
 
-.custom-day-cell {
+/* Estilos básicos para os eventos no calendário */
+.fc-daygrid-event {
+  border: none; /* Remove bordas padrão */
+  background: none; /* Remove cor de fundo padrão */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.85em;
+}
+
+/* Personalizando o card dentro do evento */
+.custom-event {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #eff0f1;
-  border-radius: 8px;
+  background-color: #00a1e4; /* Cor de fundo do card */
+  color: white; /* Cor do texto */
+  border-radius: 10px;
+  width: 40px !important; /* Largura fixa para o card */
+  height: 40px !important; /* Altura fixa para o card */
   padding: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 2px; // Margem para evitar sobreposição
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Icone do card */
+.custom-event img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Configurações para garantir que todas as células do calendário tenham o mesmo tamanho */
+.fc .fc-daygrid-day {
+  flex: 1 0 14%; /* Força todas as células a terem o mesmo tamanho */
+  height: 100px; /* Altura fixa para cada célula */
 }

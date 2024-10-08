@@ -10,6 +10,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import allLocales from '@fullcalendar/core/locales-all';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 
 @Component({
   selector: 'app-editar-tabela',
@@ -45,36 +47,25 @@ export class EditarTabelaComponent implements OnInit {
 
   // Consultas mockadas
   appointments = [
-    { title: 'Consulta 1', start: '2024-12-01', doctorId: 1 },
-    { title: 'Consulta 2', start: '2024-12-02', doctorId: 2 },
-    { title: 'Consulta 2', start: '2025-12-02', doctorId: 2 },
-    { title: 'Consulta 3', start: '2024-12-03', doctorId: 15 },
-    { title: 'Consulta 3', start: '2024-10-10', doctorId: 15 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 15', start: '2024-03-10', doctorId: 15 },
-    { title: 'Consulta 15', start: '2024-03-10', doctorId: 15 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
-    { title: 'Consulta 3', start: '2024-03-10', doctorId: 3 },
+    {
+      title: 'Consulta 1',
+      date: '2024-12-01',
+      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
+      patient: { id: 201, name: 'Patient 1' },
+    },
+    {
+      title: 'Consulta 1',
+      date: '2024-12-01',
+      doctor: { id: 2, name: 'Doctor 1', specialty: 'Cardiology' },
+      patient: { id: 201, name: 'Patient 1' },
+    },
+    {
+      title: 'Consulta 2',
+      date: '2024-12-02',
+      doctor: { id: 2, name: 'Doctor 2', specialty: 'Dermatology' },
+      patient: { id: 202, name: 'Patient 2' },
+    },
+    // Mais apontamentos...
   ];
 
   // Configurações do calendário
@@ -100,29 +91,12 @@ export class EditarTabelaComponent implements OnInit {
     fixedWeekCount: false,
   };
 
-  consolidateEvents(appointments) {
-    const eventsByDay = {};
-    appointments.forEach((appointment) => {
-      const date = appointment.start.split('T')[0]; // Supondo que `start` seja uma string de data ISO
-      if (!eventsByDay[date]) {
-        eventsByDay[date] = {
-          start: date,
-          count: 0,
-          title: 'Consultas',
-          icon: 'assets/img/icone-medicos.svg', // Caminho para o ícone
-        };
-      }
-      eventsByDay[date].count += 1;
-    });
-    return Object.values(eventsByDay);
-  }
-
   customEventContent(arg) {
     // Cria o HTML para o card do evento
     const element = document.createElement('div');
     element.innerHTML = `
       <div class="custom-event">
-        <img src="${arg.event._def.extendedProps.icon}" style="width: 30px; height: 30px;">
+        <img src="${arg.event._def.extendedProps.icon}" ">
         <span>${arg.event._def.extendedProps.count}</span>
       </div>
     `;
@@ -151,17 +125,20 @@ export class EditarTabelaComponent implements OnInit {
 
   handleDateClick(arg) {
     this.selectedDate = arg.dateStr; // Armazena a data selecionada
+
+    // Captura os IDs dos médicos selecionados com base nos checkboxes
     const selectedDoctors = this.doctors
       .filter((doctor) => doctor.checked)
       .map((doctor) => doctor.id);
 
+    // Filtra as consultas para mostrar apenas aquelas que ocorrem na data selecionada
+    // e que são de médicos selecionados
     this.displayedAppointments = this.appointments.filter(
       (appointment) =>
-        appointment.start.includes(this.selectedDate) &&
+        appointment.date.includes(this.selectedDate) &&
         (selectedDoctors.length === 0 ||
-          selectedDoctors.includes(appointment.doctorId))
+          selectedDoctors.includes(appointment.doctor.id))
     );
-    // Filtra as consultas para mostrar apenas as que ocorrem na data selecionada e são dos médicos selecionados
   }
 
   // Opções para o select de mês
@@ -182,6 +159,8 @@ export class EditarTabelaComponent implements OnInit {
   // Atualiza o calendário quando o mês ou ano é alterado
   onMonthYearChange() {
     const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
+    this.displayedAppointments = [];
+    this.selectedDate = '';
     this.calendarComponent.getApi().gotoDate(selectedDate);
   }
 
@@ -191,40 +170,52 @@ export class EditarTabelaComponent implements OnInit {
     value: year,
   }));
 
-  // filterAppointments() {
-  //   const selectedDoctorIds = this.doctors
-  //     .filter((doctor) => doctor.checked)
-  //     .map((doctor) => doctor.id);
-  //   const filteredAppointments = this.appointments.filter((appointment) =>
-  //     selectedDoctorIds.includes(appointment.doctorId)
-  //   );
-  //   this.calendarOptions.events = this.consolidateEvents(filteredAppointments);
-  //   this.calendarComponent.getApi().refetchEvents(); // Refetch os eventos no calendário
-  // }
-
-  // Filtrar consultas ao selecionar médicos
   filterAppointments() {
-    const selectedDoctors = this.doctors
+    const selectedDoctorIds = this.doctors
       .filter((doctor) => doctor.checked)
       .map((doctor) => doctor.id);
 
-    // Filtra os compromissos com base nos médicos selecionados
     const filteredAppointments = this.appointments.filter(
       (appointment) =>
-        selectedDoctors.length === 0 ||
-        selectedDoctors.includes(appointment.doctorId)
+        selectedDoctorIds.length === 0 ||
+        selectedDoctorIds.includes(appointment.doctor.id)
     );
 
-    // Agora, consolida os eventos filtrados por dia
     const consolidatedEvents = this.consolidateEvents(filteredAppointments);
-
-    // Atualiza os eventos do calendário com os eventos consolidados
     this.calendarOptions.events = consolidatedEvents;
-
-    // Se estiver usando uma referência ao componente do FullCalendar, você pode precisar chamar refetchEvents para atualizar o calendário
     if (this.calendarComponent) {
       this.calendarComponent.getApi().refetchEvents();
     }
+    this.displayedAppointments = this.appointments.filter(
+      (appointment) =>
+        appointment.date.includes(this.selectedDate) &&
+        (selectedDoctorIds.length === 0 ||
+          selectedDoctorIds.includes(appointment.doctor.id))
+    );
+  }
+
+  consolidateEvents(appointments) {
+    const eventsByDay = {};
+    appointments.forEach((appointment) => {
+      const date = appointment.date;
+      if (!eventsByDay[date]) {
+        eventsByDay[date] = {
+          start: date,
+          count: 0,
+          title: 'Consultas',
+          icon: 'assets/img/icone-medicos.svg',
+          details: [],
+        };
+      }
+      eventsByDay[date].count++;
+      eventsByDay[date].details.push({
+        doctorName: appointment.doctor.name,
+        doctorSpecialty: appointment.doctor.specialty,
+        patientName: appointment.patient.name,
+      });
+    });
+
+    return Object.values(eventsByDay);
   }
 
   // Navegar para o mês e ano selecionados
