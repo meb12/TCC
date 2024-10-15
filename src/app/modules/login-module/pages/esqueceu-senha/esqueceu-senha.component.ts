@@ -26,6 +26,15 @@ export class EsqueceuSenhaComponent implements OnInit {
   mensagem: any;
   hide = true;
   hideSenha = true;
+
+  isLengthValid = false;
+  hasNumber = false;
+  hasLowercase = false;
+  hasUppercase = false;
+  hasSpecialChar = false;
+  passwordsMatch = false;
+  isValid = false;
+
   constructor(private toastr: ToastrService) {}
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
@@ -97,6 +106,31 @@ export class EsqueceuSenhaComponent implements OnInit {
   //   }
   //   return null;
   // }
+
+  validatePassword() {
+    const senha = this.form.value.senha;
+    const novaSenha = this.form.value.confirmarSenha;
+
+    this.isLengthValid = senha.length >= 8;
+    this.hasNumber = /\d/.test(senha);
+    this.hasLowercase = /[a-z]/.test(senha);
+    this.hasUppercase = /[A-Z]/.test(senha);
+    this.hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(senha);
+    this.passwordsMatch = senha === novaSenha && senha != '' && novaSenha != '';
+
+    if (
+      this.isLengthValid &&
+      this.hasNumber &&
+      this.hasLowercase &&
+      this.hasUppercase &&
+      this.hasSpecialChar &&
+      this.passwordsMatch
+    ) {
+      this.isValid = true;
+    } else {
+      this.isValid = false;
+    }
+  }
 
   toggleHide(): void {
     this.hide = !this.hide;

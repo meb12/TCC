@@ -1,7 +1,9 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -18,6 +20,7 @@ import { SharedModule } from './shared/shared.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { PacientesModule } from './modules/pacientes-module/pacientes-module.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,8 +34,12 @@ import { MatButtonModule } from '@angular/material/button';
     BrowserAnimationsModule,
     CadastroModule,
     SharedModule,
+    PacientesModule,
   ],
   bootstrap: [AppComponent],
-  providers: [provideAnimationsAsync()],
+  providers: [
+    provideAnimationsAsync(),
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
+  ],
 })
 export class AppModule {}

@@ -9,6 +9,7 @@ import { ITableColumn } from './tabela.models';
 export class TabelaComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() columns: ITableColumn[] = [];
+
   @Input() condition: boolean = false;
   @Output() ngModelChange: EventEmitter<any> = new EventEmitter();
 
@@ -28,6 +29,14 @@ export class TabelaComponent implements OnInit {
     } else {
       this.selectedRowIndex = index;
     }
+  }
+
+  toggleDropdown(index: number): void {
+    this.selectedRowIndex = this.selectedRowIndex === index ? null : index;
+  }
+
+  isDropdownOpen(index: number): boolean {
+    return this.selectedRowIndex === index;
   }
 
   constructor() {}

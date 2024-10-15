@@ -179,3 +179,24 @@ input[type="number"]::-webkit-outer-spin-button {
     display: none;
   }
 }
+
+.readonly {
+  background-color: #e3e3e3;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  right: 10px; /* Ajuste a posição da imagem à direita */
+  pointer-events: none; /* A imagem não deve interferir nos eventos do mouse */
+  height: 15px; /* Ajuste a altura da imagem conforme necessário */
+}
+
+.labelReadonly {
+  font-weight: 500;
+}

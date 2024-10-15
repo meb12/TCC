@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   NgZone,
   OnInit,
   ViewChild,
@@ -14,11 +15,11 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
 @Component({
-  selector: 'app-editar-tabela',
-  templateUrl: './editar-tabela.component.html',
-  styleUrls: ['./editar-tabela.component.css'],
+  selector: 'app-calendario',
+  templateUrl: './calendario.component.html',
+  styleUrls: ['./calendario.component.css'],
 })
-export class EditarTabelaComponent implements OnInit {
+export class CalendarioComponent implements OnInit, AfterViewInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent; // Referência ao FullCalendar
   @ViewChild('dateSelector') dateSelector!: ElementRef; // Referência aos selects de mês e ano
 
@@ -50,13 +51,25 @@ export class EditarTabelaComponent implements OnInit {
     {
       title: 'Consulta 1',
       date: '2024-12-01',
+      doctor: { id: 3, name: 'Doctor 1', specialty: 'Cardiology' },
+      patient: { id: 201, name: 'Patient 1' },
+    },
+    {
+      title: 'Consulta 1',
+      date: '2024-10-01',
+      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
+      patient: { id: 201, name: 'Patient 1' },
+    },
+    {
+      title: 'Consulta 1',
+      date: '2024-10-01',
       doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
       patient: { id: 201, name: 'Patient 1' },
     },
     {
       title: 'Consulta 1',
       date: '2024-12-01',
-      doctor: { id: 2, name: 'Doctor 1', specialty: 'Cardiology' },
+      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
       patient: { id: 201, name: 'Patient 1' },
     },
     {
@@ -75,31 +88,31 @@ export class EditarTabelaComponent implements OnInit {
     locales: allLocales,
     locale: 'pt-br',
     headerToolbar: {
-      left: 'prev,next today',
+      left: '',
       center: 'title',
       right: '',
     },
-    dayMaxEventRows: false, // Impede a exibição automática de eventos
+    dayMaxEventRows: true, // Impede a exibição automática de eventos
     events: this.consolidateEvents(this.appointments),
     eventContent: (arg) => this.customEventContent(arg),
-    editable: true,
-    selectable: true,
     dateClick: this.handleDateClick.bind(this),
-    moreLinkText: 'mais',
-    aspectRatio: 1.35,
     showNonCurrentDates: false,
     fixedWeekCount: false,
   };
 
+  constructor() {
+    registerLocaleData(localePt); // Registra os dados do locale português
+  }
+
   customEventContent(arg) {
-    // Cria o HTML para o card do evento
     const element = document.createElement('div');
+    element.classList.add('custom-event'); // Adiciona a classe customizada
     element.innerHTML = `
-      <div class="custom-event">
-        <img src="${arg.event._def.extendedProps.icon}" ">
-        <span>${arg.event._def.extendedProps.count}</span>
-      </div>
+        <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="width: 16px; height: 16px; margin-right: 4px;">
+        <span>${arg.event._def.extendedProps.count} </span>
+
     `;
+
     return { domNodes: [element] };
   }
 
@@ -146,15 +159,6 @@ export class EditarTabelaComponent implements OnInit {
     label: month,
     value: index + 1,
   }));
-  ngAfterViewInit() {
-    // Insere os selects de mês e ano no lado direito do FullCalendar
-    const calendarToolbarRight = document.querySelector(
-      '.fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:last-child'
-    );
-    if (calendarToolbarRight && this.dateSelector) {
-      calendarToolbarRight.appendChild(this.dateSelector.nativeElement); // Adiciona os selects no lado direito
-    }
-  }
 
   // Atualiza o calendário quando o mês ou ano é alterado
   onMonthYearChange() {
@@ -162,6 +166,7 @@ export class EditarTabelaComponent implements OnInit {
     this.displayedAppointments = [];
     this.selectedDate = '';
     this.calendarComponent.getApi().gotoDate(selectedDate);
+    // this.adjustCalendarEventStyles();
   }
 
   // Opções para o select de ano
@@ -223,5 +228,79 @@ export class EditarTabelaComponent implements OnInit {
     const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
     this.calendarComponent.getApi().gotoDate(selectedDate);
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.graphPacientesCadastradas.descriptionValue = 200;
+    this.graphPacientesCadastradas.totalValue = 200;
+
+    this.graphMedicosCadastrados.descriptionValue = 50;
+    this.graphMedicosCadastrados.totalValue = 50;
+
+    this.updateAspectRatio();
+  }
+
+  updateAspectRatio() {
+    const calendarApi = this.calendarComponent?.getApi();
+    if (calendarApi) {
+      calendarApi.setOption('aspectRatio', this.getAspectRatio());
+    }
+  }
+
+  // Define a proporção conforme o tamanho da tela
+  getAspectRatio(): number {
+    return window.innerWidth < 768 ? 1.35 : 1.75;
+  }
+
+  // Escuta o evento de redimensionamento da tela
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.updateAspectRatio();
+  }
+
+  ngAfterViewInit() {
+    this.adjustCalendarEventStyles();
+    // Insere os selects de mês e ano no lado direito do FullCalendar
+    const calendarToolbarRight = document.querySelector(
+      '.fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:last-child'
+    );
+    if (calendarToolbarRight && this.dateSelector) {
+      calendarToolbarRight.appendChild(this.dateSelector.nativeElement); // Adiciona os selects no lado direito
+    }
+  }
+
+  adjustCalendarEventStyles() {
+    setTimeout(() => {
+      const eventHarnesses = document.querySelectorAll(
+        '.fc-daygrid-event-harness'
+      );
+      eventHarnesses.forEach((el: HTMLElement) => {
+        el.style.display = 'flex';
+        el.style.justifyContent = 'center';
+        el.style.width = 'auto'; // Ajuste de largura
+        el.style.marginTop = '0'; // Remover o espaço superior se necessário
+      });
+    }, 100);
+  }
+
+  graphPacientesCadastradas: any = {
+    title: 'Pacientes cadastrados',
+    description: 'Quantidade',
+    descriptionValue: '',
+    description2: '',
+    description2Value: '',
+    totalValue: '',
+  };
+
+  graphMedicosCadastrados: any = {
+    title: 'Médicos cadastrados',
+    description: 'Quantidade',
+    descriptionValue: '',
+    description2: '',
+    description2Value: '',
+    totalValue: '',
+  };
+
+  mockedGraphsData = [
+    this.graphPacientesCadastradas,
+    this.graphMedicosCadastrados,
+  ];
 }

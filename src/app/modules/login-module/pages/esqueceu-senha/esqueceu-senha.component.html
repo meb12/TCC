@@ -13,6 +13,7 @@
           name="senha"
           formControlName="senha"
           placeholder="Digite sua Senha"
+          (ngModelChange)="validatePassword()"
         />
         <button
           mat-icon-button
@@ -23,19 +24,11 @@
         >
           <mat-icon>{{ hideSenha ? "visibility_off" : "visibility" }}</mat-icon>
         </button>
-        <mat-error *ngIf="form.controls['senha'].errors?.['required']">
-          Obrigatório
-        </mat-error>
+
         <mat-error *ngIf="form.controls['senha'].errors?.['senhaFraca']">
           Senha fraca
         </mat-error>
       </mat-form-field>
-      <div class="divTextSenha">
-        <p>
-          A senha deve conter pelo menos 8 dígitos, 1 letra maiúscula, 1 letra
-          minúscula, 1 número e 1 caractere especial
-        </p>
-      </div>
     </label>
   </div>
 
@@ -50,6 +43,7 @@
             name="confirmarSenha"
             formControlName="confirmarSenha"
             placeholder="Confirme sua Senha"
+            (ngModelChange)="validatePassword()"
           />
           <button
             mat-icon-button
@@ -61,19 +55,58 @@
             <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
           </button>
         </mat-form-field>
-        <div class="error">
-          <span
-            *ngIf="
-              form.value.senha != form.value.confirmarSenha &&
-              form.value.confirmarSenha != ''
-            "
-            >Senhas não correspondem</span
-          >
-        </div>
       </div>
     </label>
   </div>
 
+  <div class="validators">
+    <p
+      [ngClass]="{ valid: isLengthValid, invalid: !isLengthValid }"
+      class="error"
+    >
+      <span *ngIf="isLengthValid; else crossIcon"
+        ><img src="assets/img/check-true.svg"
+      /></span>
+      <ng-template #crossIcon
+        ><img src="assets/img/check-false.svg" class="error"
+      /></ng-template>
+      No mínimo 8 caracteres
+    </p>
+    <p [ngClass]="{ valid: hasNumber, invalid: !hasNumber }" class="error">
+      <span *ngIf="hasNumber; else crossIcon"
+        ><img src="assets/img/check-true.svg"
+      /></span>
+      <ng-template #crossIcon
+        ><img src="assets/img/check-false.svg"
+      /></ng-template>
+      Pelo menos um número
+    </p>
+
+    <p
+      [ngClass]="{ valid: hasSpecialChar, invalid: !hasSpecialChar }"
+      class="error"
+    >
+      <span *ngIf="hasSpecialChar; else crossIcon"
+        ><img src="assets/img/check-true.svg"
+      /></span>
+      <ng-template #crossIcon
+        ><img src="assets/img/check-false.svg"
+      /></ng-template>
+      No mínimo 1 caractere especial
+    </p>
+    <p
+      [ngClass]="{ valid: passwordsMatch, invalid: !passwordsMatch }"
+      class="error"
+    >
+      <span *ngIf="passwordsMatch; else crossIcon"
+        ><img src="assets/img/check-true.svg"
+      /></span>
+      <ng-template #crossIcon
+        ><img src="assets/img/check-false.svg"
+      /></ng-template>
+      As senhas devem ser iguais
+    </p>
+  </div>
   <button
     mat-raised-button
     color="primary"
@@ -82,6 +115,6 @@
     type="submit"
     class="btn-padrao1 button-login"
   >
-    Mudar senha
+    Redefinir senha
   </button>
 </form>

@@ -1,0 +1,283 @@
+.calendar-layout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Define o tamanho da lista de médicos */
+.doctor-filter {
+  display: flex;
+  flex-direction: column;
+  width: 200px; /* Largura fixa para a lista de médicos */
+  margin-right: 20px; /* Espaçamento entre a lista de médicos e o calendário */
+  justify-content: space-between;
+}
+/*  */
+/* Define o tamanho do contêiner do calendário */
+
+/* Ajuste para os selects de mês e ano */
+.date-selector {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+full-calendar {
+  height: 75vh;
+}
+.testando {
+  height: 200px;
+  overflow: auto;
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.testando2 {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 250px;
+  margin-top: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.graficos {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.fc-daygrid-day {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Estilos básicos para os eventos no calendário */
+.fc-daygrid-event {
+  border: none; /* Remove bordas padrão */
+  background: none; /* Remove cor de fundo padrão */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.85em;
+}
+
+/* Icone do card */
+.custom-event img {
+  width: 20px;
+  height: 20px;
+}
+
+.fc .fc-daygrid-day {
+  height: 100px; /* Ajuste o valor conforme necessário */
+}
+
+.fc-daygrid-day-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* Preenche toda a altura da célula */
+}
+
+.fc-daygrid-event-harness {
+  width: 70px !important; /* Define a largura fixa para os eventos */
+  max-width: 100%; /* Garante que os eventos não ultrapassem a largura da célula */
+}
+
+.fc-daygrid-day-events {
+  max-height: 80%; /* Ajuste para limitar a altura ocupada pelos eventos */
+  overflow: hidden; /* Esconde o overflow dos eventos */
+}
+
+::ng-deep .fc .fc-daygrid-day {
+  height: 100px;
+}
+
+::ng-deep .fc-daygrid-event-harness {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+::ng-deep .custom-event {
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border-radius: 4px;
+  padding: 4px;
+  color: white;
+  font-size: 0.8rem;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.consulta-card {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.consulta-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+.consulta-subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: gray;
+}
+
+.calendar-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.fc {
+  width: 100%;
+  min-width: 300px; /* Define um tamanho mínimo para não quebrar a exibição */
+  box-sizing: border-box;
+}
+
+.calendar-container {
+  height: 90vh;
+  max-height: 90vh;
+}
+
+/* Ajuste para dispositivos móveis */
+@media (max-width: 1700px) {
+  .fc-toolbar-title {
+    font-size: 1rem; /* Reduz o tamanho do título em telas menores */
+  }
+
+  .fc-header-toolbar {
+    flex-direction: column; /* Empilha os botões do header em telas menores */
+  }
+
+  .calendar-container {
+    height: 75vh;
+    max-height: 75vh;
+  }
+
+  ::ng-deep .custom-event {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    font-size: 0.7rem;
+  }
+
+  .testando2 {
+    height: 100px;
+  }
+
+  .graficos {
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+/* Contêiner do checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+/* Esconder o checkbox original mas mantê-lo clicável */
+.checkbox-container input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Criar o estilo personalizado do checkbox (ajustado para 15px) */
+.checkmark {
+  position: relative;
+  height: 15px; /* Alterado para 15px */
+  width: 15px; /* Alterado para 15px */
+  background-color: #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+  z-index: 0;
+}
+
+/* Efeito ao passar o mouse */
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #b3b3b3;
+}
+
+/* Estilo para checkbox marcado */
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #007bff;
+}
+
+/* Adiciona o ícone de checkmark */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Mostrar o ícone quando estiver marcado */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Estilo do ícone de checkmark (ajustado para 15px) */
+.checkmark:after {
+  left: 5px; /* Ajustado para 15px */
+  top: 3px; /* Ajustado para 15px */
+  width: 4px; /* Ajustado para 15px */
+  height: 8px; /* Ajustado para 15px */
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+/* Estilização da div que contém os selects */
+.date-selector {
+  display: flex;
+  gap: 10px; /* Espaçamento entre os dois selects */
+  margin-bottom: 10px; /* Espaçamento inferior */
+}
+
+.date-selector select {
+  width: 120px; /* Ajuste da largura */
+  height: 36px; /* Altura fixa */
+  padding: 5px 30px 5px 10px; /* Padding ajustado para a seta e o texto */
+  font-size: 16px; /* Tamanho da fonte */
+  border-radius: 4px; /* Bordas arredondadas */
+  border: 1px solid #ccc; /* Cor da borda */
+  background-color: #fff; /* Fundo branco */
+  appearance: none; /* Remove o estilo padrão dos selects */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="none" stroke="black" stroke-width=".5" d="M0 0l2 2.5L4 0"/></svg>');
+  background-position: right 8px center;
+
+  background-repeat: no-repeat;
+  background-size: 8px; /* Tamanho da seta */
+}
+
+/* Adiciona um efeito quando o select é focado */
+.date-selector select:focus {
+  outline: none;
+  border-color: #007bff; /* Cor da borda ao focar */
+}
+
+/* Ajusta o espaçamento dos textos nas opções */
+.date-selector option {
+  padding: 5px;
+}

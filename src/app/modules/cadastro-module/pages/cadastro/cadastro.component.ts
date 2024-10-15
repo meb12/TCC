@@ -18,11 +18,18 @@ interface Country {
 })
 export class CadastroComponent implements OnInit {
   cadastroForm: FormGroup;
+  readonly: boolean = false;
   tipoCadastro: string = ''; // Tipo do cadastro como string inicialmente vazio
   sexoOptions = [
     { value: 1, name: 'Masculino' },
     { value: 2, name: 'Feminino' },
     { value: 3, name: 'Prefiro não dizer' },
+  ];
+  cadastroOptions = [
+    { value: 1, name: 'Paciente' },
+    { value: 2, name: 'Médico' },
+    { value: 3, name: 'Recepcionista' },
+    { value: 4, name: 'Administrador' },
   ];
   nacionalidades: any[] = []; // Array para armazenar nacionalidades
 
@@ -32,12 +39,16 @@ export class CadastroComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient // HttpClient injetado para requisições HTTP
-  ) {}
+  ) {
+    this.router.onSameUrlNavigation = 'reload';
+  }
 
   ngOnInit() {
     this.initializeForm();
     this.setupRouteListener();
     this.fetchnacionalidades();
+
+    this.validateRouteOnLoad();
   }
 
   private initializeForm() {
@@ -64,6 +75,8 @@ export class CadastroComponent implements OnInit {
       informacoesAdicionais: [''],
       instituicaoEnsino: [''],
       anoFormacao: [''],
+      tipoCadastro: [''],
+      tipoCadastroLabel: [''],
     });
 
     this.cadastroForm.get('cep')?.valueChanges.subscribe((cep) => {
@@ -76,14 +89,47 @@ export class CadastroComponent implements OnInit {
     });
   }
 
-  private setupRouteListener() {
+  previousUrl: string = '';
+
+  validateRouteOnLoad() {
+    const urlSegments = this.router.url.split('/');
+
+    if (urlSegments.length > 2) {
+      const tipoCadastroSegment = urlSegments[2].toLowerCase();
+
+      switch (tipoCadastroSegment) {
+        case 'paciente':
+          this.cadastroForm.patchValue({
+            tipoCadastro: 1,
+            tipoCadastroLabel: 'Paciente',
+          });
+          break;
+        case 'medico':
+          this.cadastroForm.patchValue({
+            tipoCadastro: 2,
+            tipoCadastroLabel: 'Médico',
+          });
+          break;
+        case 'funcionarios':
+          this.cadastroForm.patchValue({
+            tipoCadastro: '',
+            tipoCadastroLabel: '',
+          });
+          break;
+        default:
+          this.cadastroForm.patchValue({
+            tipoCadastro: '',
+            tipoCadastroLabel: '',
+          });
+      }
+    }
+  }
+
+  setupRouteListener() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        const urlSegments = this.router.url.split('/');
-        if (urlSegments.length > 2) {
-          this.tipoCadastro = urlSegments[2]; // Atualiza o tipo de cadastro baseado na URL
-        }
+        this.validateRouteOnLoad(); // Valida a rota sempre que há uma mudança
       });
   }
 

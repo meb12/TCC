@@ -18,9 +18,14 @@
       >
         <td *ngFor="let column of columns">
           <ng-container [ngSwitch]="column.type">
-            <span *ngSwitchCase="'text'">{{
-              item[column.key] ?? "-----"
-            }}</span>
+            <span
+              *ngSwitchCase="'text'"
+              [ngClass]="{
+                'status-active': item[column.key] === 'Ativo',
+                'status-inactive': item[column.key] === 'Inativo'
+              }"
+              >{{ item[column.key] ?? "-----" }}</span
+            >
 
             <div *ngSwitchCase="'textArray'">
               <div class="text-array" *ngIf="column.keyArray">
@@ -46,34 +51,30 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="'buttons'">
-              <ng-container *ngFor="let btn of column.buttons">
-                <ng-container
-                  *ngIf="!condition ? btn.condition(item) : !btn.condition"
-                >
-                  <button (click)="btn.action(item)">
-                    <ng-container *ngIf="btn.img">
-                      <img class="img-icon" [src]="btn.img" />
-                    </ng-container>
-                    <ng-container *ngIf="!btn.img">
-                      <span class="button">{{
-                        btn.conditionSecLabel
-                          ? btn.conditionSecLabel(item)
-                            ? btn.secondaryLabel
-                            : btn.label
-                          : btn.label
-                      }}</span>
-                    </ng-container>
+              <div class="dropdown">
+                <button class="btn-icon" (click)="toggleDropdown(i)">
+                  <img
+                    src="assets/img/tres-pontos.svg"
+                    alt="Actions"
+                    (click)="toggleDropdown(i)"
+                  />
+                </button>
+                <div class="dropdown-menu" *ngIf="isDropdownOpen(i)">
+                  <button
+                    *ngFor="let btn of column.buttons"
+                    (click)="btn.action(item)"
+                  >
+                    <div class="dropdown-option">
+                      <img
+                        [src]="btn.img"
+                        alt="Actions"
+                        (click)="toggleDropdown(i)"
+                      />
+                      {{ btn.label }}
+                    </div>
                   </button>
-                </ng-container>
-
-                <ng-container
-                  *ngIf="!(!condition ? btn.condition(item) : !btn.condition)"
-                >
-                  <button>
-                    <span class="button">--</span>
-                  </button>
-                </ng-container>
-              </ng-container>
+                </div>
+              </div>
             </ng-container>
 
             <ng-container *ngSwitchCase="'checkbox'">

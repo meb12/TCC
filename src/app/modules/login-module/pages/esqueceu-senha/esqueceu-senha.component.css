@@ -40,21 +40,6 @@
     background-color: #ec5225;
   }
 
-  .error {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    color: red;
-    font-size: 13px;
-    font-weight: 400;
-    span {
-      text-align: start;
-      padding: 0 16px;
-      margin: -20px 0;
-    }
-  }
   .divTextSenha {
     /* position: absolute; */
     width: 100% !important;
@@ -69,5 +54,47 @@
   input::-ms-reveal,
   input::-ms-clear {
     display: none;
+  }
+  .button-login {
+    background-color: #8cc738;
+    color: #ffffff;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    border-radius: 8px;
+    margin-top: 30px;
+  }
+
+  .validators {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
+
+  .validators p {
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .validators p span {
+    margin-right: 5px;
+  }
+
+  .valid {
+    color: green;
+    font-weight: 500;
+  }
+
+  .invalid {
+    color: red;
+    font-weight: 500;
+  }
+
+  .error {
+    display: flex;
+    gap: 8px;
   }
 }

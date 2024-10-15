@@ -1,12 +1,30 @@
+<div class="header">
+  <div><h1>Médicos</h1></div>
+  <div class="header-buttons">
+    <button class="secundario" [style.width]="'100%'">
+      <img [src]="'assets/img/download-icon.svg'" class="icon-photo" />
+      {{ "Exportar excel" }}
+    </button>
+  </div>
+</div>
+
 <div class="table-header">
-  <h1 class="table-title">Projetos</h1>
+  <h1 class="table-title">Listagem</h1>
   <div class="table-filters">
     <app-input
       type="search"
       placeholder="Pesquisar"
       icon="assets/img/search.svg"
+      (ngModelChange)="onSearchChange($event)"
+    ></app-input>
+    <app-input
+      type="select"
+      placeholder="Pesquisar"
+      [selectData]="selectData"
+      icon="assets/img/search.svg"
+      (ngModelChange)="onSelectChange($event)"
     ></app-input>
   </div>
 </div>
 
-<app-tabela [data]="tableData" [columns]="tableColumns"></app-tabela>
+<app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>

@@ -15,6 +15,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 interface SelectOption {
   value: any;
   name: string;
+  intervalo?: number;
 }
 
 type InputTypes =
@@ -27,7 +28,8 @@ type InputTypes =
   | 'number'
   | 'select'
   | 'search'
-  | 'textarea';
+  | 'textarea'
+  | 'readonly';
 
 @Component({
   selector: 'app-input',
@@ -171,7 +173,7 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this.readOnly = isDisabled;
+    // this.readOnly = isDisabled;
   }
 
   onValueChange(value: any) {

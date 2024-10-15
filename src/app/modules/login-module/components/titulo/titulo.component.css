@@ -8,7 +8,8 @@ h1 {
 p {
   position: relative;
   font-size: 18px;
-  font-weight: 200;
+  font-weight: 500;
   margin-bottom: 30px;
   text-align: start;
+  color: #676767;
 }

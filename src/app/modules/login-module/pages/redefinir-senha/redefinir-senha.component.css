@@ -11,4 +11,11 @@
       text-decoration: underline;
     }
   }
+  .button-login {
+    background-color: #8cc738;
+    color: #ffffff;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    border-radius: 8px;
+  }
 }

@@ -1,4 +1,25 @@
+<div>
+  <h1>Novo cadastro</h1>
+</div>
 <div class="form-container" [formGroup]="cadastroForm">
+  <div class="header">
+    <app-input
+      label="Tipo de cadastro"
+      formControlName="tipoCadastroLabel"
+      inputClassName="input-standard"
+      [readOnly]="true"
+      type="readonly"
+    ></app-input>
+
+    <app-input
+      type="select"
+      width="100%"
+      name="Nome"
+      label="Tipo de cadastro"
+      [selectData]="cadastroOptions"
+      *ngIf="cadastroForm.value.tipoCadastro == ''"
+    ></app-input>
+  </div>
   <h3>Informações Pessoais</h3>
   <div class="form-row">
     <app-input type="text" width="100%" label="Nome" name="Nome"></app-input>
@@ -112,7 +133,7 @@
     ></app-input>
   </div>
 
-  <div *ngIf="tipoCadastro == 'medico'">
+  <div *ngIf="cadastroForm.value.tipoCadastro == 2">
     <h3>Informações Profissionais</h3>
     <div class="form-row">
       <app-input

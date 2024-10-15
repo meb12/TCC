@@ -2,18 +2,46 @@
   <label [style.color]="labelColor">
     {{ label }} <span *ngIf="requiredInput" class="required">*</span>
   </label>
-  <input
-    type="text"
-    autocomplete="off"
-    [placeholder]="placeholder"
-    [mask]="mask"
-    [attr.maxLength]="maxLength"
-    [style.width]="width"
-    [readOnly]="readOnly"
-    [disabled]="disabled"
-    [(ngModel)]="value"
-    (ngModelChange)="onValueChange($event)"
-  />
+  <div>
+    <input
+      type="text"
+      autocomplete="off"
+      [placeholder]="placeholder"
+      [mask]="mask"
+      [attr.maxLength]="maxLength"
+      [style.width]="width"
+      [disabled]="disabled"
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+    />
+  </div>
+</div>
+
+<div class="input" *ngIf="type === 'readonly'">
+  <label class="labelReadonly">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="input-container">
+    <input
+      type="text"
+      autocomplete="off"
+      [placeholder]="placeholder"
+      [mask]="mask"
+      [attr.maxLength]="maxLength"
+      [style.width]="width"
+      [disabled]="disabled"
+      [(ngModel)]="value"
+      [readOnly]="readOnly"
+      (ngModelChange)="onValueChange($event)"
+      class="readonly"
+    />
+    <img
+      src="assets/img/readonly.svg"
+      alt="Ícone de Read Only"
+      class="input-icon"
+      *ngIf="readOnly"
+    />
+  </div>
 </div>
 
 <div class="input" *ngIf="type === 'number'">

@@ -25,6 +25,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'pacientes',
+        loadChildren: () =>
+          import('../pacientes-module/pacientes-module.module').then(
+            (m) => m.PacientesModule
+          ),
+      },
+      {
         path: 'cadastro',
         loadChildren: () =>
           import('../cadastro-module/cadastro-module.module').then(

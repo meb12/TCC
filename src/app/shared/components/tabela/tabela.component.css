@@ -182,3 +182,53 @@ input:checked + .slider:before {
   -ms-transform: translateX(14px);
   transform: translateX(14px);
 }
+
+.dropdown {
+  position: relative;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: #f4f4f4;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 8px 0;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #e0e0e0;
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-active {
+  color: green;
+  font-weight: 700;
+}
+
+.status-inactive {
+  color: red;
+  font-weight: 700;
+}
