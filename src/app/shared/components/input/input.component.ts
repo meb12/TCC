@@ -28,6 +28,7 @@ type InputTypes =
   | 'number'
   | 'select'
   | 'search'
+  | 'search-select'
   | 'textarea'
   | 'readonly';
 
@@ -59,14 +60,23 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input() ngModel: any;
   @Output() ngModelChange: EventEmitter<any> = new EventEmitter();
   @Output() blurEvent: EventEmitter<void> = new EventEmitter();
-
+  @Input() optionsList = [];
+  @Output() searchChange = new EventEmitter<string>();
+  @Output() selectChange = new EventEmitter<string>();
+  selectedOption: string = '';
   passwordType: string = 'password';
   eyeImage: string = 'assets/images/eye-off.svg';
   searchTerm: string | null = null;
   showOptions: boolean = false;
   filteredOptions: SelectOption[] = [];
   value: any = null;
+  pesquisar = '';
+  // Armazena o valor e o rótulo da opção selecionada
 
+  @Input() selectedLabel: string = '';
+
+  // Controla a visibilidade do dropdown
+  isDropdownVisible: boolean = false;
   onChange: any = () => {};
   onTouched: any = () => {};
   private searchSubject = new Subject<string>();
@@ -114,7 +124,10 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     }
   }
 
-  filterOptions(searchTerm: string) {
+  toggleDropdown() {
+    this.isDropdownVisible = !this.isDropdownVisible;
+  }
+  filterOptions(searchTerm: any) {
     if (searchTerm) {
       this.filteredOptions = this.selectData.filter((option) =>
         option.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -130,6 +143,11 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     this.showOptions = false;
     this.onChange(this.value);
     this.ngModelChange.emit(this.value);
+    this.selectedOption = option.value;
+    this.selectedLabel = option.name;
+
+    this.isDropdownVisible = false;
+    this.selectChange.emit(this.value);
   }
 
   hideOptions() {
@@ -157,6 +175,7 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   onSelectChange(value: any) {
     this.value = value === '' ? null : value;
     this.ngModelChange.emit(this.value);
+    this.selectChange.emit(this.value);
   }
 
   writeValue(value: any): void {
@@ -174,6 +193,10 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     // this.readOnly = isDisabled;
+  }
+
+  onSearchChange(value: string) {
+    this.searchChange.emit(value); // Emite o valor para o componente pai
   }
 
   onValueChange(value: any) {
