@@ -118,11 +118,11 @@
   <label [style.color]="labelColor">
     {{ label }} <span *ngIf="requiredInput" class="required">*</span>
   </label>
-  <div class="search-container">
-    <img src="assets/img/calendario.svg" class="search-icon" />
+  <div class="date-container">
+    <img src="assets/img/calendario.svg" alt="aaa" class="search-icon" />
     <input
       mask="00/00/0000"
-      class="search-input"
+      class="date-input"
       [placeholder]="placeholder"
       [(ngModel)]="value"
       (ngModelChange)="onDateValueChange($event, 'date')"
@@ -209,5 +209,73 @@
       [(ngModel)]="value"
       (ngModelChange)="onValueChange($event)"
     />
+  </div>
+</div>
+
+<div class="input" *ngIf="type === 'search-select'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="dropdown-search-container">
+    <!-- Campo de pesquisa -->
+    <div class="search-input-container">
+      <img src="assets/img/search.svg" class="search-icon" />
+      <input
+        type="text"
+        autocomplete="off"
+        [placeholder]="placeholder"
+        [mask]="mask"
+        [attr.maxLength]="maxLength"
+        [style.width]="width"
+        [readOnly]="readOnly"
+        [disabled]="disabled"
+        [(ngModel)]="pesquisar"
+        (ngModelChange)="onSearchChange($event)"
+        class="search-input margin-right"
+      />
+    </div>
+
+    <!-- Dropdown customizado para o select -->
+    <div class="select-container">
+      <div class="selected-option" (click)="toggleDropdown()">
+        {{ selectedLabel }}
+        <svg
+          class="dropdown-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <!-- Lista suspensa -->
+      <ul *ngIf="isDropdownVisible" class="custom-options">
+        <li
+          *ngFor="let option of optionsList"
+          [class.selected]="option.value === selectedOption"
+          (ngModelChange)="onSelectChange($event)"
+          (click)="selectOption(option)"
+        >
+          {{ option.name }}
+          <svg
+            *ngIf="option.value === selectedOption"
+            class="check-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
