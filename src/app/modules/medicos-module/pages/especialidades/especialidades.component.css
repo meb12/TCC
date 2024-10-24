@@ -46,6 +46,7 @@ h1 {
   justify-content: flex-end;
   gap: 32px;
   width: 10%;
+  position: relative;
 }
 
 .buttons-table {

@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ITableColumn } from '../../../../shared/components/tabela/tabela.models';
+import { MatDialog } from '@angular/material/dialog';
+import { EspecialidadesModalComponent } from '../especialidades-modal/especialidades-modal.component';
 import { EspecialidadeService } from '../../../../core/services/especalidades.service';
 import { ToastrService } from 'ngx-toastr';
-import { MedicosService } from '../../../../core/services/medicos.service';
 
 @Component({
-  selector: 'app-medicos',
-  templateUrl: './medicos.component.html',
-  styleUrls: ['./medicos.component.css'],
+  selector: 'app-especialidades',
+  templateUrl: './especialidades.component.html',
+  styleUrls: ['./especialidades.component.css'],
 })
-export class MedicosComponent implements OnInit {
+export class EspecialidadesComponent implements OnInit {
   constructor(
     private especialidades: EspecialidadeService,
-    private toastr: ToastrService,
-    private medicos: MedicosService
+    private toastr: ToastrService
   ) {}
-
+  showModal = false;
   tipo = '';
   item: {
     id: number;
@@ -42,15 +42,9 @@ export class MedicosComponent implements OnInit {
   filteredData = this.tableData;
 
   tableColumns: ITableColumn[] = [
-    { header: 'Nome', key: 'name', type: 'text' },
+    { header: 'Nome', key: 'specialtyName', type: 'text' },
     { header: 'Código', key: 'id', type: 'text' },
-    { header: 'CRM', key: 'doctorData.crm', type: 'text' },
-    {
-      header: 'Especialidade',
-      key: 'doctorData.specialtyType.specialtyName',
-      type: 'text',
-    },
-
+    { header: 'Intervalo', key: 'intervalBetweenAppointments', type: 'text' },
     { header: 'Status', key: 'isActive', type: 'text' },
     {
       header: 'Ações',
@@ -74,22 +68,11 @@ export class MedicosComponent implements OnInit {
   ];
 
   onSearchChange(searchValue: any) {
-    const lowerSearchValue = searchValue.toLowerCase();
-
-    this.filteredData = this.tableData.filter((item) => {
-      const name = item.name?.toLowerCase() || '';
-      const id = item.id?.toString() || '';
-      const crm = item.doctorData?.crm?.toLowerCase() || '';
-      const specialtyName =
-        item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
-
-      return (
-        name.includes(lowerSearchValue) ||
-        id.includes(lowerSearchValue) ||
-        crm.includes(lowerSearchValue) ||
-        specialtyName.includes(lowerSearchValue)
-      );
-    });
+    this.filteredData = this.tableData.filter(
+      (item) =>
+        item.specialtyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.id.toString().includes(searchValue)
+    );
   }
 
   onSelectChange(selectedValue: any) {
@@ -113,11 +96,12 @@ export class MedicosComponent implements OnInit {
     }
   }
 
-  getMedicos() {
-    this.medicos.getData().subscribe({
+  getEspecialidades() {
+    this.especialidades.getData().subscribe({
       next: (response) => {
         this.tableData = response;
         this.filteredData = this.tableData;
+        console.log(this.tableData);
       },
       error: (error) => {
         console.error('Erro ao carregar especialidades:', error);
@@ -126,42 +110,24 @@ export class MedicosComponent implements OnInit {
   }
 
   editItem(item: any) {
+    this.showModal = true;
     this.tipo = 'editar';
     this.item = item;
-    this.getMedicos();
+    this.getEspecialidades();
   }
 
   deleteItem(item: any) {
-    console.log(item);
     const formNovo = {
       id: item.id,
-      cpf: item.cpf,
-      documentNumber: item.documentNumber,
-      name: item.name,
-      dateOfBirth: item.dateOfBirth,
-      email: item.email,
-      cellphone: item.cellphone,
-      userTypeId: item.userTypeId,
-      streetName: item.streetName,
-      streetNumber: item.streetNumber,
-      complement: item.complement,
-      neighborhood: item.neighborhood,
-      state: item.state,
-      cep: item.cep,
-      city: item.city,
-      gender: item.gender,
+      description: item.specialtyName,
+      intervalBetweenAppointments: item.intervalBetweenAppointments,
       isActive: false,
-      doctorData: {
-        crm: item.doctorData.crm,
-        specialtyTypeId: item.doctorData.specialtyType.id,
-        observation: item.doctorData.observation,
-      },
     };
 
-    this.medicos.putData(formNovo).subscribe({
+    this.especialidades.putData(formNovo).subscribe({
       next: (response) => {
-        this.toastr.success('Médico excluído com sucesso!');
-        this.getMedicos();
+        this.toastr.success('Especialidade excluída com sucesso!');
+        this.getEspecialidades();
       },
       error: (error) => {
         this.toastr.error('Erro, tente novamente!');
@@ -170,10 +136,11 @@ export class MedicosComponent implements OnInit {
   }
 
   closeModal() {
-    this.getMedicos();
+    this.showModal = false;
+    this.getEspecialidades();
   }
 
   ngOnInit() {
-    this.getMedicos();
+    this.getEspecialidades();
   }
 }

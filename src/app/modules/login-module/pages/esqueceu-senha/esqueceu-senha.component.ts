@@ -40,7 +40,6 @@ export class EsqueceuSenhaComponent implements OnInit {
     this.subscription$.unsubscribe();
   }
   ngOnInit(): void {
-    console.log('EsqueceuSenhaComponent carregado');
     this._initForm();
   }
   private _initForm() {

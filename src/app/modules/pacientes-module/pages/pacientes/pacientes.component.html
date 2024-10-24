@@ -1,12 +1,26 @@
+<div class="header">
+  <div><h1>Pacientes</h1></div>
+</div>
+
 <div class="table-header">
-  <h1 class="table-title">Médicos</h1>
   <div class="table-filters">
-    <app-input
-      type="search"
-      placeholder="Pesquisar"
-      icon="assets/img/search.svg"
-    ></app-input>
+    <div class="buttons-table">
+      <app-input
+        type="search-select"
+        placeholder="Pesquisar"
+        icon="assets/img/search.svg"
+        [optionsList]="selectData"
+        (searchChange)="onSearchChange($event)"
+        (selectChange)="onSelectChange($event)"
+        [selectedLabel]="'Todos'"
+      ></app-input>
+    </div>
+    <div class="header-buttons">
+      <button class="primario" [style.width]="'100%'">
+        {{ "Cadastrar" }}
+      </button>
+    </div>
   </div>
 </div>
 
-<app-tabela [data]="tableData" [columns]="tableColumns"></app-tabela>
+<app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>

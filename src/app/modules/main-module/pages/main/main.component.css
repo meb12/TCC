@@ -4,12 +4,10 @@
 }
 
 .c-app_conteudo {
+  height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  width: 100%;
-  height: 100vh;
-  background: var(--color-14);
+  align-items: center;
 }
 
 @media (min-width: 1200px) {

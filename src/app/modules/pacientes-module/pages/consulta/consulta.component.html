@@ -38,7 +38,7 @@
     name="especialidades"
     label="Especialidade"
     [(ngModel)]="form.especialidades"
-    [selectData]="especialidadesOptions"
+    [selectData]="especialidadesData"
     (ngModelChange)="onEspecialidadeChange($event)"
   ></app-input>
   <app-input
@@ -47,14 +47,16 @@
     name="medico"
     label="Médico(a)"
     [(ngModel)]="form.medico"
-    [selectData]="medicosOptions"
+    [selectData]="filteredMedicos"
+    (ngModelChange)="onMedicoChange($event)"
   ></app-input>
   <app-input
-    label="Data de Nascimento"
+    label="Data da consulta"
     name="date"
     type="date"
     [(ngModel)]="form.date"
     inputClassName="input-standard"
+    (ngModelChange)="onDateChange($event)"
   ></app-input>
   <app-input
     type="select"

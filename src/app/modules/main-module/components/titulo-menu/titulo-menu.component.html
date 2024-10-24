@@ -3,7 +3,7 @@
   <div class="menu-container">
     <div class="menu">
       <div class="menu-icon">
-        <img class="menu-icon-img" *ngIf="src != ''" [src]="src" />
+        <img [src]="src" alt="Ícone do Menu" />
         <p class="principal-p">{{ name }}</p>
       </div>
       <i class="bx bx-chevron-down" style="color: #ffffff" *ngIf="!open"></i>
@@ -11,18 +11,16 @@
     </div>
   </div>
 </div>
-
 } @if (type === 'subtitulo') {
 <div class="titlemenu">
   <div class="menu">
     <div class="menu-icon">
-      <i
-        class="menu-icon-img submenu-icon-img"
+      <img
         *ngIf="src != ''"
-        [class]="src"
-        [ngClass]="selected ? 'open' : ''"
-      ></i>
-      <img *ngIf="sair && src != ''" [src]="src" />
+        [src]="src"
+        alt="Ícone do Subtítulo"
+        class="icone menu-icon-img"
+      />
       <p class="subtitulo-p" [ngClass]="selected ? 'open' : ''">{{ name }}</p>
     </div>
   </div>

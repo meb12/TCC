@@ -7,12 +7,16 @@ import {
   forwardRef,
   OnChanges,
   SimpleChanges,
+  HostListener,
+  ElementRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { CrmService } from '../../../core/services/crm.service';
 
 interface SelectOption {
+  id?: any;
   value: any;
   name: string;
   intervalo?: number;
@@ -30,7 +34,9 @@ type InputTypes =
   | 'search'
   | 'search-select'
   | 'textarea'
-  | 'readonly';
+  | 'readonly'
+  | 'time'
+  | 'crm';
 
 @Component({
   selector: 'app-input',
@@ -52,6 +58,7 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input() readOnly: boolean = false;
   @Input() typeSearch: 'string' | 'number' = 'string';
   @Input() disabled: boolean = false;
+  mostrar: boolean = false;
   @Input() maxLength: string | null = null;
   @Input() width: string = '';
   @Input() mask: string = '';
@@ -60,6 +67,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input() ngModel: any;
   @Output() ngModelChange: EventEmitter<any> = new EventEmitter();
   @Output() blurEvent: EventEmitter<void> = new EventEmitter();
+  valueTouched: boolean = false;
+  isFocused: boolean = false;
   @Input() optionsList = [];
   @Output() searchChange = new EventEmitter<string>();
   @Output() selectChange = new EventEmitter<string>();
@@ -71,6 +80,13 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   filteredOptions: SelectOption[] = [];
   value: any = null;
   pesquisar = '';
+  @Input() isCpf: boolean = false;
+  cpfValido: boolean = true;
+  @Input() isRg: boolean = false;
+  rgValido: boolean = true;
+  @Input() isEmail: boolean = false;
+  emailValido: boolean = true;
+
   // Armazena o valor e o rótulo da opção selecionada
 
   @Input() selectedLabel: string = '';
@@ -80,8 +96,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   onChange: any = () => {};
   onTouched: any = () => {};
   private searchSubject = new Subject<string>();
-
-  constructor(private route: ActivatedRoute) {}
+  private crmSubject = new Subject<string>();
+  constructor(private route: ActivatedRoute, private eRef: ElementRef) {}
 
   ngOnInit(): void {
     if (this.maxLength === '') {
@@ -124,10 +140,16 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     }
   }
 
+  checkValidity() {
+    if (this.searchTerm == '') {
+      this.valueTouched = true;
+    }
+  }
+
   toggleDropdown() {
     this.isDropdownVisible = !this.isDropdownVisible;
   }
-  filterOptions(searchTerm: any) {
+  filterOptions(searchTerm: string) {
     if (searchTerm) {
       this.filteredOptions = this.selectData.filter((option) =>
         option.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -138,16 +160,16 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   selectOption(option: SelectOption) {
-    this.value = option.value;
+    this.value = option.value || option.id;
     this.searchTerm = option.name;
     this.showOptions = false;
     this.onChange(this.value);
     this.ngModelChange.emit(this.value);
     this.selectedOption = option.value;
     this.selectedLabel = option.name;
-
     this.isDropdownVisible = false;
     this.selectChange.emit(this.value);
+    this.mostrar = true;
   }
 
   hideOptions() {
@@ -162,6 +184,13 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     this.showOptions = false;
     this.onChange(null);
     this.ngModelChange.emit(null);
+
+    this.valueTouched,
+      this.requiredInput,
+      this.value !== null &&
+        this.value !== undefined &&
+        this.value !== 0 &&
+        this.value !== '';
   }
 
   togglePassword() {
@@ -170,6 +199,15 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
       this.eyeImage === 'assets/images/eye-off.svg'
         ? 'assets/images/eye-on.svg'
         : 'assets/images/eye-off.svg';
+  }
+
+  isValueValid(): boolean {
+    return (
+      this.value !== null &&
+      this.value !== undefined &&
+      this.value !== 0 &&
+      this.value !== ''
+    );
   }
 
   onSelectChange(value: any) {
@@ -192,16 +230,21 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    // this.readOnly = isDisabled;
+    this.readOnly = isDisabled;
   }
-
   onSearchChange(value: string) {
     this.searchChange.emit(value); // Emite o valor para o componente pai
   }
-
   onValueChange(value: any) {
     this.ngModelChange.emit(value);
     this.searchSubject.next(value);
+    if (this.isCpf) {
+      this.cpfValido = this.validarCPF(value);
+    } else if (this.isRg) {
+      this.rgValido = this.validarRG(value);
+    } else if (this.isEmail) {
+      this.emailValido = this.validarEmail(value);
+    }
   }
 
   onChangeValuesInit(value: string) {
@@ -238,6 +281,47 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   onBlur() {
     this.blurEvent.emit();
     this.onTouched();
+  }
+
+  validarCPF(cpf: string): boolean {
+    console.log(cpf);
+    cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+      return false;
+    }
+    let soma = 0;
+    let resto;
+    for (let i = 1; i <= 9; i++)
+      soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for (let i = 1; i <= 10; i++)
+      soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+    return true;
+  }
+
+  validarRG(rg: string): boolean {
+    // Remove caracteres não numéricos ou letras (para casos com dígitos verificadores)
+    rg = rg.replace(/[^\w]/g, '');
+
+    // Verifica se o RG tem entre 7 e 10 caracteres
+    if (rg.length < 7 || rg.length > 10) {
+      return false;
+    }
+
+    // Valida se o RG contém apenas números ou letras permitidas
+    return /^[0-9A-Za-z]+$/.test(rg);
+  }
+
+  validarEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    console.log(regex.test(email));
+    return regex.test(email);
   }
 
   private setValue(value: any): void {

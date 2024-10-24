@@ -45,6 +45,7 @@
   height: 100vh;
   background-color: #307ac1;
   z-index: 2;
+  overflow-y: auto;
 
   img {
     margin: 32px 32px 48px;
@@ -89,7 +90,6 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  overflow: none;
 }
 
 .menu-selecionado {

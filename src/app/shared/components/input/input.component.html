@@ -13,7 +13,65 @@
       [disabled]="disabled"
       [(ngModel)]="value"
       (ngModelChange)="onValueChange($event)"
+      [ngClass]="{
+        'input-invalid':
+          (requiredInput && valueTouched && !value) ||
+          (isCpf && value && !cpfValido) ||
+          (isRg && value && !rgValido) ||
+          (isEmail && value && !emailValido)
+      }"
+      (focus)="isFocused = true; valueTouched = true"
+      (blur)="isFocused = true"
     />
+
+    <div
+      *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+      class="error-message"
+    >
+      Obrigatório
+    </div>
+    <div *ngIf="isCpf && value && !cpfValido" class="error-message">
+      CPF inválido
+    </div>
+    <div *ngIf="isRg && value && !rgValido" class="error-message">
+      RG inválido
+    </div>
+    <div *ngIf="isEmail && value && !emailValido" class="error-message">
+      E-mail inválido
+    </div>
+  </div>
+</div>
+
+
+
+<div class="input" *ngIf="type === 'time'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div>
+    <input
+      type="time"
+      autocomplete="off"
+      [placeholder]="placeholder"
+      [mask]="mask"
+      [attr.maxLength]="maxLength"
+      [style.width]="width"
+      [disabled]="disabled"
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+      [ngClass]="{
+        'input-invalid': requiredInput && valueTouched && !value
+      }"
+      (focus)="isFocused = true; valueTouched = true"
+      (blur)="isFocused = true"
+    />
+
+    <div
+      *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+      class="error-message"
+    >
+      Obrigatório
+    </div>
   </div>
 </div>
 
@@ -39,7 +97,6 @@
       src="assets/img/readonly.svg"
       alt="Ícone de Read Only"
       class="input-icon"
-      *ngIf="readOnly"
     />
   </div>
 </div>
@@ -91,7 +148,18 @@
     [readOnly]="readOnly"
     [(ngModel)]="value"
     (ngModelChange)="onValueChange($event)"
+    [ngClass]="{
+      'input-invalid': requiredInput && valueTouched && !value
+    }"
+    (focus)="isFocused = true; valueTouched = true"
+    (blur)="isFocused = true"
   />
+  <div
+    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+    class="error-message"
+  >
+    Obrigatório
+  </div>
 </div>
 
 <div class="input" *ngIf="type === 'money'">
@@ -119,15 +187,26 @@
     {{ label }} <span *ngIf="requiredInput" class="required">*</span>
   </label>
   <div class="date-container">
-    <img src="assets/img/calendario.svg" alt="aaa" class="search-icon" />
+    <img src="assets/img/calendario.svg" class="search-icon" />
     <input
       mask="00/00/0000"
       class="date-input"
       [placeholder]="placeholder"
       [(ngModel)]="value"
       (ngModelChange)="onDateValueChange($event, 'date')"
+      (focus)="isFocused = true; valueTouched = true"
       (blur)="onBlur()"
+      [ngClass]="{
+        'input-invalid': requiredInput && valueTouched && !value
+      }"
     />
+  </div>
+
+  <div
+    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+    class="error-message"
+  >
+    Obrigatório
   </div>
 </div>
 
@@ -159,7 +238,19 @@
     [readOnly]="readOnly"
     [(ngModel)]="value"
     (ngModelChange)="onValueChange($event)"
+    [ngClass]="{
+      'input-invalid': requiredInput && valueTouched && !value
+    }"
+    (focus)="isFocused = true; valueTouched = true"
+    (blur)="isFocused = true"
   ></textarea>
+
+  <div
+    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+    class="error-message"
+  >
+    Obrigatório
+  </div>
 </div>
 
 <div class="input" *ngIf="type == 'select'">
@@ -173,11 +264,14 @@
       [style.width]="width"
       [(ngModel)]="searchTerm"
       (ngModelChange)="filterOptions($event)"
-      (focus)="showOptions = true"
+      (focus)="showOptions = true; valueTouched = true; checkValidity()"
       (blur)="hideOptions()"
       [disabled]="disabled"
+      [ngClass]="{
+        'input-invalid': requiredInput && valueTouched && !isValueValid()
+      }"
     />
-    <div *ngIf="this.value && this.value > 0 && !disabled">
+    <div *ngIf="isValueValid() && mostrar" class="remove-button-container">
       <img
         src="assets/img/remove-select.svg"
         class="remove-button"
@@ -190,6 +284,14 @@
         {{ option.name }}
       </li>
     </ul>
+  </div>
+
+  <!-- Exibe mensagem de erro se o campo for inválido -->
+  <div
+    *ngIf="requiredInput && valueTouched && !isValueValid()"
+    class="error-message"
+  >
+    Obrigatório
   </div>
 </div>
 
@@ -211,7 +313,6 @@
     />
   </div>
 </div>
-
 <div class="input" *ngIf="type === 'search-select'">
   <label [style.color]="labelColor">
     {{ label }} <span *ngIf="requiredInput" class="required">*</span>

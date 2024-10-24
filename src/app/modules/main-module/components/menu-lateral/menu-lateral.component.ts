@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
@@ -15,15 +15,15 @@ export class MenuLateralComponent implements OnInit {
       src: 'assets/img/icone-pacientes.svg',
       listSubmenu: [
         {
-          menu: 'Criar',
-          src: 'bx bxs-dashboard',
+          menu: 'Cadastrar',
+          src: 'assets/img/criar.svg',
           route: 'cadastro/paciente',
           selecionado: false,
           manutencao: false,
         },
         {
           menu: 'Listagem',
-          src: 'bx bx-user',
+          src: 'assets/img/listagem.svg',
           route: 'pacientes/listagem',
           manutencao: false,
           selecionado: false,
@@ -36,88 +36,120 @@ export class MenuLateralComponent implements OnInit {
       src: 'assets/img/icone-medicos.svg',
       listSubmenu: [
         {
-          menu: 'Criar',
-          src: 'bx bxs-dashboard',
+          menu: 'Cadastrar',
+          src: 'assets/img/criar.svg',
           route: 'cadastro/medico',
           selecionado: false,
         },
         {
           menu: 'Listagem',
-          src: 'bx bx-user',
+          src: 'assets/img/listagem.svg',
           route: 'medicos/listagem',
           selecionado: false,
         },
         {
           menu: 'Especialidade',
-          src: 'bx bx-camera',
-          route: 'medicos/listagem',
+          src: 'assets/img/especialidades.svg',
+          route: 'medicos/especialidades',
+          selecionado: false,
+        },
+      ],
+    },
+    {
+      modulo: 'Funcionários',
+      open: false,
+      src: 'assets/img/icone-medicos.svg',
+      listSubmenu: [
+        {
+          menu: 'Cadastrar',
+          src: 'assets/img/criar.svg',
+          route: 'cadastro/funcionario',
+          selecionado: false,
+        },
+        {
+          menu: 'Listagem',
+          src: 'assets/img/listagem.svg',
+          route: 'funcionarios/listagem',
           selecionado: false,
         },
       ],
     },
   ];
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        // Chama a função de verificação da rota sempre que a navegação for concluída
-        this.verificaRota();
-      }
-    });
-  }
+  constructor(private router: Router, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
+    // Chama o scroll no topo ao carregar a página
+    this.scrollToTop();
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.scrollToTop(); // Rola para o topo após a navegação
+      }
+    });
+
     this.verificaRota();
   }
 
   verificaRota() {
     const urlAtual = this.router.url;
-    this.listMenu.forEach((menu: any) => {
-      menu.listSubmenu.forEach((submenu: any) => {
-        // Verifique se a rota atual coincide com a rota do submenu
-        submenu.selecionado = submenu.route === urlAtual;
-        // Expanda o menu pai se algum submenu estiver selecionado
-        if (submenu.selecionado) {
-          menu.open = true;
-        }
+    if (urlAtual != '/manutencao') {
+      this.listMenu?.map((y: any) => {
+        y?.listSubmenu.map((x: any) => {
+          if (x.route == urlAtual) {
+            x.selecionado = true;
+            y.open = true;
+          }
+        });
       });
-    });
+    }
   }
 
-  selecionarMenu(menu: any) {
-    // Alternar o estado de abertura do menu atual
-    menu.open = !menu.open;
-
-    // Fechar os outros menus
-    this.listMenu.forEach((m: any) => {
-      if (m !== menu) {
-        m.open = false;
+  selecionarMenu(event: any) {
+    this.listMenu?.map((x: any) => {
+      if (x.modulo == event.modulo) {
+        x.open = !x.open;
+      } else {
+        x.open = false;
       }
     });
   }
 
   navegar(event: any) {
-    // Verifica se a rota selecionada é a mesma que a atual
-    if (this.router.url === event.route) {
-      // Se for a mesma, recarrega a rota
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigate([event.route]);
-      });
-    } else {
-      // Se for diferente, apenas navega
-      this.router.navigate([event.route]);
-    }
+    const urlAtual = this.router.url;
 
-    // Atualiza o estado do menu
-    this.listMenu?.map((y: any) => {
-      y.listSubmenu?.map((x: any) => {
-        if (x.menu == event.menu) {
-          x.selecionado = true;
-        } else {
-          x.selecionado = false;
-        }
+    // Atualiza o estado dos itens selecionados no menu
+    this.listMenu?.forEach((menu: any) => {
+      menu.listSubmenu?.forEach((submenu: any) => {
+        submenu.selecionado = submenu.menu === event.menu;
       });
     });
+
+    // Se a rota for a mesma, recarrega a rota
+    if (urlAtual === event.route) {
+      this.router
+        .navigateByUrl('/dummy-route', { skipLocationChange: true })
+        .then(() => {
+          this.router.navigate([event.route]);
+          this.scrollToTop(); // Chama o scroll no topo após a navegação
+        });
+    } else {
+      // Navega para a nova rota se for diferente
+      this.router.navigate([event.route]);
+      this.scrollToTop(); // Chama o scroll no topo após a navegação
+    }
+
+    // Fecha o módulo que contém o submenu selecionado
+    this.listMenu.forEach((menu: any) => {
+      if (
+        menu.listSubmenu.some((submenu: any) => submenu.menu === event.menu)
+      ) {
+        menu.open = false; // Fecha o módulo atual
+      }
+    });
+
+    // Fecha o menu lateral completo (se necessário)
+    this.openMenu = false;
   }
 
   openAndCloseMenu() {
@@ -127,14 +159,22 @@ export class MenuLateralComponent implements OnInit {
         x.open = false;
       });
     }
-    console.log('open', this.openMenu);
   }
 
   navegarHome() {
     this.router.navigate(['home']);
+    this.scrollToTop(); // Certifica-se de rolar para o topo ao navegar para a home
   }
 
-  ngAfterViewInit() {
-    this.verificaRota();
+  // Função para rolar para o topo da área de conteúdo
+  scrollToTop() {
+    const contentContainer =
+      this.elementRef.nativeElement.querySelector('.container');
+    if (contentContainer) {
+      contentContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth', // Comportamento suave opcional
+      });
+    }
   }
 }

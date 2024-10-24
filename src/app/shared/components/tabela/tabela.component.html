@@ -11,91 +11,48 @@
       <tr
         *ngFor="let item of data; let i = index"
         [ngClass]="{
-          red: item.saida === '--',
-          selected: selectedRowIndex === i
+          'row-selected': selectedRowIndex === i
         }"
-        (click)="selectRow(i)"
+        (click)="selectRow(i, $event)"
       >
         <td *ngFor="let column of columns">
           <ng-container [ngSwitch]="column.type">
             <span
               *ngSwitchCase="'text'"
               [ngClass]="{
-                'status-active': item[column.key] === 'Ativo',
-                'status-inactive': item[column.key] === 'Inativo'
+                'status-active': item[column.key] === true,
+                'status-inactive': item[column.key] === false
               }"
-              >{{ item[column.key] ?? "-----" }}</span
+              >{{
+                item[column.key] === true
+                  ? "Ativo"
+                  : item[column.key] === false
+                  ? "Inativo"
+                  : getNestedValue(item, column.key) ?? "-----"
+              }}</span
             >
 
-            <div *ngSwitchCase="'textArray'">
-              <div class="text-array" *ngIf="column.keyArray">
-                <span>{{ item[column.keyArray[0]] }}</span>
-                <span class="text-blue">{{ item[column.keyArray[1]] }}</span>
-              </div>
-            </div>
-
-            <ng-container *ngSwitchCase="'select'">
-              <div class="custom-select">
-                <select
-                  [(ngModel)]="item[column.key]"
-                  (ngModelChange)="onSelectChange($event, item)"
-                >
-                  <option
-                    *ngFor="let option of column.options"
-                    [value]="option.value"
-                  >
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-            </ng-container>
-
+            <!-- Condição para botões -->
             <ng-container *ngSwitchCase="'buttons'">
               <div class="dropdown">
-                <button class="btn-icon" (click)="toggleDropdown(i)">
-                  <img
-                    src="assets/img/tres-pontos.svg"
-                    alt="Actions"
-                    (click)="toggleDropdown(i)"
-                  />
+                <button class="btn-icon" (click)="toggleDropdown(i, $event)">
+                  <img src="assets/img/tres-pontos.svg" alt="Actions" />
                 </button>
+
                 <div class="dropdown-menu" *ngIf="isDropdownOpen(i)">
-                  <button
-                    *ngFor="let btn of column.buttons"
-                    (click)="btn.action(item)"
-                  >
-                    <div class="dropdown-option">
-                      <img
-                        [src]="btn.img"
-                        alt="Actions"
-                        (click)="toggleDropdown(i)"
-                      />
-                      {{ btn.label }}
-                    </div>
-                  </button>
+                  <ng-container *ngFor="let btn of column.buttons">
+                    <button
+                      class="dropdown-item"
+                      (click)="executeButtonAction(btn, item, $event)"
+                    >
+                      <div class="dropdown-option">
+                        <img [src]="btn.img" alt="Action icon" />
+                        {{ btn.label }}
+                      </div>
+                    </button>
+                  </ng-container>
                 </div>
               </div>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'checkbox'">
-              <label class="checkbox">
-                <input
-                  type="checkbox"
-                  [checked]="item[column.key]"
-                  (change)="column.action ? column.action(item) : null"
-                />
-              </label>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'switch'">
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  [checked]="item[column.key]"
-                  (change)="column.action ? column.action(item) : null"
-                />
-                <span class="slider round"></span>
-              </label>
             </ng-container>
           </ng-container>
         </td>

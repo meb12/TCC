@@ -1,0 +1,50 @@
+<div class="modal-overlay" (click)="closeOnClickOutside($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Toggle no canto superior direito dentro do modal -->
+    <div class="toggle-container" *ngIf="tipo === 'editar'">
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="form.isActive" />
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <h2>Nova especialidade</h2>
+    <form>
+      <div class="form-group">
+        <div class="div1">
+          <app-input
+            type="text"
+            label="Nome"
+            name="name"
+            required="true"
+            width="100%"
+            [(ngModel)]="form.description"
+            [requiredInput]="true"
+          ></app-input>
+        </div>
+        <div class="div1">
+          <app-input
+            type="time"
+            label="Intervalo"
+            name="intervalBetweenAppointments"
+            required="true"
+            width="100%"
+            [(ngModel)]="form.intervalBetweenAppointments"
+            [requiredInput]="true"
+          ></app-input>
+        </div>
+      </div>
+    </form>
+
+    <div class="button-group">
+      <button (click)="voltar()" class="btn btn-secondary">Voltar</button>
+      <button
+        (click)="salvar()"
+        [disabled]="formValido()"
+        class="btn btn-primary"
+      >
+        Salvar
+      </button>
+    </div>
+  </div>
+</div>

@@ -51,7 +51,10 @@
               [sair]="subItem.manutencao"
               [open]="subItem.selecionado"
               (click)="navegar(subItem)"
-            ></app-titulo-menu>
+            >
+              <!-- Adicione o img corretamente dentro do subtítulo -->
+              <img [src]="subItem.src" />
+            </app-titulo-menu>
           </div>
         </div>
       </div>

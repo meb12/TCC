@@ -4,10 +4,17 @@ import { MedicosRoutingModule } from './medicos-routing.module';
 import { MedicosComponent } from './pages/medicos/medicos.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ReceituarioMedicoComponent } from './components/receituario-medico/receituario-medico.component';
+import { EspecialidadesComponent } from './pages/especialidades/especialidades.component';
+import { EspecialidadesModalComponent } from './pages/especialidades-modal/especialidades-modal.component';
 
 @NgModule({
   imports: [CommonModule, MedicosRoutingModule, SharedModule],
-  declarations: [MedicosComponent, ReceituarioMedicoComponent],
+  declarations: [
+    MedicosComponent,
+    ReceituarioMedicoComponent,
+    EspecialidadesComponent,
+    EspecialidadesModalComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MedicosModule {}

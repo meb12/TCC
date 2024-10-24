@@ -7,19 +7,11 @@ import { Observable } from 'rxjs/internal/Observable';
 @Injectable({
   providedIn: 'root',
 })
-export class EspecialidadeService {
-  private baseURL: string = `${environment.apiUrl}/api/specialties`;
+export class TiposUsuariosService {
+  private baseURL: string = `${environment.apiUrl}/api/user-types`;
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
-  postData(data: any): Observable<any> {
-    return this.http.post(this.baseURL, data);
-  }
-
-  getData(): Observable<any> {
+  getUserTypes(): Observable<any> {
     return this.http.get(this.baseURL);
-  }
-
-  putData(data: any): Observable<any> {
-    return this.http.put(this.baseURL, data);
   }
 }

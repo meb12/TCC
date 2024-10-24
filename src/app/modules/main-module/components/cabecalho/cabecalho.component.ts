@@ -8,7 +8,12 @@ import { Router } from '@angular/router';
 })
 export class CabecalhoComponent implements OnInit {
   constructor(private router: Router) {}
-  ngOnInit() {}
+  ngOnInit() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // opcional, para uma rolagem suave
+    });
+  }
   getNome(): string {
     const funcionario = localStorage.getItem('Funcionario');
     const funcionarioObj = funcionario

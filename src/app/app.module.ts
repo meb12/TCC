@@ -21,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { PacientesModule } from './modules/pacientes-module/pacientes-module.module';
+import { FuncionariosModule } from './modules/funcionarios-module/funcionarios-module.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,6 +36,7 @@ import { PacientesModule } from './modules/pacientes-module/pacientes-module.mod
     CadastroModule,
     SharedModule,
     PacientesModule,
+    FuncionariosModule,
   ],
   bootstrap: [AppComponent],
   providers: [

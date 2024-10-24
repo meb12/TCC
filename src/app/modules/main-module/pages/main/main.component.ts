@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -6,36 +7,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit {
-  constructor() {}
-
   isHomeRoute: boolean = false;
-
   mostrar = false;
-
   dataSource!: any[];
-
   cor: string = '';
+
+  constructor(private router: Router, private elementRef: ElementRef) {}
 
   onMostrarChange(mostrar: any) {
     this.mostrar = mostrar;
   }
 
   ngOnInit() {
-    // comentando notificacao
-    // this.getNotificacao();
-    // this.intervalId = setInterval(() => {
-    //   this.getNotificacao();
-    // }, 300000); // 300000ms = 5 minutos
-    // if (!this.authService.isAuthenticated()) {
-    //   // Se não estiver logado, redireciona para a página de login
-    //   this.router.navigateByUrl('/login');
-    // }
-    // this.router.events.subscribe(val => {
-    //   // Verifica se a rota atual é a rota inicial "/"
-    //   this.isHomeRoute = this.router.url === '/';
-    //   if (this.router.url === '/') {
-    //     this.tituloPagina.defineTitulo('');
-    //   }
-    // });
+    // Escuta as mudanças de rota
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // Quando a navegação termina, rola o elemento c-app_conteudo para o topo
+        const contentElement =
+          this.elementRef.nativeElement.querySelector('.c-app_conteudo');
+        if (contentElement) {
+          contentElement.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }
+      }
+    });
   }
 }

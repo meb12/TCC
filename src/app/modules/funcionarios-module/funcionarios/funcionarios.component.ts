@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ITableColumn } from '../../../../shared/components/tabela/tabela.models';
-import { Router } from '@angular/router';
+import { ITableColumn } from '../../../shared/components/tabela/tabela.models';
 
 @Component({
-  selector: 'app-pacientes',
-  templateUrl: './pacientes.component.html',
-  styleUrls: ['./pacientes.component.css'],
+  selector: 'app-funcionarios',
+  templateUrl: './funcionarios.component.html',
+  styleUrls: ['./funcionarios.component.css'],
 })
-export class PacientesComponent implements OnInit {
-  constructor(private router: Router) {}
-
+export class FuncionariosComponent implements OnInit {
   selectData = [
     {
       value: 1,
@@ -62,18 +59,6 @@ export class PacientesComponent implements OnInit {
       type: 'buttons',
       buttons: [
         {
-          label: 'Informações',
-          action: (item) => this.editItem(item),
-          condition: (item) => true,
-          img: 'assets/img/icon-consulta.svg',
-        },
-        {
-          label: 'Nova consulta',
-          action: (item) => this.novaConsulta(item),
-          condition: (item) => item.status === 'Ativo',
-          img: 'assets/img/icon-consulta.svg',
-        },
-        {
           label: 'Editar',
           action: (item) => this.editItem(item),
           condition: (item) => true,
@@ -118,11 +103,6 @@ export class PacientesComponent implements OnInit {
   }
 
   editItem(item: any) {}
-
-  novaConsulta(item: any) {
-    item;
-    this.router.navigate([`/pacientes/consulta`, item.cod]);
-  }
 
   deleteItem(item: any) {}
 

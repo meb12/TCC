@@ -14,7 +14,7 @@ h3 {
 .form-row {
   display: grid;
   grid-template-columns: repeat(
-    4,
+    3,
     1fr
   ); /* 4 colunas para informações pessoais */
   gap: 10px; /* Espaçamento entre os inputs */
@@ -24,7 +24,7 @@ h3 {
 .form-row-profissionais {
   display: grid;
   grid-template-columns: repeat(
-    3,
+    2,
     1fr
   ); /* 3 colunas para informações profissionais */
   gap: 10px;
@@ -39,21 +39,99 @@ h3 {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 100px;
 }
 
 button {
   padding: 10px 20px;
   border: none;
-  background-color: #007bff;
-  color: white;
   border-radius: 4px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
 .header {
   width: 24%;
+}
+
+.consulta-title {
+  font-size: 32px;
+  border-bottom: 1px solid #d9d9d9;
+}
+.dot {
+  color: #307ac1;
+}
+
+.finalizar {
+  background-color: #398fe2;
+  border: 1px solid #005ab1;
+  font-weight: 700;
+  color: white;
+}
+
+.cancelar {
+  color: black;
+  background-color: #aeaeae;
+  border: 1px solid #818181;
+  font-weight: 700;
+}
+
+.finalizar:hover {
+  background-color: #005ab1;
+}
+
+.cancelar:hover {
+  background-color: #818181;
+}
+.grid-2fr {
+  grid-column: span 2;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+input,
+textarea {
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  padding: 18px;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.alergias {
+  width: 100%;
+}
+
+.alergias-btn {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+.alergias-btn2 {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.input2 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  gap: 10px;
+  max-height: 300px;
+  overflow: auto;
 }

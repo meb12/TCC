@@ -236,6 +236,11 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     this.graphMedicosCadastrados.totalValue = 50;
 
     this.updateAspectRatio();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // opcional, para uma rolagem suave
+    });
   }
 
   updateAspectRatio() {
