@@ -36,7 +36,6 @@ export class EspecialidadesModalComponent implements OnInit {
         intervalBetweenAppointments: this.item.intervalBetweenAppointments,
         isActive: this.item.isActive,
       };
-      console.log('form novo', this.form);
     }
   }
 
@@ -82,7 +81,7 @@ export class EspecialidadesModalComponent implements OnInit {
 
   voltar() {
     // Lógica para voltar
-    console.log('Voltar clicked');
+
     this.closeModal.emit(); // Fecha o modal ao clicar em "Voltar"
   }
 

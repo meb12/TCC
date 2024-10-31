@@ -1,10 +1,17 @@
-<div>
+<div class="consulta-header">
   <h1 class="consulta-title">Novo cadastro<span class="dot">.</span></h1>
+  <div class="toggle" *ngIf="tipoAcao !== undefined">
+    <label class="switch">
+      <input type="checkbox" [(ngModel)]="form.isActive" name="isActive" />
+      <span class="slider round"></span>
+    </label>
+  </div>
 </div>
-<form class="form-container">
+<form #meuForm="ngForm" class="form-container">
   <div class="header">
     <!-- Readonly Tipo de cadastro -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Tipo de cadastro"
       name="tipoCadastroLabel"
       [(ngModel)]="form.tipoCadastroLabel"
@@ -16,6 +23,7 @@
 
     <!-- Select Tipo de cadastro, displayed if tipoCadastro is empty -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Tipo de cadastro"
       type="select"
       width="100%"
@@ -31,6 +39,7 @@
   <div class="form-row">
     <!-- Name Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       type="text"
       label="Nome"
       name="name"
@@ -43,6 +52,7 @@
 
     <!-- Date of Birth Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Data de Nascimento"
       type="date"
       name="dateOfBirth"
@@ -50,10 +60,12 @@
       [(ngModel)]="form.dateOfBirth"
       [requiredInput]="true"
       [placeholder]="'DD/MM/YYYY'"
+      [isDataNascimento]="true"
     ></app-input>
 
     <!-- CPF Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="CPF"
       name="cpf"
       inputClassName="input-standard"
@@ -68,6 +80,7 @@
   <div class="form-row">
     <!-- RG Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="RG"
       name="documentNumber"
       mask="00.000.000-0"
@@ -80,6 +93,7 @@
 
     <!-- Nacionalidade Select -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       type="select"
       width="100%"
       name="gender"
@@ -92,6 +106,7 @@
 
     <!-- Celular Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Celular"
       name="cellphone"
       inputClassName="input-standard"
@@ -105,6 +120,7 @@
   <div class="form-row">
     <!-- CEP Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="CEP"
       name="cep"
       inputClassName="input-standard"
@@ -117,6 +133,7 @@
 
     <!-- Logradouro Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Logradouro"
       name="streetName"
       inputClassName="input-standard"
@@ -127,6 +144,7 @@
 
     <!-- Número Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Número"
       name="streetNumber"
       inputClassName="input-standard"
@@ -139,6 +157,7 @@
   <div class="form-row">
     <!-- Bairro Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Bairro"
       name="neighborhood"
       inputClassName="input-standard"
@@ -149,6 +168,7 @@
 
     <!-- Cidade Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Cidade"
       name="city"
       [(ngModel)]="form.city"
@@ -159,10 +179,11 @@
 
     <!-- UF Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="UF"
-      name="state"
+      name="stateName"
       inputClassName="input-standard"
-      [(ngModel)]="form.state"
+      [(ngModel)]="form.stateName"
       [requiredInput]="true"
       [placeholder]="'Digite a UF (Estado)'"
     ></app-input>
@@ -171,6 +192,7 @@
   <div class="form-row">
     <!-- Complemento Input -->
     <app-input
+      (validChange)="onChildValidityChange($event)"
       label="Complemento"
       name="complement"
       inputClassName="input-standard"
@@ -181,6 +203,7 @@
     <!-- E-mail Input -->
     <div class="grid-2fr">
       <app-input
+        (validChange)="onChildValidityChange($event)"
         label="E-mail"
         name="email"
         type="text"
@@ -197,6 +220,7 @@
     <div class="input">
       <!-- Input para adicionar novas alergias -->
       <app-input
+        (validChange)="onChildValidityChange($event)"
         type="text"
         label="Alergias"
         [(ngModel)]="newAllergy"
@@ -227,6 +251,7 @@
     <div class="form-row-profissionais">
       <!-- Especialidade Select -->
       <app-input
+        (validChange)="onChildValidityChange($event)"
         type="select"
         width="100%"
         name="specialtyTypeId"
@@ -235,10 +260,13 @@
         [requiredInput]="true"
         [(ngModel)]="form.specialtyTypeId"
         [placeholder]="'Selecione a especialidade'"
+        [displayField]="'name'"
+        [valueField]="'id'"
       ></app-input>
 
       <!-- CRM Input -->
       <app-input
+        (validChange)="onChildValidityChange($event)"
         label="CRM"
         name="crm"
         inputClassName="input-standard"
@@ -252,6 +280,7 @@
     <!-- Observações -->
     <div class="grid-2fr">
       <app-input
+        (validChange)="onChildValidityChange($event)"
         label="Informações adicionais"
         name="observation"
         inputClassName="input-standard"
@@ -265,6 +294,12 @@
   <!-- Form Actions -->
   <div class="form-actions">
     <button (click)="handleCancel()" class="cancelar">Cancelar</button>
-    <button (click)="handleConfirm()" class="finalizar">Finalizar</button>
+    <button
+      (click)="handleConfirm()"
+      [disabled]="validaForm()"
+      class="finalizar"
+    >
+      Finalizar
+    </button>
   </div>
 </form>

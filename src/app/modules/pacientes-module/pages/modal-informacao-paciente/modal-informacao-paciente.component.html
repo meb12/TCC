@@ -1,0 +1,44 @@
+<div class="modal-container">
+  <div class="modal">
+    <div class="tabs">
+      <button
+        class="tab"
+        [ngClass]="{ 'active-tab': activeTab === 'informacoes' }"
+        (click)="activateTab('informacoes')"
+      >
+        Informações
+      </button>
+      <button
+        class="tab"
+        [ngClass]="{ 'active-tab': activeTab === 'consultas' }"
+        (click)="activateTab('consultas')"
+      >
+        Consultas
+      </button>
+    </div>
+
+    <div class="consulta-container" *ngIf="activeTab === 'informacoes'">
+      <div class="consulta-header">
+        <div>
+          <span class="patient-title">{{ data.nome }}</span>
+        </div>
+        <div>
+          <span class="patient-subtitle"> {{ "Cod." + data.Cod }}</span>
+        </div>
+      </div>
+      <div class="consulta-header">
+        <span> {{ "Data de nasc." + data.date }}</span>
+        <span> {{ "Sexo:" + data.sexo }}</span>
+        <span> {{ "CPF:" + data.cpf }}</span>
+        <span> {{ "RG:" + data.rg }}</span>
+      </div>
+      <div class="consulta-header gap">
+        <span> {{ "Tel." + data.tel }}</span>
+        <span> {{ "Cel." + data.cel }}</span>
+      </div>
+      <div class="consulta-header">
+        <span> {{ data.endereco }}</span>
+      </div>
+    </div>
+  </div>
+</div>

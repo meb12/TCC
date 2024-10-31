@@ -84,3 +84,9 @@ body {
 .toast {
   z-index: 99999 !important;
 }
+
+button:disabled {
+  color: #64748b !important;
+  background-color: #d1d5db !important;
+  cursor: not-allowed;
+}

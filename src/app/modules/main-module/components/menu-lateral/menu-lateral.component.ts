@@ -177,4 +177,9 @@ export class MenuLateralComponent implements OnInit {
       });
     }
   }
+
+  sair() {
+    this.router.navigate(['login']);
+    localStorage.clear();
+  }
 }

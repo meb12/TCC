@@ -35,3 +35,9 @@
   [tipo]="tipo"
   [item]="item"
 ></app-modal-nova-especialidade>
+<app-exclusao-modal-especialidade
+  (closeModal)="closeModal()"
+  *ngIf="showModalExclusao"
+  [item]="item"
+  [tipo]="tipo"
+></app-exclusao-modal-especialidade>

@@ -3,6 +3,7 @@ import { ITableColumn } from '../../../../shared/components/tabela/tabela.models
 import { EspecialidadeService } from '../../../../core/services/especalidades.service';
 import { ToastrService } from 'ngx-toastr';
 import { MedicosService } from '../../../../core/services/medicos.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-medicos',
@@ -13,15 +14,47 @@ export class MedicosComponent implements OnInit {
   constructor(
     private especialidades: EspecialidadeService,
     private toastr: ToastrService,
-    private medicos: MedicosService
+    private medicos: MedicosService,
+    private router: Router
   ) {}
-
+  showModalExclusao = false;
   tipo = '';
   item: {
     id: number;
     specialtyName: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
+    cellphone: string;
+    cep: string;
+    city: string;
+    complement: string;
+    cpf: string;
+    dateOfBirth: string; // ou Date se preferir usar um objeto de data
+    doctorData: {
+      crm: string;
+      observation: string;
+      specialtyType: {
+        id: number;
+        intervalBetweenAppointments: string;
+        isActive: boolean;
+        specialtyName: string;
+      };
+    };
+    documentNumber: string;
+    email: string;
+    gender: string;
+    login: string;
+    name: string;
+    neighborhood: string;
+    pacientData: any; // Defina o tipo se houver uma estrutura específica para paciente
+    stateName: string | null;
+    streetName: string;
+    streetNumber: number;
+    userType: {
+      id: number;
+      name: string;
+      isActive: boolean;
+    };
   };
   selectData = [
     {
@@ -64,9 +97,9 @@ export class MedicosComponent implements OnInit {
           img: 'assets/img/editar.svg',
         },
         {
-          label: 'Excluir',
+          label: 'Desativar',
           action: (item) => this.deleteItem(item),
-          condition: (item) => true,
+          condition: (item) => item.isActive !== false,
           img: 'assets/img/excluir.svg',
         },
       ],
@@ -93,7 +126,6 @@ export class MedicosComponent implements OnInit {
   }
 
   onSelectChange(selectedValue: any) {
-    console.log(selectedValue, this.filteredData);
     switch (selectedValue) {
       case 1: // Ativos
         this.filteredData = this.tableData.filter(
@@ -120,59 +152,30 @@ export class MedicosComponent implements OnInit {
         this.filteredData = this.tableData;
       },
       error: (error) => {
-        console.error('Erro ao carregar especialidades:', error);
+        console.error('Erro ao carregar médicos!!!!:', error);
       },
     });
   }
 
   editItem(item: any) {
-    this.tipo = 'editar';
-    this.item = item;
-    this.getMedicos();
+    this.router.navigate([`/cadastro/medico/${item.id}`]);
   }
 
   deleteItem(item: any) {
-    console.log(item);
-    const formNovo = {
-      id: item.id,
-      cpf: item.cpf,
-      documentNumber: item.documentNumber,
-      name: item.name,
-      dateOfBirth: item.dateOfBirth,
-      email: item.email,
-      cellphone: item.cellphone,
-      userTypeId: item.userTypeId,
-      streetName: item.streetName,
-      streetNumber: item.streetNumber,
-      complement: item.complement,
-      neighborhood: item.neighborhood,
-      state: item.state,
-      cep: item.cep,
-      city: item.city,
-      gender: item.gender,
-      isActive: false,
-      doctorData: {
-        crm: item.doctorData.crm,
-        specialtyTypeId: item.doctorData.specialtyType.id,
-        observation: item.doctorData.observation,
-      },
-    };
-
-    this.medicos.putData(formNovo).subscribe({
-      next: (response) => {
-        this.toastr.success('Médico excluído com sucesso!');
-        this.getMedicos();
-      },
-      error: (error) => {
-        this.toastr.error('Erro, tente novamente!');
-      },
-    });
-  }
-
-  closeModal() {
+    this.showModalExclusao = true;
+    this.item = item;
+    this.tipo = 'medicos';
     this.getMedicos();
   }
 
+  closeModal() {
+    this.showModalExclusao = false;
+    this.getMedicos();
+  }
+
+  cadastrar() {
+    this.router.navigate(['/cadastro/medico']);
+  }
   ngOnInit() {
     this.getMedicos();
   }

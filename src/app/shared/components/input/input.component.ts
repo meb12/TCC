@@ -28,6 +28,7 @@ type InputTypes =
   | 'email'
   | 'money'
   | 'date'
+  | 'dateNascimento'
   | 'date-hour'
   | 'number'
   | 'select'
@@ -86,11 +87,13 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   rgValido: boolean = true;
   @Input() isEmail: boolean = false;
   emailValido: boolean = true;
-
+  @Input() isDataNascimento: boolean = false;
+  dataValida: boolean = true; // Indica se a data é válida
+  dataFutura: boolean = false; // Indica se a data é no futuro
   // Armazena o valor e o rótulo da opção selecionada
 
   @Input() selectedLabel: string = '';
-
+  @Output() validChange: EventEmitter<boolean> = new EventEmitter();
   // Controla a visibilidade do dropdown
   isDropdownVisible: boolean = false;
   onChange: any = () => {};
@@ -104,6 +107,13 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
       this.maxLength = null;
     }
     this.filteredOptions = [...this.selectData];
+
+    // Carregar as opções e aplicar filtro inicial, se necessário
+    this.filteredOptions = [...this.selectData];
+    // Definir o nome da opção com base no valor do ID inicialmente fornecido
+    if (this.ngModel) {
+      this.value = this.ngModel;
+    }
 
     if (
       this.ngModel === undefined ||
@@ -138,18 +148,17 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
       this.filteredOptions = [...this.selectData];
       this.setValue(this.value);
     }
-  }
 
-  checkValidity() {
-    if (this.searchTerm == '') {
-      this.valueTouched = true;
+    if (this.selectData) {
+      this.filteredOptions = [...this.selectData];
     }
   }
 
   toggleDropdown() {
     this.isDropdownVisible = !this.isDropdownVisible;
   }
-  filterOptions(searchTerm: string) {
+  // Filtrar as opções com base no texto digitado
+  filterOptions(searchTerm: any) {
     if (searchTerm) {
       this.filteredOptions = this.selectData.filter((option) =>
         option.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -170,6 +179,14 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     this.isDropdownVisible = false;
     this.selectChange.emit(this.value);
     this.mostrar = true;
+  }
+
+  // Retorna o nome da opção correspondente ao ID armazenado
+  getOptionNameById(value: any): string {
+    const selectedOption = this.selectData.find(
+      (option) => option.value === value || option.id === value
+    );
+    return selectedOption ? selectedOption.name : ''; // Retorna o nome ou string vazia
   }
 
   hideOptions() {
@@ -244,7 +261,18 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
       this.rgValido = this.validarRG(value);
     } else if (this.isEmail) {
       this.emailValido = this.validarEmail(value);
+    } else if (this.isDataNascimento) {
+      this.validaData(value);
     }
+    this.checkValidity();
+  }
+
+  checkValidity() {
+    const isValid =
+      !!this.value &&
+      (this.cpfValido || this.rgValido || this.emailValido || this.dataValida);
+
+    this.validChange.emit(isValid);
   }
 
   onChangeValuesInit(value: string) {
@@ -283,8 +311,29 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     this.onTouched();
   }
 
+  validaData(value: string) {
+    if (value.length !== 8) {
+      this.dataValida = false;
+      return;
+    }
+
+    const day = parseInt(value.substring(0, 2), 10); // Extrai o dia
+    const month = parseInt(value.substring(2, 4), 10); // Extrai o mês
+    const year = parseInt(value.substring(4, 8), 10); // Extrai o ano
+
+    const currentDate = new Date();
+    const selectedDate = new Date(`${year}-${month}-${day}`);
+
+    if (isNaN(day) || isNaN(month) || isNaN(year) || day > 31 || month > 12) {
+      this.dataValida = false;
+    } else {
+      this.dataValida = true;
+    }
+
+    this.dataFutura = selectedDate > currentDate;
+  }
+
   validarCPF(cpf: string): boolean {
-    console.log(cpf);
     cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
       return false;
@@ -306,10 +355,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   validarRG(rg: string): boolean {
-    // Remove caracteres não numéricos ou letras (para casos com dígitos verificadores)
     rg = rg.replace(/[^\w]/g, '');
 
-    // Verifica se o RG tem entre 7 e 10 caracteres
     if (rg.length < 7 || rg.length > 10) {
       return false;
     }
@@ -320,7 +367,6 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
 
   validarEmail(email: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    console.log(regex.test(email));
     return regex.test(email);
   }
 

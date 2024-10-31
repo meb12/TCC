@@ -1,0 +1,47 @@
+<div class="modal-overlay" (click)="closeOnClickOutside($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Toggle no canto superior direito dentro do modal -->
+    <div class="toggle-container" *ngIf="tipo === 'editar'">
+      <label class="switch">
+        <input type="checkbox" [(ngModel)]="form.isActive" />
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <div class="icone-atencao">
+      <div class="teste">
+        <img
+          src="assets/img/exclusao-atencao.svg"
+          alt=""
+          class="icone-atencao"
+        />
+        <h2>Cuidado!</h2>
+      </div>
+    </div>
+
+    <div class="div-subtitle">
+      <p class="subtitle">
+        Você está prestes a desativar
+        <span>
+          {{
+            item.gender === "Masculino"
+              ? "o " + item.userType.name.toLowerCase()
+              : item.gender === "Feminino"
+              ? "a " + item.userType.name.toLowerCase()
+              : ""
+          }}
+        </span>
+
+        <span style="font-weight: 700">
+          {{ tipo === "especialidade" ? item.specialtyName : item.name }}
+        </span>
+        do sistema. Deseja prosseguir?
+      </p>
+    </div>
+
+    <div class="button-group">
+      <button (click)="voltar()" class="btn btn-secondary">Cancelar</button>
+      <button (click)="salvar()" class="btn btn-primary">Desativar</button>
+    </div>
+  </div>
+</div>

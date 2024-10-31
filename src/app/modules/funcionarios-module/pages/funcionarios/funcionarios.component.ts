@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { ITableColumn } from '../../../../shared/components/tabela/tabela.models';
-import { MatDialog } from '@angular/material/dialog';
-import { EspecialidadesModalComponent } from '../especialidades-modal/especialidades-modal.component';
-import { EspecialidadeService } from '../../../../core/services/especalidades.service';
+
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { EspecialidadeService } from '../../../../core/services/especalidades.service';
+import { FuncionariosService } from '../../../../core/services/funcionarios.service';
+import { ITableColumn } from '../../../../shared/components/tabela/tabela.models';
 
 @Component({
-  selector: 'app-especialidades',
-  templateUrl: './especialidades.component.html',
-  styleUrls: ['./especialidades.component.css'],
+  selector: 'app-funcionarios',
+  templateUrl: './funcionarios.component.html',
+  styleUrls: ['./funcionarios.component.css'],
 })
-export class EspecialidadesComponent implements OnInit {
+export class FuncionariosComponent implements OnInit {
   constructor(
     private especialidades: EspecialidadeService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private funcionarioService: FuncionariosService
   ) {}
-  showModal = false;
   showModalExclusao = false;
   tipo = '';
   item: {
@@ -74,9 +76,9 @@ export class EspecialidadesComponent implements OnInit {
   filteredData = this.tableData;
 
   tableColumns: ITableColumn[] = [
-    { header: 'Nome', key: 'specialtyName', type: 'text' },
+    { header: 'Nome', key: 'name', type: 'text' },
     { header: 'Código', key: 'id', type: 'text' },
-    { header: 'Intervalo', key: 'intervalBetweenAppointments', type: 'text' },
+    { header: 'Cargo', key: 'userType.name', type: 'text' },
     { header: 'Status', key: 'isActive', type: 'text' },
     {
       header: 'Ações',
@@ -100,11 +102,22 @@ export class EspecialidadesComponent implements OnInit {
   ];
 
   onSearchChange(searchValue: any) {
-    this.filteredData = this.tableData.filter(
-      (item) =>
-        item.specialtyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.id.toString().includes(searchValue)
-    );
+    const lowerSearchValue = searchValue.toLowerCase();
+
+    this.filteredData = this.tableData.filter((item) => {
+      const name = item.name?.toLowerCase() || '';
+      const id = item.id?.toString() || '';
+      const crm = item.doctorData?.crm?.toLowerCase() || '';
+      const specialtyName =
+        item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
+
+      return (
+        name.includes(lowerSearchValue) ||
+        id.includes(lowerSearchValue) ||
+        crm.includes(lowerSearchValue) ||
+        specialtyName.includes(lowerSearchValue)
+      );
+    });
   }
 
   onSelectChange(selectedValue: any) {
@@ -127,39 +140,38 @@ export class EspecialidadesComponent implements OnInit {
     }
   }
 
-  getEspecialidades() {
-    this.especialidades.getData().subscribe({
+  getFuncionarios() {
+    this.funcionarioService.getData().subscribe({
       next: (response) => {
         this.tableData = response;
         this.filteredData = this.tableData;
       },
       error: (error) => {
-        console.error('Erro ao carregar especialidades:', error);
+        console.error('Erro ao carregar médicos!!!!:', error);
       },
     });
   }
 
   editItem(item: any) {
-    this.showModal = true;
-    this.tipo = 'editar';
-    this.item = item;
-    this.getEspecialidades();
+    this.router.navigate([`/cadastro/funcionario/${item.id}`]);
   }
 
   deleteItem(item: any) {
     this.showModalExclusao = true;
     this.item = item;
-    this.tipo = 'especialidade';
-    this.getEspecialidades();
+    this.tipo = 'funcionario';
+    this.getFuncionarios();
   }
 
   closeModal() {
-    this.showModal = false;
     this.showModalExclusao = false;
-    this.getEspecialidades();
+    this.getFuncionarios();
   }
 
+  cadastrar() {
+    this.router.navigate(['/cadastro/funcionario']);
+  }
   ngOnInit() {
-    this.getEspecialidades();
+    this.getFuncionarios();
   }
 }

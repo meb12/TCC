@@ -22,13 +22,8 @@
         </div>
       </div>
 
-      <div class="mobile" *ngIf="openMenu" (click)="navegarHome()">
-        <div class="logo">
-          <img src="assets/img/Logo.svg" />
-        </div>
-      </div>
-
       <div class="container-menu1 desktop">
+        <!-- Menu items here -->
         <div
           class="titleMenus"
           *ngFor="let item of listMenu"
@@ -40,39 +35,7 @@
             [name]="item.modulo"
             [open]="item.open"
             (click)="selecionarMenu(item)"
-          >
-          </app-titulo-menu>
-          <div class="sub-menu" *ngIf="item.open">
-            <app-titulo-menu
-              type="subtitulo"
-              *ngFor="let subItem of item.listSubmenu"
-              [src]="subItem.src"
-              [name]="subItem.menu"
-              [sair]="subItem.manutencao"
-              [open]="subItem.selecionado"
-              (click)="navegar(subItem)"
-            >
-              <!-- Adicione o img corretamente dentro do subtítulo -->
-              <img [src]="subItem.src" />
-            </app-titulo-menu>
-          </div>
-        </div>
-      </div>
-      <div class="container-menu1 mobile" *ngIf="openMenu">
-        <div
-          class="titleMenus"
-          *ngFor="let item of listMenu"
-          [ngClass]="item.open ? 'menu-selecionado' : ''"
-        >
-          <app-titulo-menu
-            type="principal"
-            class="titleMenu"
-            [src]="item.src"
-            [name]="item.modulo"
-            [open]="item.open"
-            (click)="selecionarMenu(item)"
-          >
-          </app-titulo-menu>
+          ></app-titulo-menu>
           <div class="sub-menu" *ngIf="item.open">
             <app-titulo-menu
               type="subtitulo"
@@ -86,6 +49,13 @@
           </div>
         </div>
       </div>
+
+      <!-- Exit button aligned at the bottom -->
+
+      <!-- <div class="exit-button" (click)="sair()">
+        <img src="assets/img/sair.svg" class="img-exit" alt="Sair" />
+        <span>Sair</span>
+      </div> -->
     </div>
   </div>
   <div class="conteudo" [ngClass]="openMenu ? 'menu-conteudo' : ''">

@@ -42,6 +42,7 @@
                 <div class="dropdown-menu" *ngIf="isDropdownOpen(i)">
                   <ng-container *ngFor="let btn of column.buttons">
                     <button
+                      *ngIf="!btn.condition || btn.condition(item)"
                       class="dropdown-item"
                       (click)="executeButtonAction(btn, item, $event)"
                     >

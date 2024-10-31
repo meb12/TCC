@@ -13,6 +13,8 @@ import allLocales from '@fullcalendar/core/locales-all';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
+import { MedicosService } from '../../../../core/services/medicos.service';
+import { FuncionariosService } from '../../../../core/services/funcionarios.service';
 
 @Component({
   selector: 'app-calendario',
@@ -24,27 +26,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   @ViewChild('dateSelector') dateSelector!: ElementRef; // Referência aos selects de mês e ano
 
   // Lista de médicos mockados
-  doctors = [
-    { id: 1, name: 'Dr. Médico 1', checked: false },
-    { id: 2, name: 'Dr. Médico 2', checked: false },
-    { id: 3, name: 'Dr. Médico 3', checked: false },
-    { id: 4, name: 'Dr. Médico 4', checked: false },
-    { id: 5, name: 'Dr. Médico 5', checked: false },
-    { id: 6, name: 'Dr. Médico 6', checked: false },
-    { id: 7, name: 'Dr. Médico 7', checked: false },
-    { id: 8, name: 'Dr. Médico 8', checked: false },
-    { id: 9, name: 'Dr. Médico 9', checked: false },
-    { id: 10, name: 'Dr. Médico 10', checked: false },
-    { id: 11, name: 'Dr. Médico 11', checked: false },
-    { id: 12, name: 'Dr. Médico 12', checked: false },
-    { id: 13, name: 'Dr. Médico 13', checked: false },
-    { id: 14, name: 'Dr. Médico 14', checked: false },
-    { id: 15, name: 'Dr. Médico 15', checked: false },
-    { id: 16, name: 'Dr. Médico 16', checked: false },
-    { id: 17, name: 'Dr. Médico 17', checked: false },
-    { id: 18, name: 'Dr. Médico 18', checked: false },
-    { id: 19, name: 'Dr. Médico 19', checked: false },
-  ];
+  doctors = [];
 
   // Consultas mockadas
   appointments = [
@@ -92,15 +74,36 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       center: 'title',
       right: '',
     },
-    dayMaxEventRows: true, // Impede a exibição automática de eventos
+    dayMaxEventRows: true,
     events: this.consolidateEvents(this.appointments),
     eventContent: (arg) => this.customEventContent(arg),
     dateClick: this.handleDateClick.bind(this),
     showNonCurrentDates: false,
     fixedWeekCount: false,
+    titleFormat: { year: 'numeric', month: 'long' },
+    datesSet: this.modifyTitle.bind(this),
   };
 
-  constructor() {
+  modifyTitle(info) {
+    const titleElement = document.querySelector('.fc-toolbar-title');
+
+    if (titleElement) {
+      // Retrieve the original text for the month and year
+      const originalText = info.view.title; // FullCalendar provides the current title here
+
+      // Capitalize the first letter
+      const capitalizedTitle =
+        originalText.charAt(0).toUpperCase() + originalText.slice(1);
+
+      // Update the title text content
+      titleElement.textContent = capitalizedTitle;
+    }
+  }
+
+  constructor(
+    private medicos: MedicosService,
+    private funcionarios: FuncionariosService
+  ) {
     registerLocaleData(localePt); // Registra os dados do locale português
   }
 
@@ -223,6 +226,51 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     return Object.values(eventsByDay);
   }
 
+  getMedicos() {
+    this.medicos.getData().subscribe({
+      next: (response) => {
+        const mappedDoctors = response
+          .filter((medico: any) => medico.isActive === true)
+          .map((medico: any) => ({
+            id: medico.id,
+            name: medico.name.split(' ')[0],
+            gender: medico.gender,
+            checked: false,
+          }));
+
+        this.graphMedicosCadastrados.descriptionValue = mappedDoctors.length;
+        this.graphMedicosCadastrados.totalValue = mappedDoctors.length;
+
+        this.doctors = mappedDoctors;
+        console.log(this.doctors);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar médicos:', error);
+      },
+    });
+  }
+
+  getFuncionario() {
+    this.funcionarios.getData().subscribe({
+      next: (response) => {
+        const mappedDoctors = response
+          .filter((medico: any) => medico.isActive === true)
+          .map((medico: any) => ({
+            id: medico.id,
+            name: medico.name.split(' ')[0],
+            gender: medico.gender,
+            checked: false,
+          }));
+
+        this.graphFuncionariosCadastrados.descriptionValue =
+          mappedDoctors.length;
+        this.graphFuncionariosCadastrados.totalValue = mappedDoctors.length;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar médicos:', error);
+      },
+    });
+  }
   // Navegar para o mês e ano selecionados
   updateCalendar() {
     const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
@@ -231,9 +279,8 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.graphPacientesCadastradas.descriptionValue = 200;
     this.graphPacientesCadastradas.totalValue = 200;
-
-    this.graphMedicosCadastrados.descriptionValue = 50;
-    this.graphMedicosCadastrados.totalValue = 50;
+    this.getFuncionario();
+    this.getMedicos();
 
     this.updateAspectRatio();
 
@@ -280,8 +327,8 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       eventHarnesses.forEach((el: HTMLElement) => {
         el.style.display = 'flex';
         el.style.justifyContent = 'center';
-        el.style.width = 'auto'; // Ajuste de largura
-        el.style.marginTop = '0'; // Remover o espaço superior se necessário
+        el.style.width = 'auto';
+        el.style.marginTop = '0';
       });
     }, 100);
   }
@@ -296,7 +343,15 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   };
 
   graphMedicosCadastrados: any = {
-    title: 'Médicos cadastrados',
+    title: 'Médicos ativos',
+    description: 'Quantidade',
+    descriptionValue: '',
+    description2: '',
+    description2Value: '',
+    totalValue: '',
+  };
+  graphFuncionariosCadastrados: any = {
+    title: 'Funcionários ativos',
     description: 'Quantidade',
     descriptionValue: '',
     description2: '',
@@ -307,5 +362,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   mockedGraphsData = [
     this.graphPacientesCadastradas,
     this.graphMedicosCadastrados,
+    this.graphFuncionariosCadastrados,
   ];
 }

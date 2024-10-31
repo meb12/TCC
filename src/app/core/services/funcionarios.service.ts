@@ -7,8 +7,8 @@ import { Observable } from 'rxjs/internal/Observable';
 @Injectable({
   providedIn: 'root',
 })
-export class MedicosService {
-  private baseURL: string = `${environment.apiUrl}/api/doctors`;
+export class FuncionariosService {
+  private baseURL: string = `${environment.apiUrl}/api/generic-users`;
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   postData(data: any): Observable<any> {

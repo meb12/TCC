@@ -28,7 +28,7 @@ h1 {
   font-size: 36px;
   line-height: 40px;
   text-align: left;
-  color: #37aaf7;
+  color: #307ac1;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -81,7 +81,7 @@ button:disabled {
 
 button.primario {
   color: #fff;
-  background-color: #37aaf7;
+  background-color: #307ac1;
 }
 
 button.primario:hover {

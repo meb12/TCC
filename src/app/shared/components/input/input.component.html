@@ -20,7 +20,7 @@
           (isRg && value && !rgValido) ||
           (isEmail && value && !emailValido)
       }"
-      (focus)="isFocused = true; valueTouched = true"
+      (focus)="isFocused = true; valueTouched = true; checkValidity()"
       (blur)="isFocused = true"
     />
 
@@ -42,7 +42,46 @@
   </div>
 </div>
 
+<div class="input" *ngIf="type === 'date'">
+  <label [style.color]="labelColor">
+    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
+  </label>
+  <div class="date-container">
+    <img src="assets/img/calendario.svg" class="search-icon" />
+    <input
+      mask="00/00/0000"
+      class="date-input"
+      [placeholder]="placeholder"
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+      (focus)="isFocused = true; valueTouched = true"
+      (blur)="onBlur()"
+      [ngClass]="{
+        'input-invalid':
+          (requiredInput && valueTouched && !value) ||
+          (value && !dataValida) ||
+          (value && dataFutura)
+      }"
+    />
+  </div>
 
+  <!-- Mensagens de erro -->
+  <div
+    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+    class="error-message"
+  >
+    Obrigatório
+  </div>
+  <div *ngIf="value">
+    <!-- Exibe a mensagem de "Data inválida" primeiro se for o caso -->
+    <div *ngIf="!dataValida" class="error-message">Data inválida</div>
+
+    <!-- Exibe a mensagem de "A data não pode ser no futuro" se a data for válida, mas futura -->
+    <div *ngIf="dataValida && dataFutura" class="error-message">
+      A data não pode ser no futuro
+    </div>
+  </div>
+</div>
 
 <div class="input" *ngIf="type === 'time'">
   <label [style.color]="labelColor">
@@ -182,34 +221,6 @@
   </div>
 </div>
 
-<div class="input" *ngIf="type === 'date'">
-  <label [style.color]="labelColor">
-    {{ label }} <span *ngIf="requiredInput" class="required">*</span>
-  </label>
-  <div class="date-container">
-    <img src="assets/img/calendario.svg" class="search-icon" />
-    <input
-      mask="00/00/0000"
-      class="date-input"
-      [placeholder]="placeholder"
-      [(ngModel)]="value"
-      (ngModelChange)="onDateValueChange($event, 'date')"
-      (focus)="isFocused = true; valueTouched = true"
-      (blur)="onBlur()"
-      [ngClass]="{
-        'input-invalid': requiredInput && valueTouched && !value
-      }"
-    />
-  </div>
-
-  <div
-    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
-    class="error-message"
-  >
-    Obrigatório
-  </div>
-</div>
-
 <div class="input" *ngIf="type == 'date-hour'">
   <label
     >{{ label }} <span *ngIf="requiredInput" class="required">*</span></label
@@ -253,7 +264,7 @@
   </div>
 </div>
 
-<div class="input" *ngIf="type == 'select'">
+<div class="input" *ngIf="type === 'select'">
   <label [style.color]="labelColor">
     {{ label }} <span *ngIf="requiredInput" class="required">*</span>
   </label>
@@ -262,13 +273,13 @@
       type="text"
       placeholder="Selecione"
       [style.width]="width"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="filterOptions($event)"
-      (focus)="showOptions = true; valueTouched = true; checkValidity()"
+      [value]="getOptionNameById(value)"
+      (focus)="isDropdownVisible = true; valueTouched = true"
       (blur)="hideOptions()"
       [disabled]="disabled"
+      (ngModelChange)="filterOptions($event)"
       [ngClass]="{
-        'input-invalid': requiredInput && valueTouched && !isValueValid()
+        'input-invalid': requiredInput && valueTouched && !value
       }"
     />
     <div *ngIf="isValueValid() && mostrar" class="remove-button-container">
@@ -279,9 +290,13 @@
       />
     </div>
 
-    <ul *ngIf="showOptions && filteredOptions.length" class="custom-options">
+    <ul
+      *ngIf="isDropdownVisible && filteredOptions.length"
+      class="custom-options"
+    >
       <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
         {{ option.name }}
+        <!-- Mostra o nome da especialidade -->
       </li>
     </ul>
   </div>

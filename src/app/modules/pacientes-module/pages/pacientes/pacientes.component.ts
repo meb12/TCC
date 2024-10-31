@@ -63,7 +63,7 @@ export class PacientesComponent implements OnInit {
       buttons: [
         {
           label: 'Informações',
-          action: (item) => this.editItem(item),
+          action: (item) => this.infosItem(item),
           condition: (item) => true,
           img: 'assets/img/icon-consulta.svg',
         },
@@ -117,6 +117,16 @@ export class PacientesComponent implements OnInit {
     }
   }
 
+  // No componente pai
+  isPacienteModalOpen = false;
+
+  closePacienteModal() {
+    this.isPacienteModalOpen = false;
+  }
+
+  infosItem(item: any) {
+    this.isPacienteModalOpen = true;
+  }
   editItem(item: any) {}
 
   novaConsulta(item: any) {
@@ -126,5 +136,8 @@ export class PacientesComponent implements OnInit {
 
   deleteItem(item: any) {}
 
+  cadastrar() {
+    this.router.navigate(['/cadastro/paciente']);
+  }
   ngOnInit(): void {}
 }

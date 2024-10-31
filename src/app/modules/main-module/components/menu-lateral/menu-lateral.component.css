@@ -194,3 +194,26 @@ app-titulo-menu {
     overflow-y: auto;
   }
 }
+.exit-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  margin-left: 3px;
+  margin-bottom: 40px;
+  color: white;
+  gap: 10px;
+  width: 90%;
+}
+
+.exit-button img {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+
+  padding: 0;
+}
+
+img.img-exit {
+  filter: invert(100%);
+}

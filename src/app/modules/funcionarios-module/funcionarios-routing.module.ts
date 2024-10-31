@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { FuncionariosComponent } from './funcionarios/funcionarios.component';
+import { FuncionariosComponent } from './pages/funcionarios/funcionarios.component';
 
 export const routes: Routes = [
   {

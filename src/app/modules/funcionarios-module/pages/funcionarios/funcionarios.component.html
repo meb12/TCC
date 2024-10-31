@@ -16,7 +16,7 @@
       ></app-input>
     </div>
     <div class="header-buttons">
-      <button class="primario" [style.width]="'100%'">
+      <button class="primario" [style.width]="'100%'" (click)="cadastrar()">
         {{ "Cadastrar" }}
       </button>
     </div>
@@ -24,3 +24,10 @@
 </div>
 
 <app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>
+
+<app-exclusao-modal-funcionarios
+  (closeModal)="closeModal()"
+  *ngIf="showModalExclusao"
+  [item]="item"
+  [tipo]="tipo"
+></app-exclusao-modal-funcionarios>

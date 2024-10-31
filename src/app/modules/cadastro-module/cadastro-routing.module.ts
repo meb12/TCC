@@ -11,6 +11,18 @@ export const routes: Routes = [
     path: ':tipo',
     component: CadastroComponent,
   },
+  {
+    path: 'medico/:id',
+    component: CadastroComponent,
+  },
+  {
+    path: 'paciente/:id',
+    component: CadastroComponent,
+  },
+  {
+    path: 'funcionario/:id',
+    component: CadastroComponent,
+  },
 ];
 
 @NgModule({

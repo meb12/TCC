@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EspecialidadeService } from '../../../../core/services/especalidades.service';
 import { Router } from '@angular/router';
+import { MedicosService } from '../../../../core/services/medicos.service';
 
 @Component({
   selector: 'app-consulta',
@@ -28,78 +29,7 @@ export class ConsultaComponent implements OnInit {
     observacao: 0,
   };
 
-  medicosOptions = [
-    {
-      value: 1,
-      name: 'Dr. João Silva',
-      especialidadeId: 1, // Unique ID for the specialty
-      especialidade: 'Cardiologia',
-      intervaloConsulta: '30 minutos',
-    },
-    {
-      value: 2,
-      name: 'Dra. Maria Oliveira',
-      especialidadeId: 1,
-      especialidade: 'Pediatria',
-      intervaloConsulta: '1 hora',
-    },
-    {
-      value: 3,
-      name: 'Dr. Pedro Souza',
-      especialidadeId: 1,
-      especialidade: 'Dermatologia',
-      intervaloConsulta: '45 minutos',
-    },
-    {
-      value: 4,
-      name: 'Dra. Ana Costa',
-      especialidadeId: 2,
-      especialidade: 'Oftalmologia',
-      intervaloConsulta: '1 hora',
-    },
-    {
-      value: 5,
-      name: 'Dr. Carlos Mendes',
-      especialidadeId: 2,
-      especialidade: 'Ginecologia',
-      intervaloConsulta: '30 minutos',
-    },
-    {
-      value: 6,
-      name: 'Dra. Sofia Lima',
-      especialidadeId: 2,
-      especialidade: 'Ortopedia',
-      intervaloConsulta: '1 hora',
-    },
-    {
-      value: 7,
-      name: 'Dr. Lucas Pereira',
-      especialidadeId: 3,
-      especialidade: 'Neurologia',
-      intervaloConsulta: '30 minutos',
-    },
-    {
-      value: 8,
-      name: 'Dra. Fernanda Ribeiro',
-      especialidadeId: 3,
-      especialidade: 'Endocrinologia',
-      intervaloConsulta: '45 minutos',
-    },
-    {
-      value: 9,
-      name: 'Dr. Roberto Almeida',
-      especialidadeId: 4,
-      especialidade: 'Geriatria',
-      intervaloConsulta: '1 hora',
-    },
-    {
-      value: 10,
-      name: 'Dra. Vanessa Martins',
-      especialidadeId: 4,
-      especialidade: 'Psiquiatria',
-      intervaloConsulta: '30 minutos',
-    },
-  ];
+  medicosOptions = [];
 
   filteredMedicos: any[] = [];
 
@@ -228,10 +158,31 @@ export class ConsultaComponent implements OnInit {
   }
   constructor(
     private especialidades: EspecialidadeService,
-    private router: Router
+    private router: Router,
+    private medicos: MedicosService
   ) {}
+
+  getMedicos() {
+    this.medicos.getData().subscribe({
+      next: (response) => {
+        // Mapeia a resposta da API para o formato esperado
+        this.medicosOptions = response.map((medico: any) => ({
+          value: medico.id, // O ID do médico será usado como "value"
+          name: medico.name, // Título conforme o gênero
+          especialidadeId: medico.doctorData.specialtyType.id, // ID da especialidade
+          especialidade: medico.doctorData.specialtyType.specialtyName, // Nome da especialidade
+          intervaloConsulta:
+            medico.doctorData.specialtyType.intervalBetweenAppointments, // Intervalo entre consultas
+        }));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar médicos:', error);
+      },
+    });
+  }
 
   ngOnInit() {
     this.getEspecialidades();
+    this.getMedicos();
   }
 }

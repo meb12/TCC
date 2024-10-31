@@ -11,7 +11,17 @@
             class="custom-checkbox"
           />
           <span class="checkmark"></span>
-          {{ doctor.name }}
+          {{
+            (doctor.gender === "Feminino"
+              ? "Dra. "
+              : doctor.gender === "Masculino"
+              ? "Dr. "
+              : "") +
+              doctor.name +
+              " (" +
+              doctor.id +
+              ")"
+          }}
         </div>
       </div>
     </div>

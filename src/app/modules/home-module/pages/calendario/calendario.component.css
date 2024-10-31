@@ -23,7 +23,7 @@
 }
 
 full-calendar {
-  height: 75vh;
+  height: 85vh;
 }
 .testando {
   height: 200px;
@@ -144,10 +144,10 @@ full-calendar {
   box-sizing: border-box;
 }
 
-.calendar-container {
+/* .calendar-container {
   height: 90vh;
   max-height: 90vh;
-}
+} */
 
 /* Ajuste para dispositivos móveis */
 @media (max-width: 1700px) {
@@ -157,11 +157,6 @@ full-calendar {
 
   .fc-header-toolbar {
     flex-direction: column; /* Empilha os botões do header em telas menores */
-  }
-
-  .calendar-container {
-    height: 75vh;
-    max-height: 75vh;
   }
 
   ::ng-deep .custom-event {
@@ -280,4 +275,8 @@ full-calendar {
 /* Ajusta o espaçamento dos textos nas opções */
 .date-selector option {
   padding: 5px;
+}
+
+.fc-toolbar-title {
+  text-transform: capitalize;
 }

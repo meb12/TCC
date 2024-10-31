@@ -1,0 +1,171 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  width: 80%;
+  height: 80%;
+  max-width: 1200px;
+  max-height: 900px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  margin-left: 200px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.patient-info {
+  max-width: 70%;
+}
+
+.patient-info h2 {
+  margin: 0;
+}
+
+.patient-info p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.profile-pic {
+  text-align: center;
+}
+
+.profile-pic img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.profile-pic button {
+  margin-top: 10px;
+  background-color: #ccc;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tabs {
+  display: flex;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.tabs .active-tab {
+  border-bottom: 2px solid #000;
+  color: #000;
+}
+
+.modal-body {
+  margin-top: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.medical-info .section {
+  margin-bottom: 20px;
+}
+
+.medical-info .section h4 {
+  margin-bottom: 10px;
+}
+
+.consults .consult {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.gap {
+  display: flex;
+  gap: 95px;
+}
+
+.consulta-header {
+  display: flex;
+  align-items: center;
+  gap: 46px;
+  margin: 18px 0px;
+}
+.patient-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.patient-subtitle {
+  font-size: 14px;
+  color: #818181;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover {
+  background-color: #e0e0e0;
+}
+
+.active-tab {
+  background-color: #ffffff;
+  border-bottom: 2px solid #000;
+  font-weight: bold;
+}
+
+.consulta-container {
+  padding: 20px;
+}
