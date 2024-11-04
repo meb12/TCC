@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    include:
+      #- main
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  NODE_VERSION: '18.19.0'
+
+steps:
+
+  - task: UseNode@1
+    inputs:
+      version: $(NODE_VERSION)
+    displayName: 'Set Node.js version'  
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.19'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install -g @angular/cli
+      npm install
+    displayName: 'Install Angular CLI and dependencies'
+
+  - script: |
+      ng build --configuration production
+    displayName: 'Build Angular app'
+
+  - script: |
+      ls -la dist/healthcare-connect-front-web
+    displayName: 'List build output files'
+  
+
+  - script: |
+      echo '##vso[task.prependpath]$(node_root)/bin'
+      npm install -g @angular/cli
+      npm install
+    displayName: 'Ensure correct Node.js version for AzureStaticWebApp'
+    
+  - task: AzureStaticWebApp@0
+    inputs:
+      app_location: '/' # Diretório raiz da aplicação Angular
+      output_location: 'dist/healthcare-connect-front-web/browser' # Substitua pelo nome do diretório de saída do build
+      app_build_command: 'npm run build'
+      api_location: '' # Se não houver API, deixe vazio
+      azure_static_web_apps_api_token: '$(AZURE_STATIC_WEB_APPS_API_TOKEN)'
+      
