@@ -44,7 +44,7 @@ full-calendar {
 .graficos {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 55px;
   margin-top: 20px;
 }
 
@@ -171,7 +171,7 @@ full-calendar {
   }
 
   .graficos {
-    gap: 10px;
+    gap: 19px;
     margin-top: 10px;
   }
 }

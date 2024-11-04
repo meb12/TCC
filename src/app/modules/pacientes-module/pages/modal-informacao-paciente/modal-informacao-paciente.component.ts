@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-modal-informacao-paciente',
@@ -20,8 +20,36 @@ export class ModalInformacaoPacienteComponent implements OnInit {
 
   activeTab = 'informacoes';
 
+  consultas = [
+    {
+      codigo: '002',
+      data: '14/10/2024',
+      medico: 'Camila Taglione',
+      especialidade: 'Ortopedista',
+    },
+    {
+      codigo: '001',
+      data: '08/10/2024',
+      medico: 'Juan Mendes',
+      especialidade: 'Cardiologista',
+    },
+  ];
+
   activateTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  @Output() close = new EventEmitter<void>();
+
+  closeModal() {
+    this.close.emit(); // Emit the close event to the parent component
+  }
+  onBackdropClick(event: MouseEvent) {
+    // Check if the click was outside the modal element
+    const target = event.target as HTMLElement;
+    if (target.classList.contains('modal-container')) {
+      this.closeModal();
+    }
   }
 
   constructor() {}

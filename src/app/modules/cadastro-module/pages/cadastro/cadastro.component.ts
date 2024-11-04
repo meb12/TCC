@@ -230,6 +230,7 @@ export class CadastroComponent implements OnInit {
           name: this.form.name,
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
+          login: this.form.email,
           cellphone: this.form.cellphone,
           userTypeId: this.form.userType,
           streetName: this.form.streetName,

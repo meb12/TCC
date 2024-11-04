@@ -1,5 +1,8 @@
-<div class="modal-container">
+<div class="modal-container" (click)="onBackdropClick($event)">
   <div class="modal">
+    <!-- Close Button -->
+    <button class="close-button" (click)="closeModal()">✕</button>
+
     <div class="tabs">
       <button
         class="tab"
@@ -17,6 +20,7 @@
       </button>
     </div>
 
+    <!-- Patient Information Tab -->
     <div class="consulta-container" *ngIf="activeTab === 'informacoes'">
       <div class="consulta-header">
         <div>
@@ -38,6 +42,24 @@
       </div>
       <div class="consulta-header">
         <span> {{ data.endereco }}</span>
+      </div>
+    </div>
+
+    <!-- Consultations Tab -->
+    <div class="consulta-container1" *ngIf="activeTab === 'consultas'">
+      <div *ngFor="let consulta of consultas" class="consulta-card">
+        <div>
+          <span class="consulta-title">{{
+            "Consulta #" + consulta.codigo
+          }}</span>
+          <span class="consulta-date">{{ consulta.data }}</span>
+        </div>
+        <div class="title-container">
+          <span class="consulta-medico">{{ "Dr. " + consulta.medico }}</span>
+          <span class="consulta-especialidade">{{
+            consulta.especialidade
+          }}</span>
+        </div>
       </div>
     </div>
   </div>

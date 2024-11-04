@@ -24,6 +24,7 @@ body {
   padding: 20px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   margin-left: 200px;
+  position: relative;
 }
 
 .modal-header {
@@ -166,6 +167,70 @@ body {
   font-weight: bold;
 }
 
-.consulta-container {
+.consulta-container,
+.consulta-container1 {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
+}
+
+.consulta-container1 {
+  gap: 20px;
+}
+
+.consulta-card {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.consulta-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.consulta-date {
+  font-size: 12px;
+  color: #888;
+  margin-left: 10px;
+}
+
+.consulta-medico {
+  font-size: 14px;
+  color: #333;
+}
+
+.consulta-especialidade {
+  font-size: 12px;
+  color: #666;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.3s;
+  padding: 10px;
+}
+
+.close-button:hover {
+  color: #000;
 }

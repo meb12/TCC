@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,11 @@ import { Subscription } from 'rxjs';
 export class LoginComponent implements OnInit {
   private subscription$ = new Subscription();
   form!: FormGroup;
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   onSubmit(): void {
     // this.subscription$.add(

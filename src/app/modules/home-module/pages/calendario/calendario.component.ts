@@ -277,8 +277,8 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     this.calendarComponent.getApi().gotoDate(selectedDate);
   }
   ngOnInit(): void {
-    this.graphPacientesCadastradas.descriptionValue = 200;
-    this.graphPacientesCadastradas.totalValue = 200;
+    this.graphPacientesCadastradas.descriptionValue = 3;
+    this.graphPacientesCadastradas.totalValue = 3;
     this.getFuncionario();
     this.getMedicos();
 
@@ -334,7 +334,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   }
 
   graphPacientesCadastradas: any = {
-    title: 'Pacientes cadastrados',
+    title: 'Pacientes ativos',
     description: 'Quantidade',
     descriptionValue: '',
     description2: '',
