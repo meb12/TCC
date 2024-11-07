@@ -15,6 +15,7 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { FuncionariosService } from '../../../../core/services/funcionarios.service';
+import { PacientesService } from '../../../../core/services/pacientes.service';
 
 @Component({
   selector: 'app-calendario',
@@ -81,7 +82,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     showNonCurrentDates: false,
     fixedWeekCount: false,
     titleFormat: { year: 'numeric', month: 'long' },
-    datesSet: this.modifyTitle.bind(this),
   };
 
   modifyTitle(info) {
@@ -102,7 +102,8 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
 
   constructor(
     private medicos: MedicosService,
-    private funcionarios: FuncionariosService
+    private funcionarios: FuncionariosService,
+    private pacientes: PacientesService
   ) {
     registerLocaleData(localePt); // Registra os dados do locale português
   }
@@ -242,7 +243,26 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         this.graphMedicosCadastrados.totalValue = mappedDoctors.length;
 
         this.doctors = mappedDoctors;
-        console.log(this.doctors);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar médicos:', error);
+      },
+    });
+  }
+  getPacientes() {
+    this.pacientes.getData().subscribe({
+      next: (response) => {
+        const mappedDoctors = response
+          .filter((medico: any) => medico.isActive === true)
+          .map((medico: any) => ({
+            id: medico.id,
+            name: medico.name.split(' ')[0],
+            gender: medico.gender,
+            checked: false,
+          }));
+
+        this.graphPacientesCadastradas.descriptionValue = mappedDoctors.length;
+        this.graphPacientesCadastradas.totalValue = mappedDoctors.length;
       },
       error: (error) => {
         console.error('Erro ao carregar médicos:', error);
@@ -277,10 +297,9 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     this.calendarComponent.getApi().gotoDate(selectedDate);
   }
   ngOnInit(): void {
-    this.graphPacientesCadastradas.descriptionValue = 3;
-    this.graphPacientesCadastradas.totalValue = 3;
     this.getFuncionario();
     this.getMedicos();
+    this.getPacientes();
 
     this.updateAspectRatio();
 

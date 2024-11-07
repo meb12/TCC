@@ -62,9 +62,7 @@ export class ExclusaoModalEspecialidadeComponent implements OnInit {
 
   formNovo = {};
 
-  ngOnInit() {
-    console.log(this.item);
-  }
+  ngOnInit() {}
 
   salvar() {
     if (this.tipo === 'especialidade') {
@@ -84,7 +82,6 @@ export class ExclusaoModalEspecialidadeComponent implements OnInit {
         },
       });
     } else {
-      console.log('médicos', this.item);
       const formNovo = {
         id: this.item.id,
         cpf: this.item.cpf,

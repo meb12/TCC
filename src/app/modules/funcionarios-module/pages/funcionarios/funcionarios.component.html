@@ -13,6 +13,7 @@
         (searchChange)="onSearchChange($event)"
         (selectChange)="onSelectChange($event)"
         [selectedLabel]="'Todos'"
+        [(ngModel)]="selectedFilter"
       ></app-input>
     </div>
     <div class="header-buttons">
@@ -23,7 +24,15 @@
   </div>
 </div>
 
-<app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>
+<app-tabela [data]="paginatedData" [columns]="tableColumns"></app-tabela>
+
+<mat-paginator
+  [length]="tableData.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[1, 5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
 
 <app-exclusao-modal-funcionarios
   (closeModal)="closeModal()"

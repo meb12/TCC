@@ -38,9 +38,15 @@ import { FullCalendarModule } from '@fullcalendar/angular'; // import the FullCa
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
 import timeGridPlugin from '@fullcalendar/timegrid'; // a plugin
 import interactionPlugin from '@fullcalendar/interaction'; // a plugin for draggable events
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
-  declarations: [InputComponent, TabelaComponent, PaginacaoComponent],
+  declarations: [
+    InputComponent,
+    TabelaComponent,
+    PaginacaoComponent,
+    LoaderComponent,
+  ],
   imports: [
     CommonModule,
     MatInputModule,
@@ -104,6 +110,7 @@ import interactionPlugin from '@fullcalendar/interaction'; // a plugin for dragg
     ToastrModule,
     MatButtonToggleModule,
     InputComponent,
+    LoaderComponent,
     TabelaComponent,
     PaginacaoComponent,
     MatCardModule,

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ITableColumn } from '../../../../shared/components/tabela/tabela.models';
 import { EspecialidadeService } from '../../../../core/services/especalidades.service';
 import { ToastrService } from 'ngx-toastr';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { Router } from '@angular/router';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-medicos',
@@ -11,68 +12,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./medicos.component.css'],
 })
 export class MedicosComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private especialidades: EspecialidadeService,
     private toastr: ToastrService,
     private medicos: MedicosService,
     private router: Router
   ) {}
+
   showModalExclusao = false;
   tipo = '';
-  item: {
-    id: number;
-    specialtyName: string;
-    intervalBetweenAppointments: string;
-    isActive: boolean;
-    cellphone: string;
-    cep: string;
-    city: string;
-    complement: string;
-    cpf: string;
-    dateOfBirth: string; // ou Date se preferir usar um objeto de data
-    doctorData: {
-      crm: string;
-      observation: string;
-      specialtyType: {
-        id: number;
-        intervalBetweenAppointments: string;
-        isActive: boolean;
-        specialtyName: string;
-      };
-    };
-    documentNumber: string;
-    email: string;
-    gender: string;
-    login: string;
-    name: string;
-    neighborhood: string;
-    pacientData: any; // Defina o tipo se houver uma estrutura específica para paciente
-    stateName: string | null;
-    streetName: string;
-    streetNumber: number;
-    userType: {
-      id: number;
-      name: string;
-      isActive: boolean;
-    };
-  };
+  item: any;
   selectData = [
-    {
-      value: 1,
-      name: 'Ativos',
-    },
-    {
-      value: 2,
-      name: 'Inativos',
-    },
-    {
-      value: 3,
-      name: 'Todos',
-    },
+    { value: 1, name: 'Ativos' },
+    { value: 2, name: 'Inativos' },
+    { value: 3, name: 'Todos' },
   ];
-  tableData = [];
 
-  filteredData = this.tableData;
+  tableData: any[] = [];
+  filteredData: any[] = [];
+  paginatedData: any[] = [];
+  currentPage = 0;
+  pageSize = 5;
 
   tableColumns: ITableColumn[] = [
     { header: 'Nome', key: 'name', type: 'text' },
@@ -83,7 +45,6 @@ export class MedicosComponent implements OnInit {
       key: 'doctorData.specialtyType.specialtyName',
       type: 'text',
     },
-
     { header: 'Status', key: 'isActive', type: 'text' },
     {
       header: 'Ações',
@@ -106,55 +67,90 @@ export class MedicosComponent implements OnInit {
     },
   ];
 
-  onSearchChange(searchValue: any) {
-    const lowerSearchValue = searchValue.toLowerCase();
-
-    this.filteredData = this.tableData.filter((item) => {
-      const name = item.name?.toLowerCase() || '';
-      const id = item.id?.toString() || '';
-      const crm = item.doctorData?.crm?.toLowerCase() || '';
-      const specialtyName =
-        item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
-
-      return (
-        name.includes(lowerSearchValue) ||
-        id.includes(lowerSearchValue) ||
-        crm.includes(lowerSearchValue) ||
-        specialtyName.includes(lowerSearchValue)
-      );
-    });
-  }
-
-  onSelectChange(selectedValue: any) {
-    switch (selectedValue) {
-      case 1: // Ativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === true
-        );
-        break;
-      case 2: // Inativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === false
-        );
-        break;
-      case 3: // Todos
-        this.filteredData = this.tableData;
-        break;
-      default:
-        this.filteredData = this.tableData;
-    }
+  ngOnInit() {
+    this.getMedicos();
   }
 
   getMedicos() {
     this.medicos.getData().subscribe({
       next: (response) => {
         this.tableData = response;
-        this.filteredData = this.tableData;
+        this.filteredData = [...this.tableData];
+        this.updatePaginatedData();
       },
       error: (error) => {
-        console.error('Erro ao carregar médicos!!!!:', error);
+        console.error('Erro ao carregar médicos:', error);
       },
     });
+  }
+
+  onSearchChange(searchValue: string) {
+    const lowerSearchValue = searchValue.toLowerCase().trim();
+
+    if (lowerSearchValue) {
+      this.filteredData = this.tableData.filter((item) => {
+        const name = item.name?.toLowerCase() || '';
+        const id = item.id?.toString() || '';
+        const crm = item.doctorData?.crm?.toLowerCase() || '';
+        const specialtyName =
+          item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
+
+        return (
+          name.includes(lowerSearchValue) ||
+          id.includes(lowerSearchValue) ||
+          crm.includes(lowerSearchValue) ||
+          specialtyName.includes(lowerSearchValue)
+        );
+      });
+
+      this.paginator.length = this.filteredData.length;
+      this.currentPage = 0;
+      this.paginator.pageIndex = this.currentPage;
+      this.updatePaginatedData();
+    } else {
+      this.filteredData = [...this.tableData];
+      this.paginator.length = this.filteredData.length;
+      this.currentPage = 0;
+      this.paginator.pageIndex = this.currentPage;
+      this.updatePaginatedData();
+    }
+  }
+
+  onSelectChange(selectedValue: any) {
+    switch (selectedValue) {
+      case 1:
+        this.filteredData = this.tableData.filter(
+          (item) => item.isActive === true
+        );
+        break;
+      case 2:
+        this.filteredData = this.tableData.filter(
+          (item) => item.isActive === false
+        );
+        break;
+      case 3:
+        this.filteredData = [...this.tableData];
+        break;
+      default:
+        this.filteredData = [...this.tableData];
+    }
+
+    this.paginator.length = this.filteredData.length;
+    this.currentPage = 0;
+    this.paginator.pageIndex = this.currentPage;
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData() {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedData();
   }
 
   editItem(item: any) {
@@ -165,7 +161,6 @@ export class MedicosComponent implements OnInit {
     this.showModalExclusao = true;
     this.item = item;
     this.tipo = 'medicos';
-    this.getMedicos();
   }
 
   closeModal() {
@@ -175,8 +170,5 @@ export class MedicosComponent implements OnInit {
 
   cadastrar() {
     this.router.navigate(['/cadastro/medico']);
-  }
-  ngOnInit() {
-    this.getMedicos();
   }
 }

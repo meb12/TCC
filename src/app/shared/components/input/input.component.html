@@ -253,14 +253,17 @@
       'input-invalid': requiredInput && valueTouched && !value
     }"
     (focus)="isFocused = true; valueTouched = true"
-    (blur)="isFocused = true"
+    (blur)="isFocused = false"
   ></textarea>
 
-  <div
-    *ngIf="requiredInput && (valueTouched || isFocused) && !value"
-    class="error-message"
-  >
-    Obrigatório
+  <div class="char-count-container">
+    <div
+      *ngIf="requiredInput && (valueTouched || isFocused) && !value"
+      class="error-message"
+    >
+      Obrigatório
+    </div>
+    <div class="char-count">{{ value?.length || 0 }}/{{ maxLength }}</div>
   </div>
 </div>
 

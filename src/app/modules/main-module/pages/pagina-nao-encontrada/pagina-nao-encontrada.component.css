@@ -1,0 +1,18 @@
+.root {
+  width: 90vw !important;
+}
+
+.not-found {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.not-found h1 {
+  font-size: 48px;
+  color: #ff4a4a;
+}
+
+.not-found p {
+  font-size: 18px;
+  color: #666;
+}

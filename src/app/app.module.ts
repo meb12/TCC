@@ -15,13 +15,14 @@ import { MainModule } from './modules/main-module/main-module.module';
 import { MedicosModule } from './modules/medicos-module/medicos-module.module';
 import { HomeModule } from './modules/home-module/home.module';
 import { CadastroModule } from './modules/cadastro-module/cadastro-module.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { PacientesModule } from './modules/pacientes-module/pacientes-module.module';
 import { FuncionariosModule } from './modules/funcionarios-module/funcionarios-module.module';
+import { HttpInterceptorService } from './core/services/http-interceptor.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,6 +43,11 @@ import { FuncionariosModule } from './modules/funcionarios-module/funcionarios-m
   providers: [
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
   ],
 })
 export class AppModule {}

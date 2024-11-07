@@ -1,15 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EspecialidadeService } from '../../../../core/services/especalidades.service';
 import { ToastrService } from 'ngx-toastr';
-import { MedicosService } from '../../../../core/services/medicos.service';
-import { FuncionariosService } from './../../../../core/services/funcionarios.service';
+import { PacientesService } from '../../../../core/services/pacientes.service';
 
 @Component({
-  selector: 'app-exclusao-modal-funcionarios',
-  templateUrl: './exclusao-modal-funcionarios.component.html',
-  styleUrls: ['./exclusao-modal-funcionarios.component.css'],
+  selector: 'app-exclusao-modal-paciente',
+  templateUrl: './exclusao-modal-paciente.component.html',
+  styleUrls: ['./exclusao-modal-paciente.component.css'],
 })
-export class ExclusaoModalFuncionariosComponent implements OnInit {
+export class ExclusaoModalPacienteComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>(); // Evento para fechar o modal
   @Input() tipo = '';
   @Input()
@@ -40,7 +38,9 @@ export class ExclusaoModalFuncionariosComponent implements OnInit {
     login: string;
     name: string;
     neighborhood: string;
-    pacientData: any; // Defina o tipo se houver uma estrutura específica para paciente
+    pacientData: {
+      allergies: Array<{ id: number; allergy: string }>;
+    };
     stateName: string | null;
     streetName: string;
     streetNumber: number;
@@ -50,20 +50,17 @@ export class ExclusaoModalFuncionariosComponent implements OnInit {
       isActive: boolean;
     };
   };
+
   constructor(
-    private especialidades: EspecialidadeService,
-    private toastr: ToastrService,
-    private funcionarios: FuncionariosService
+    private pacientes: PacientesService,
+    private toastr: ToastrService
   ) {}
-  form: any = {
-    description: '',
-    intervalBetweenAppointments: '',
-    isActive: true,
-  };
 
   formNovo = {};
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('item recebido', this.item);
+  }
 
   salvar() {
     const formNovo = {
@@ -85,10 +82,16 @@ export class ExclusaoModalFuncionariosComponent implements OnInit {
       gender: this.item.gender,
       login: this.item.email,
       isActive: false,
+      pacientData: {
+        allergies: this.item.pacientData?.allergies
+          ? [...this.item.pacientData.allergies]
+          : [],
+      },
     };
-    this.funcionarios.putData(formNovo).subscribe({
+
+    this.pacientes.putData(formNovo).subscribe({
       next: (response) => {
-        this.toastr.success('Funcionário desativado com sucesso!');
+        this.toastr.success('Paciente desativado com sucesso!');
         this.closeModal.emit();
       },
       error: (error) => {
@@ -97,23 +100,11 @@ export class ExclusaoModalFuncionariosComponent implements OnInit {
     });
   }
 
-  formValido() {
-    if (
-      this.form.description == '' ||
-      this.form.intervalBetweenAppointments == ''
-    )
-      return true;
-    return false;
+  closeOnClickOutside(event: MouseEvent) {
+    this.closeModal.emit();
   }
 
   voltar() {
-    // Lógica para voltar
-
-    this.closeModal.emit(); // Fecha o modal ao clicar em "Voltar"
-  }
-
-  closeOnClickOutside(event: MouseEvent) {
-    // Fecha o modal se o usuário clicar fora do conteúdo do modal
     this.closeModal.emit();
   }
 }

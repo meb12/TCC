@@ -217,30 +217,50 @@
   </div>
 
   <div class="form-row" *ngIf="form.tipoCadastro == 1">
-    <div class="input">
-      <!-- Input para adicionar novas alergias -->
+    <div class="input allergy-input-row">
+      <!-- Input for adding new allergies -->
       <app-input
         (validChange)="onChildValidityChange($event)"
         type="text"
         label="Alergias"
         [(ngModel)]="newAllergy"
         name="allergyInput"
-        width="100%"
         class="alergias"
         [placeholder]="'Digite novas alergias'"
       ></app-input>
-      <button (click)="addAllergy()" class="alergias-btn">+</button>
+      <button (click)="addAllergy()" class="alergias-btn add-btn btn-alergia2">
+        +
+      </button>
     </div>
   </div>
 
   <div class="form-row">
     <div class="input2">
-      <!-- Lista de alergias já adicionadas -->
-      <div *ngFor="let allergy of form.allergies; let i = index">
-        <div class="input">
-          <input [value]="allergy" readonly class="alergias" />
-          <button (click)="removeAllergy(i)" class="alergias-btn2">x</button>
-        </div>
+      <!-- List of added allergies -->
+      <div
+        *ngFor="let allergy of form.allergies; let i = index"
+        class="input allergy-list-row"
+      >
+        <input
+          [value]="allergy.allergy"
+          [readOnly]="!allergy.isEditing"
+          (input)="onEditAllergy(i, $event)"
+          class="alergias"
+        />
+        <button
+          *ngIf="!allergy.isEditing"
+          (click)="editAllergy(i)"
+          class="alergias-btn edit-btn btn-alergia1"
+        >
+          Editar
+        </button>
+        <button
+          *ngIf="allergy.isEditing"
+          (click)="saveAllergy(i)"
+          class="alergias-btn save-btn btn-alergia1"
+        >
+          Salvar
+        </button>
       </div>
     </div>
   </div>
@@ -281,11 +301,13 @@
     <div class="grid-2fr">
       <app-input
         (validChange)="onChildValidityChange($event)"
-        label="Informações adicionais"
+        label="Breve descrição"
         name="observation"
         inputClassName="input-standard"
         type="textarea"
         [(ngModel)]="form.observation"
+        [maxLength]="500"
+        [requiredInput]="true"
         [placeholder]="'Adicione informações adicionais'"
       ></app-input>
     </div>

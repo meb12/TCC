@@ -463,3 +463,15 @@ textarea.input-invalid:focus {
   height: 20px;
   z-index: 1; /* Garante que o ícone fique acima do texto */
 }
+
+.char-count-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-count {
+  margin-left: auto; /* Garante que a contagem de caracteres fique sempre à direita */
+  font-size: 0.875rem;
+  color: #888888; /* Cor do texto da contagem */
+}

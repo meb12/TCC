@@ -23,9 +23,24 @@
   </div>
 </div>
 
-<app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>
+<app-tabela [data]="paginatedData" [columns]="tableColumns"></app-tabela>
+
+<mat-paginator
+  [length]="filteredData.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[1, 5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
 
 <app-modal-informacao-paciente
   *ngIf="isPacienteModalOpen"
   (close)="closePacienteModal()"
 ></app-modal-informacao-paciente>
+
+<app-exclusao-modal-paciente
+  (closeModal)="closeModal()"
+  *ngIf="showModalExclusao"
+  [item]="item"
+  [tipo]="tipo"
+></app-exclusao-modal-paciente>

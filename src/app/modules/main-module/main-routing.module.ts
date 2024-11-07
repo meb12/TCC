@@ -1,6 +1,8 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { MainComponent } from './pages/main/main.component';
+import { AuthGuard } from '../../auth.guard';
+import { PaginaNaoEncontradaComponent } from './pages/pagina-nao-encontrada/pagina-nao-encontrada.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +18,7 @@ export const routes: Routes = [
         path: 'home',
         loadChildren: () =>
           import('../home-module/home.module').then((m) => m.HomeModule),
+        canActivate: [AuthGuard],
       },
       {
         path: 'medicos',
@@ -23,6 +26,7 @@ export const routes: Routes = [
           import('../medicos-module/medicos-module.module').then(
             (m) => m.MedicosModule
           ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'pacientes',
@@ -30,6 +34,7 @@ export const routes: Routes = [
           import('../pacientes-module/pacientes-module.module').then(
             (m) => m.PacientesModule
           ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'funcionarios',
@@ -37,6 +42,7 @@ export const routes: Routes = [
           import('../funcionarios-module/funcionarios-module.module').then(
             (m) => m.FuncionariosModule
           ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'cadastro',
@@ -44,7 +50,10 @@ export const routes: Routes = [
           import('../cadastro-module/cadastro-module.module').then(
             (m) => m.CadastroModule
           ),
+        canActivate: [AuthGuard],
       },
+
+      // Rota catch-all para rotas não encontrada
     ],
   },
 ];

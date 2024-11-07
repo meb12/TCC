@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   HostListener,
   ElementRef,
+  Renderer2,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -60,7 +61,7 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input() typeSearch: 'string' | 'number' = 'string';
   @Input() disabled: boolean = false;
   mostrar: boolean = false;
-  @Input() maxLength: string | null = null;
+  @Input() maxLength: string | null | number = null;
   @Input() width: string = '';
   @Input() mask: string = '';
   @Input() requiredInput: boolean = false;
@@ -100,7 +101,12 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   onTouched: any = () => {};
   private searchSubject = new Subject<string>();
   private crmSubject = new Subject<string>();
-  constructor(private route: ActivatedRoute, private eRef: ElementRef) {}
+  constructor(
+    private route: ActivatedRoute,
+    private eRef: ElementRef,
+    private renderer: Renderer2,
+    private el: ElementRef
+  ) {}
 
   ngOnInit(): void {
     if (this.maxLength === '') {
@@ -139,6 +145,12 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
         if (selectedOption) {
           this.selectOption(selectedOption);
         }
+      }
+    });
+
+    this.renderer.listen('window', 'click', (event: Event) => {
+      if (!this.el.nativeElement.contains(event.target)) {
+        this.isDropdownVisible = false;
       }
     });
   }

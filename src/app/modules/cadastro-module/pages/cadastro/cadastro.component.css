@@ -122,6 +122,8 @@ textarea {
   display: flex;
   align-items: center;
   margin-top: 30px;
+  width: 100px;
+  justify-content: center;
 }
 .alergias-btn2 {
   display: flex;
@@ -201,4 +203,7 @@ h1 {
 .toggle {
   display: flex;
   align-items: center;
+}
+.btn-alergia1 {
+  margin-top: 10px !important;
 }

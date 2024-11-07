@@ -1,25 +1,39 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   HostListener,
   Input,
   OnInit,
   Output,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { ITableColumn } from './tabela.models';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-tabela',
   templateUrl: './tabela.component.html',
   styleUrls: ['./tabela.component.css'],
 })
-export class TabelaComponent implements OnInit {
-  @Input() data: any[] = [];
-  @Input() columns: ITableColumn[] = [];
+export class TabelaComponent implements OnInit, OnChanges {
   selectedRowIndex: number | null = null;
   selectedDropdownIndex: number | null = null;
   @Input() condition: boolean = false;
   @Output() ngModelChange: EventEmitter<any> = new EventEmitter();
+  @Input() data: any[] = [];
+  @Input() dataSource!: MatTableDataSource<any>;
+  @Input() columns: ITableColumn[] = [];
+  @Input() displayedColumns: string[] = [];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Verifica se houve uma mudança nos dados e reseta `selectedRowIndex`
+    if (changes['data'] && !changes['data'].firstChange) {
+      this.selectedRowIndex = null;
+      this.selectedDropdownIndex = null;
+    }
+  }
 
   onSelectChange(value: any, item: any) {
     const body = {

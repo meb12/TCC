@@ -23,7 +23,19 @@
   </div>
 </div>
 
-<app-tabela [data]="filteredData" [columns]="tableColumns"></app-tabela>
+<!-- Tabela de dados com a lista paginada -->
+<app-tabela [data]="paginatedData" [columns]="tableColumns"></app-tabela>
+
+<!-- Paginador Angular Material -->
+<mat-paginator
+  [length]="filteredData.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[1, 5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
+
+<!-- Modal para confirmação de exclusão -->
 <app-exclusao-modal-especialidade
   (closeModal)="closeModal()"
   *ngIf="showModalExclusao"

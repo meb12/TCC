@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { NgForm } from '@angular/forms';
 import { FuncionariosService } from '../../../../core/services/funcionarios.service';
+import { PacientesService } from '../../../../core/services/pacientes.service';
 
 interface Country {
   name: { common: string; official: string };
@@ -24,6 +25,7 @@ interface Country {
 export class CadastroComponent implements OnInit {
   newAllergy: string = '';
   allergies: string[] = [];
+  userTypesData: any[] = [];
   acao: string = '';
   tipoAcao = '';
   opcoesSexo = [
@@ -73,6 +75,7 @@ export class CadastroComponent implements OnInit {
     private especialidades: EspecialidadeService,
     private tiposUsuarios: TiposUsuariosService,
     private toastr: ToastrService,
+    private pacienteService: PacientesService,
     private medicosService: MedicosService,
     private funcionariosService: FuncionariosService
   ) {
@@ -101,8 +104,13 @@ export class CadastroComponent implements OnInit {
 
   addAllergy() {
     if (this.newAllergy.trim()) {
-      this.form.allergies.push(this.newAllergy.trim()); // Adiciona no array de alergias do form
+      this.form.allergies.push({
+        allergy: this.newAllergy.trim(),
+        isEditing: false, // Adiciona a propriedade isEditing como false por padrão
+      });
       this.newAllergy = ''; // Limpa o campo de entrada após adicionar
+    } else {
+      this.toastr.error('É necessário digitar uma alergia.');
     }
   }
 
@@ -127,6 +135,7 @@ export class CadastroComponent implements OnInit {
       switch (tipoCadastroSegment) {
         case 'paciente':
           this.form.tipoCadastro = 1;
+          this.inicializarFormulario();
           this.form.userType = '';
           this.getUserTypes('Paciente');
           this.form.tipoCadastroLabel = 'Paciente';
@@ -202,26 +211,107 @@ export class CadastroComponent implements OnInit {
   }
 
   getUserTypes(pesquisa?: string) {
+    // Verifica se já temos os dados carregados
+    if (this.userTypesData.length > 0) {
+      this.filtrarUserTypes(pesquisa);
+      return;
+    }
+
+    // Faz a chamada à API apenas se ainda não temos os dados
     this.tiposUsuarios.getUserTypes().subscribe({
       next: (response) => {
-        if (this.form.tipoCadastro === 3) {
-          this.cadastroOptions = response.filter(
-            (option) => option.name !== 'Médico' && option.name !== 'Paciente'
-          );
-        } else {
-          const item = response.find((item) => item.name === pesquisa);
-          if (item) {
-            this.form.userType = item.id;
-          }
-        }
+        this.userTypesData = response; // Armazena o resultado para futuras utilizações
+        this.filtrarUserTypes(pesquisa);
       },
       error: (error) => {
-        console.error('Erro ao carregar especialidades:', error);
+        console.error('Erro ao carregar tipos de usuário:', error);
       },
     });
   }
 
+  // Filtra os tipos de usuário com base no tipo de cadastro
+  filtrarUserTypes(pesquisa?: string) {
+    if (this.form.tipoCadastro === 3) {
+      this.cadastroOptions = this.userTypesData.filter(
+        (option) => option.name !== 'Médico' && option.name !== 'Paciente'
+      );
+    } else {
+      const item = this.userTypesData.find((item) => item.name === pesquisa);
+      if (item) {
+        this.form.userType = item.id;
+      }
+    }
+  }
+
   handleConfirm() {
+    if (this.form.tipoCadastro == 1) {
+      if (!this.tipoAcao) {
+        const FormNovo = {
+          cpf: this.form.cpf,
+          documentNumber: this.form.documentNumber,
+          name: this.form.name,
+          dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
+          email: this.form.email,
+          cellphone: this.form.cellphone,
+          userTypeId: this.form.userType,
+          streetName: this.form.streetName,
+          streetNumber: this.form.streetNumber,
+          complement: this.form.complement,
+          neighborhood: this.form.neighborhood,
+          state: this.form.stateName,
+          cep: this.form.cep,
+          city: this.form.city,
+          gender: this.form.gender,
+          isActive: true,
+          pacientData: {
+            allergies: this.form.allergies,
+          },
+        };
+
+        this.pacienteService.postData(FormNovo).subscribe({
+          next: (response) => {
+            this.toastr.success('Paciente cadastrado com sucesso!');
+            this.router.navigateByUrl('/home');
+          },
+          error: (error) => {
+            this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
+          },
+        });
+      } else if (this.tipoAcao) {
+        const FormNovo = {
+          id: parseInt(this.tipoAcao, 10),
+          cpf: this.form.cpf,
+          documentNumber: this.form.documentNumber,
+          name: this.form.name,
+          dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
+          email: this.form.email,
+          cellphone: this.form.cellphone,
+          userTypeId: this.form.userType,
+          streetName: this.form.streetName,
+          streetNumber: this.form.streetNumber,
+          complement: this.form.complement,
+          neighborhood: this.form.neighborhood,
+          state: this.form.stateName,
+          cep: this.form.cep,
+          city: this.form.city,
+          gender: this.form.gender,
+          isActive: this.form.isActive,
+          login: this.form.email,
+          pacientData: {
+            allergies: this.form.allergies,
+          },
+        };
+        this.pacienteService.putData(FormNovo).subscribe({
+          next: (response) => {
+            this.toastr.success('Funcionário editado com sucesso!');
+            this.router.navigateByUrl('/home');
+          },
+          error: (error) => {
+            this.toastr.error('Erro ao editar funcionário. Tente novamente.');
+          },
+        });
+      }
+    }
     if (this.form.tipoCadastro == 2) {
       if (!this.tipoAcao) {
         const FormNovo = {
@@ -399,7 +489,36 @@ export class CadastroComponent implements OnInit {
     }
   }
   inicializarFormulario() {
-    if (this.form.tipoCadastro == 2 && this.tipoAcao) {
+    if (this.form.tipoCadastro == 1 && this.tipoAcao) {
+      this.pacienteService.getDataId(this.tipoAcao).subscribe({
+        next: (response) => {
+          this.form = {
+            name: response.name,
+            dateOfBirth: this.formatarData(response.dateOfBirth),
+            cpf: response.cpf,
+            documentNumber: response.documentNumber,
+            cellphone: response.cellphone,
+            email: response.email,
+            cep: response.cep,
+            streetName: response.streetName,
+            streetNumber: response.streetNumber,
+            neighborhood: response.neighborhood,
+            city: response.city,
+            stateName: response.stateName,
+            userType: response.userType.id,
+            complement: response.complement,
+            gender: response.gender,
+            tipoCadastro: 1,
+            tipoCadastroLabel: 'Paciente',
+            isActive: response.isActive,
+            allergies: response.pacientData.allergies || [],
+          };
+        },
+        error: (error) => {
+          console.error('Erro ao carregar especialidades:', error);
+        },
+      });
+    } else if (this.form.tipoCadastro == 2 && this.tipoAcao) {
       this.medicosService.getDataId(this.tipoAcao).subscribe({
         next: (response) => {
           this.form = {
@@ -425,6 +544,9 @@ export class CadastroComponent implements OnInit {
             tipoCadastro: 2,
             tipoCadastroLabel: 'Médico',
             isActive: response.isActive,
+            pacientData: {
+              allergies: response.pacientData?.allergies || [],
+            },
           };
         },
         error: (error) => {
@@ -453,6 +575,7 @@ export class CadastroComponent implements OnInit {
             tipoCadastro: 3,
             tipoCadastroLabel: '',
             isActive: response.isActive,
+            allergies: response.allergies || [],
           };
         },
         error: (error) => {
@@ -506,6 +629,7 @@ export class CadastroComponent implements OnInit {
         'specialtyTypeId',
         'crm',
         'gender',
+        'observation',
       ];
     }
 
@@ -551,7 +675,6 @@ export class CadastroComponent implements OnInit {
     } else {
       return false; // Formato inválido
     }
-
     const currentDate = new Date();
 
     // Verifica se a data é inválida ou futura
@@ -602,5 +725,20 @@ export class CadastroComponent implements OnInit {
   validaEmail(email: string): boolean {
     const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     return emailPattern.test(email);
+  }
+
+  // Método para habilitar a edição de uma alergia
+  editAllergy(index: number) {
+    this.form.allergies[index].isEditing = true;
+  }
+
+  // Método para salvar a edição de uma alergia
+  saveAllergy(index: number) {
+    this.form.allergies[index].isEditing = false;
+  }
+
+  onEditAllergy(index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.form.allergies[index].allergy = input.value;
   }
 }

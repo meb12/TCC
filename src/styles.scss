@@ -90,3 +90,16 @@ button:disabled {
   background-color: #d1d5db !important;
   cursor: not-allowed;
 }
+.mat-mdc-paginator {
+  background-color: white !important;
+}
+.mat-mdc-paginator-range-actions {
+  button:disabled {
+    background-color: white !important;
+  }
+}
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 999999;
+}

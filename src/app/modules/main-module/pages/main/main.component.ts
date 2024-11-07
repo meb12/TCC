@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { LoaderService } from '../../../../core/services/loader.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -11,8 +13,15 @@ export class MainComponent implements OnInit {
   mostrar = false;
   dataSource!: any[];
   cor: string = '';
+  isLoading$: Observable<boolean>;
 
-  constructor(private router: Router, private elementRef: ElementRef) {}
+  constructor(
+    private router: Router,
+    private elementRef: ElementRef,
+    private loaderService: LoaderService
+  ) {
+    this.isLoading$ = this.loaderService.isLoading$;
+  }
 
   onMostrarChange(mostrar: any) {
     this.mostrar = mostrar;
