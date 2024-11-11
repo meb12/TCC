@@ -40,8 +40,10 @@ export class ConsultaComponent implements OnInit {
     this.form.medico = '';
     this.form.date = '';
     // Filter the medicos based on the selected especialidadeId
+
     this.filteredMedicos = this.medicosOptions.filter(
-      (medico) => medico.especialidadeId === especialidadeValue
+      (medico) =>
+        medico.especialidadeId === especialidadeValue && medico.status === true
     );
   }
 
@@ -178,6 +180,7 @@ export class ConsultaComponent implements OnInit {
           especialidade: medico.doctorData.specialtyType.specialtyName, // Nome da especialidade
           intervaloConsulta:
             medico.doctorData.specialtyType.intervalBetweenAppointments, // Intervalo entre consultas
+          status: medico.isActive,
         }));
       },
       error: (error) => {

@@ -293,13 +293,12 @@
       />
     </div>
 
-    <ul
-      *ngIf="isDropdownVisible && filteredOptions.length"
-      class="custom-options"
-    >
+    <ul *ngIf="isDropdownVisible" class="custom-options">
+      <li *ngIf="filteredOptions.length === 0" class="no-options">
+        Nenhuma informação disponível
+      </li>
       <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
         {{ option.name }}
-        <!-- Mostra o nome da especialidade -->
       </li>
     </ul>
   </div>

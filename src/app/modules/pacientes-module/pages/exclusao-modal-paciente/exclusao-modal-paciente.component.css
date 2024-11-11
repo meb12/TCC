@@ -150,7 +150,7 @@ input:checked + .slider:before {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000000000000000000;
+  z-index: 9999;
 }
 
 .icone-atencao {
