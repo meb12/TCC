@@ -41,7 +41,26 @@ export class LoginComponent implements OnInit {
     this.subscription$ = this.loginService.login(email, senha).subscribe({
       next: (response) => {
         //response.token.token
-        this.loginService.setToken('1234');
+        this.loginService.setToken(response.token.token);
+        localStorage.setItem(
+          'userInfo',
+          JSON.stringify({
+            id: response.id,
+            name: response.name,
+            email: response.email,
+            userType: {
+              id: response.userType.id,
+              name: response.userType.name,
+              isActive: response.userType.isActive,
+              permissions: response.userType.permissions,
+            },
+            token: {
+              token: response.token.token,
+              expiresInSeconds: response.token.expiresInSeconds,
+              expireDate: response.token.expireDate,
+            },
+          })
+        );
         // Se a resposta for 200, assumimos que o usuário tem permissão
         this.router.navigate(['/home']);
       },

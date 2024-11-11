@@ -24,41 +24,68 @@
     <div class="consulta-container" *ngIf="activeTab === 'informacoes'">
       <div class="consulta-header">
         <div>
-          <span class="patient-title">{{ data.nome }}</span>
+          <span class="patient-title">{{ data.name }}</span>
         </div>
         <div>
-          <span class="patient-subtitle"> {{ "Cod." + data.Cod }}</span>
+          <span class="patient-subtitle"> {{ "Cod." + data.id }}</span>
         </div>
       </div>
       <div class="consulta-header">
-        <span> {{ "Data de nasc." + data.date }}</span>
-        <span> {{ "Sexo:" + data.sexo }}</span>
-        <span> {{ "CPF:" + data.cpf }}</span>
-        <span> {{ "RG:" + data.rg }}</span>
+        <span>
+          {{
+            "Data de Nascimento: " + formatarValor("data", data.dateOfBirth)
+          }}</span
+        >
+        <span> {{ "Sexo: " + data.gender }}</span>
+        <span> {{ "CPF: " + formatarValor("cpf", data.cpf) }}</span>
+        <span> {{ "RG: " + formatarValor("rg", data.documentNumber) }}</span>
       </div>
       <div class="consulta-header gap">
-        <span> {{ "Tel." + data.tel }}</span>
-        <span> {{ "Cel." + data.cel }}</span>
+        <span>
+          {{ "Celular: " + formatarValor("telefone", data.cellphone) }}</span
+        >
       </div>
       <div class="consulta-header">
-        <span> {{ data.endereco }}</span>
+        <span>
+          Endereço: {{ data.streetName }}, {{ data.streetNumber }} -
+          {{ data.neighborhood }}, {{ data.city }} - {{ data.stateName }}, CEP:
+          {{ data.cep }}
+        </span>
+      </div>
+      <div>
+        <p class="patient-title-alergia">Informações Médicas</p>
+        <p class="patient-subtitle-alergia">Alergias</p>
+        <div class="alergias">
+          <ng-container *ngFor="let allergy of data.pacientData.allergies">
+            <div *ngIf="allergy.allergy">
+              {{ allergy.allergy }}
+            </div>
+          </ng-container>
+        </div>
       </div>
     </div>
 
     <!-- Consultations Tab -->
+
     <div class="consulta-container1" *ngIf="activeTab === 'consultas'">
       <div *ngFor="let consulta of consultas" class="consulta-card">
         <div>
-          <span class="consulta-title">{{
-            "Consulta #" + consulta.codigo
+          <span class="consulta-title">Consulta #{{ consulta.id }}</span>
+          <span class="consulta-date">{{
+            formatarValor("data", consulta.appointmentDate)
           }}</span>
-          <span class="consulta-date">{{ consulta.data }}</span>
         </div>
         <div class="title-container">
-          <span class="consulta-medico">{{ "Dr. " + consulta.medico }}</span>
-          <span class="consulta-especialidade">{{
-            consulta.especialidade
-          }}</span>
+          <span class="consulta-medico">
+            {{ consulta.doctorData.gender === "Feminino" ? "Dra." : "Dr." }}
+            {{ consulta.doctorData.name }}</span
+          >
+          <span class="consulta-especialidade">
+            {{ consulta.doctorData.specialtyType.specialtyName }}
+          </span>
+        </div>
+        <div class="consulta-especialidade" *ngIf="consulta.observation">
+          <span><strong>Observação:</strong> {{ consulta.observation }}</span>
         </div>
       </div>
     </div>

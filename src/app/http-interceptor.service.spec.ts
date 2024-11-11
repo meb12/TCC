@@ -1,16 +1,34 @@
-import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+} from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-import { HttpInterceptorService } from './core/services/http-interceptor.service';
+@Injectable({
+  providedIn: 'root',
+})
+export class HttpInterceptorService implements HttpInterceptor {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const userInfo = JSON.parse(localStorage.getItem('token') || '{}');
+    const token = userInfo;
 
-describe('HttpInterceptorService', () => {
-  let service: HttpInterceptorService;
+    console.log('token', token);
+    if (token) {
+      console.log('Token encontrado:', token); // Verifique se o token é exibido
+      const authReq = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return next.handle(authReq);
+    }
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(HttpInterceptorService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    return next.handle(request);
+  }
+}

@@ -15,23 +15,21 @@ export class CabecalhoComponent implements OnInit {
     });
   }
   getNome(): string {
-    const funcionario = localStorage.getItem('Funcionario');
-    const funcionarioObj = funcionario
-      ? JSON.parse(funcionario)
-      : 'Dados não encontrados';
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
-    return funcionarioObj.TxNomeFuncionario !== null
-      ? funcionarioObj.TxNomeFuncionario.replace(/["]/g, '')
-      : 'Usuário não encontrado';
+    // Access and log the name property
+    const userName = userInfo ? userInfo.name : null;
+
+    return userName;
   }
 
   getCargo(): string {
-    const perfil = localStorage.getItem('Perfil');
-    const perfilObj = perfil ? JSON.parse(perfil) : 'Dados não encontrados';
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
-    return perfilObj.TxNomePerfil !== null
-      ? perfilObj.TxNomePerfil.replace(/["]/g, '')
-      : 'Perfil não encontrado';
+    // Access and log the name property
+    const userName = userInfo ? userInfo.userType.name : null;
+
+    return userName;
   }
 
   logout() {

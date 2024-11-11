@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EspecialidadeService } from '../../../../core/services/especalidades.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MedicosService } from '../../../../core/services/medicos.service';
+import { PacientesService } from '../../../../core/services/pacientes.service';
 
 @Component({
   selector: 'app-consulta',
@@ -9,17 +10,9 @@ import { MedicosService } from '../../../../core/services/medicos.service';
   styleUrls: ['./consulta.component.css'],
 })
 export class ConsultaComponent implements OnInit {
-  data = {
-    nome: 'João Silva',
-    Cod: '123456',
-    date: '12/05/1990',
-    sexo: 'Masculino',
-    cpf: '123.456.789-00',
-    rg: '12.345.678-9',
-    tel: '(11) 1234-5678',
-    cel: '(11) 91234-5678',
-    endereco: 'Rua das Flores, 123 - São Paulo, SP',
-  };
+  data;
+
+  id: number;
 
   form: any = {
     especialidades: '',
@@ -126,7 +119,17 @@ export class ConsultaComponent implements OnInit {
       },
     });
   }
-
+  getPaciente() {
+    console.log('chegando', this.id);
+    this.pacientes.getDataId(this.id).subscribe({
+      next: (response) => {
+        this.data = response;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar especialidades:', error);
+      },
+    });
+  }
   // gerarHorarioOptions(intervalo: number) {
   //   const horarioInicial = 9 * 60; // 09:00 em minutos
   //   const horarioFinal = 18 * 60; // 18:00 em minutos
@@ -158,8 +161,10 @@ export class ConsultaComponent implements OnInit {
   }
   constructor(
     private especialidades: EspecialidadeService,
+    private pacientes: PacientesService,
     private router: Router,
-    private medicos: MedicosService
+    private medicos: MedicosService,
+    private route: ActivatedRoute
   ) {}
 
   getMedicos() {
@@ -180,9 +185,31 @@ export class ConsultaComponent implements OnInit {
       },
     });
   }
+  formatarValor(tipo: string, valor: string): string {
+    switch (tipo) {
+      case 'data':
+        const [date] = valor.split('T');
+        const [ano, mes, dia] = date.split('-');
+        return `${dia}/${mes}/${ano}`;
 
+      case 'telefone':
+        return valor.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+
+      case 'cpf':
+        return valor.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+
+      case 'rg':
+        return valor.replace(/^(\d{2})(\d{3})(\d{3})(\d{1})$/, '$1.$2.$3-$4');
+
+      default:
+        return '';
+    }
+  }
   ngOnInit() {
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    console.log('ID da URL:', this.id);
     this.getEspecialidades();
     this.getMedicos();
+    this.getPaciente();
   }
 }

@@ -11,24 +11,40 @@
 <div>
   <div class="consulta-header">
     <div>
-      <span class="patient-title">{{ data.nome }}</span>
+      <span class="patient-title">{{ data.name }}</span>
     </div>
     <div>
-      <span class="patient-subtitle"> {{ "Cod." + data.Cod }}</span>
+      <span class="patient-subtitle"> {{ "Cod. " + data.id }}</span>
     </div>
   </div>
   <div class="consulta-header">
-    <span> {{ "Data de nasc." + data.date }}</span>
-    <span> {{ "Sexo:" + data.sexo }}</span>
-    <span> {{ "CPF:" + data.cpf }}</span>
-    <span> {{ "RG:" + data.rg }}</span>
+    <span>{{
+      "Data de nasc.: " + formatarValor("data", data.dateOfBirth)
+    }}</span>
+    <span>{{ "Sexo: " + data.gender }}</span>
+    <span>{{ "CPF: " + formatarValor("cpf", data.cpf) }}</span>
+    <span>{{ "RG: " + (data.documentNumber || "Não informado") }}</span>
   </div>
   <div class="consulta-header gap">
-    <span> {{ "Tel." + data.tel }}</span>
-    <span> {{ "Cel." + data.cel }}</span>
+    <span>{{ "Tel.: " + (data.telefone || "Não informado") }}</span>
+    <span>{{ "Cel.: " + formatarValor("telefone", data.cellphone) }}</span>
   </div>
   <div class="consulta-header">
-    <span> {{ data.endereco }}</span>
+    <span>
+      {{
+        data.streetName +
+          ", " +
+          data.streetNumber +
+          " - " +
+          data.neighborhood +
+          ", " +
+          data.city +
+          " - " +
+          data.stateName +
+          ", CEP: " +
+          data.cep
+      }}
+    </span>
   </div>
 </div>
 <form class="grid">

@@ -18,6 +18,7 @@ export class PacientesComponent implements OnInit {
   showModalExclusao = false;
   item: any;
   tipo = '';
+  data = '';
 
   selectData = [
     { value: 1, name: 'Ativos' },
@@ -149,6 +150,7 @@ export class PacientesComponent implements OnInit {
 
   infosItem(item: any) {
     this.isPacienteModalOpen = true;
+    this.data = item;
   }
 
   editItem(item: any) {

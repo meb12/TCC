@@ -36,6 +36,7 @@
 <app-modal-informacao-paciente
   *ngIf="isPacienteModalOpen"
   (close)="closePacienteModal()"
+  [data]="data"
 ></app-modal-informacao-paciente>
 
 <app-exclusao-modal-paciente

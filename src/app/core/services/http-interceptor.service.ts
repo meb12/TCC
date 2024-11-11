@@ -21,24 +21,36 @@ export class HttpInterceptorService implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    this.requests.push(request);
+    // Adiciona o token ao header
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    const token = userInfo?.token?.token;
+    const authRequest = token
+      ? request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      : request;
+
+    // Gerencia o loader
+    this.requests.push(authRequest);
     this.loaderService.show();
 
-    return next.handle(request).pipe(
+    return next.handle(authRequest).pipe(
       tap({
         next: (event) => {
           if (event instanceof HttpResponse) {
-            this.removeRequest(request);
+            this.removeRequest(authRequest);
           }
         },
         error: (err: HttpErrorResponse) => {
-          this.removeRequest(request);
+          this.removeRequest(authRequest);
         },
       })
     );
   }
 
-  removeRequest(request: HttpRequest<any>) {
+  private removeRequest(request: HttpRequest<any>) {
     const index = this.requests.indexOf(request);
     if (index >= 0) {
       this.requests.splice(index, 1);

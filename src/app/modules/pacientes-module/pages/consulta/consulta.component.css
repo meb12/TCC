@@ -106,3 +106,7 @@ h2 {
 .btn-voltar:focus {
   outline: none; /* Remove a borda padrão ao focar */
 }
+
+.patient-title {
+  text-transform: uppercase;
+}

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { LoginService } from '../../../../core/services/login.service';
 
 @Component({
   selector: 'app-redefinir-senha',
@@ -16,7 +17,7 @@ export class RedefinirSenhaComponent implements OnInit {
   // autenticarService = inject(AutenticarService);
   router = inject(Router);
 
-  constructor(private toastr: ToastrService) {}
+  constructor(private toastr: ToastrService, private login: LoginService) {}
 
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
@@ -24,24 +25,20 @@ export class RedefinirSenhaComponent implements OnInit {
   ngOnInit(): void {
     this._initEnviarEmailForm();
   }
-
-  protected enviarEmail() {
-    // this.subscription$.add(
-    //   this.autenticarService
-    //     .enviarEmailRedefinicao(this.form.value.email as string)
-    //     .subscribe({
-    //       next: (res: any) => {
-    //         this.router.navigate(['/login']);
-    //         this.toastr.success(res.Data.Message);
-    //       },
-    //       error: (error) => {
-    //         error.error.Errors.forEach((errorMessage: any) => {
-    //           this.toastr.error(errorMessage);
-    //         });
-    //       },
-    //     })
-    // );
+  enviarEmail() {
+    this.login.postRedefinirSenha(this.form.value).subscribe({
+      next: (response) => {
+        this.toastr.success('Email de redefinição de senha enviado');
+        this.router.navigateByUrl('/login');
+      },
+      error: (error) => {
+        this.toastr.error(
+          'Erro ao enviar email de redefinição de senha. Tente novamente.'
+        );
+      },
+    });
   }
+
   private _initEnviarEmailForm() {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

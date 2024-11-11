@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ConsultasService } from '../../../../core/services/consultas.service';
 
 @Component({
   selector: 'app-modal-informacao-paciente',
@@ -6,34 +7,11 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   styleUrls: ['./modal-informacao-paciente.component.css'],
 })
 export class ModalInformacaoPacienteComponent implements OnInit {
-  data = {
-    nome: 'João Silva',
-    Cod: '123456',
-    date: '12/05/1990',
-    sexo: 'Masculino',
-    cpf: '123.456.789-00',
-    rg: '12.345.678-9',
-    tel: '(11) 1234-5678',
-    cel: '(11) 91234-5678',
-    endereco: 'Rua das Flores, 123 - São Paulo, SP',
-  };
+  @Input() data;
 
   activeTab = 'informacoes';
 
-  consultas = [
-    {
-      codigo: '002',
-      data: '14/10/2024',
-      medico: 'Camila Taglione',
-      especialidade: 'Ortopedista',
-    },
-    {
-      codigo: '001',
-      data: '08/10/2024',
-      medico: 'Juan Mendes',
-      especialidade: 'Cardiologista',
-    },
-  ];
+  consultas = []; // Remove os dados mockados e inicializa como um array vazio
 
   activateTab(tab: string) {
     this.activeTab = tab;
@@ -52,7 +30,43 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     }
   }
 
-  constructor() {}
+  formatarValor(tipo: string, valor: string): string {
+    switch (tipo) {
+      case 'data':
+        const [date] = valor.split('T');
+        const [ano, mes, dia] = date.split('-');
+        return `${dia}/${mes}/${ano}`;
 
-  ngOnInit() {}
+      case 'telefone':
+        return valor.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+
+      case 'cpf':
+        return valor.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+
+      case 'rg':
+        return valor.replace(/^(\d{2})(\d{3})(\d{3})(\d{1})$/, '$1.$2.$3-$4');
+
+      default:
+        return '';
+    }
+  }
+
+  getConsultas() {
+    this.consultas1.getDataPacienteId(this.data.id).subscribe({
+      next: (response) => {
+        this.consultas = response; // Popula a lista de consultas com os dados da resposta
+        console.log('Consultas carregadas:', this.consultas);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar consultas:', error);
+      },
+    });
+  }
+
+  constructor(private consultas1: ConsultasService) {}
+
+  ngOnInit() {
+    console.log('infos', this.data);
+    this.getConsultas(); // Corrige a chamada do método, adicionando os parênteses
+  }
 }

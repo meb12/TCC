@@ -25,6 +25,10 @@ export class LoginService {
     return this.http.post(this.apiUrl, body, { headers });
   }
 
+  postRedefinirSenha(data: any): Observable<any> {
+    return this.http.post(this.apiUrl + '/send-mail-to-reset', data);
+  }
+
   // Armazena o token no localStorage
   setToken(token: string): void {
     localStorage.setItem('token', token);

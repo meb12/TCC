@@ -6,9 +6,11 @@
     <div class="user-info">
       <!-- {{ getNome() }} -->
       <!-- {{ getCargo() }} -->
-      <span class="user-name">Maria Eduarda</span>
+      <div class="user-column">
+        <span class="user-name"> {{ getNome() }}</span>
+        <span class="user-role">{{ getCargo() }}</span>
+      </div>
       <div class="user-sub-info">
-        <span class="user-role">assistente adminstrativo</span>
         <span class="logout" (click)="logout()">
           <img src="assets/img/sair.svg" />
           <span>Sair</span>

@@ -34,7 +34,7 @@ header {
 
 .user-info {
   display: flex;
-  flex-direction: column;
+
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -71,4 +71,12 @@ header {
   header {
     display: none;
   }
+}
+
+.user-column {
+  display: flex;
+  flex-direction: column;
+  margin-top: 3px;
+  justify-content: center;
+  text-align: center;
 }

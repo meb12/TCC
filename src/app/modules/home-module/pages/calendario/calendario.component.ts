@@ -16,6 +16,7 @@ import localePt from '@angular/common/locales/pt';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { FuncionariosService } from '../../../../core/services/funcionarios.service';
 import { PacientesService } from '../../../../core/services/pacientes.service';
+import { ConsultasService } from './../../../../core/services/consultas.service';
 
 @Component({
   selector: 'app-calendario',
@@ -23,60 +24,39 @@ import { PacientesService } from '../../../../core/services/pacientes.service';
   styleUrls: ['./calendario.component.css'],
 })
 export class CalendarioComponent implements OnInit, AfterViewInit {
-  @ViewChild('calendar') calendarComponent: FullCalendarComponent; // Referência ao FullCalendar
-  @ViewChild('dateSelector') dateSelector!: ElementRef; // Referência aos selects de mês e ano
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+  @ViewChild('dateSelector') dateSelector!: ElementRef;
 
-  // Lista de médicos mockados
   doctors = [];
+  appointments = [];
+  selectedMonth: number = new Date().getMonth() + 1;
+  selectedYear: number = new Date().getFullYear();
+  selectedDate: any;
+  displayedAppointments: any;
 
-  // Consultas mockadas
-  appointments = [
-    {
-      title: 'Consulta 1',
-      date: '2024-12-01',
-      doctor: { id: 3, name: 'Doctor 1', specialty: 'Cardiology' },
-      patient: { id: 201, name: 'Patient 1' },
-    },
-    {
-      title: 'Consulta 1',
-      date: '2024-10-01',
-      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
-      patient: { id: 201, name: 'Patient 1' },
-    },
-    {
-      title: 'Consulta 1',
-      date: '2024-10-01',
-      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
-      patient: { id: 201, name: 'Patient 1' },
-    },
-    {
-      title: 'Consulta 1',
-      date: '2024-12-01',
-      doctor: { id: 1, name: 'Doctor 1', specialty: 'Cardiology' },
-      patient: { id: 201, name: 'Patient 1' },
-    },
-    {
-      title: 'Consulta 2',
-      date: '2024-12-02',
-      doctor: { id: 2, name: 'Doctor 2', specialty: 'Dermatology' },
-      patient: { id: 202, name: 'Patient 2' },
-    },
-    // Mais apontamentos...
+  months = [
+    'JANEIRO',
+    'FEVEREIRO',
+    'MARÇO',
+    'ABRIL',
+    'MAIO',
+    'JUNHO',
+    'JULHO',
+    'AGOSTO',
+    'SETEMBRO',
+    'OUTUBRO',
+    'NOVEMBRO',
+    'DEZEMBRO',
   ];
 
-  // Configurações do calendário
   calendarOptions: any = {
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, interactionPlugin],
     locales: allLocales,
     locale: 'pt-br',
-    headerToolbar: {
-      left: '',
-      center: 'title',
-      right: '',
-    },
+    headerToolbar: { left: '', center: 'title', right: '' },
     dayMaxEventRows: true,
-    events: this.consolidateEvents(this.appointments),
+    events: [],
     eventContent: (arg) => this.customEventContent(arg),
     dateClick: this.handleDateClick.bind(this),
     showNonCurrentDates: false,
@@ -84,147 +64,100 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     titleFormat: { year: 'numeric', month: 'long' },
   };
 
-  modifyTitle(info) {
-    const titleElement = document.querySelector('.fc-toolbar-title');
-
-    if (titleElement) {
-      // Retrieve the original text for the month and year
-      const originalText = info.view.title; // FullCalendar provides the current title here
-
-      // Capitalize the first letter
-      const capitalizedTitle =
-        originalText.charAt(0).toUpperCase() + originalText.slice(1);
-
-      // Update the title text content
-      titleElement.textContent = capitalizedTitle;
-    }
-  }
-
-  constructor(
-    private medicos: MedicosService,
-    private funcionarios: FuncionariosService,
-    private pacientes: PacientesService
-  ) {
-    registerLocaleData(localePt); // Registra os dados do locale português
-  }
-
-  customEventContent(arg) {
-    const element = document.createElement('div');
-    element.classList.add('custom-event'); // Adiciona a classe customizada
-    element.innerHTML = `
-        <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="width: 16px; height: 16px; margin-right: 4px;">
-        <span>${arg.event._def.extendedProps.count} </span>
-
-    `;
-
-    return { domNodes: [element] };
-  }
-
-  selectedMonth: number = new Date().getMonth() + 1;
-  selectedYear: number = new Date().getFullYear();
-
-  months = [
-    'Janeiro',
-    'Fevereiro',
-    'Março',
-    'Abril',
-    'Maio',
-    'Junho',
-    'Julho',
-    'Agosto',
-    'Setembro',
-    'Outubro',
-    'Novembro',
-    'Dezembro',
-  ];
-  selectedDate: any;
-  displayedAppointments: any;
-
-  handleDateClick(arg) {
-    this.selectedDate = arg.dateStr; // Armazena a data selecionada
-
-    // Captura os IDs dos médicos selecionados com base nos checkboxes
-    const selectedDoctors = this.doctors
-      .filter((doctor) => doctor.checked)
-      .map((doctor) => doctor.id);
-
-    // Filtra as consultas para mostrar apenas aquelas que ocorrem na data selecionada
-    // e que são de médicos selecionados
-    this.displayedAppointments = this.appointments.filter(
-      (appointment) =>
-        appointment.date.includes(this.selectedDate) &&
-        (selectedDoctors.length === 0 ||
-          selectedDoctors.includes(appointment.doctor.id))
-    );
-  }
-
-  // Opções para o select de mês
   monthOptions = this.months.map((month, index) => ({
     label: month,
     value: index + 1,
   }));
 
-  // Atualiza o calendário quando o mês ou ano é alterado
-  onMonthYearChange() {
-    const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
-    this.displayedAppointments = [];
-    this.selectedDate = '';
-    this.calendarComponent.getApi().gotoDate(selectedDate);
-    // this.adjustCalendarEventStyles();
-  }
-
-  // Opções para o select de ano
   yearOptions = [2023, 2024, 2025].map((year) => ({
     label: year,
     value: year,
   }));
 
-  filterAppointments() {
-    const selectedDoctorIds = this.doctors
-      .filter((doctor) => doctor.checked)
-      .map((doctor) => doctor.id);
+  graphPacientesCadastradas: any = {
+    title: 'Pacientes ativos',
+    description: 'Quantidade',
+    descriptionValue: '',
+    totalValue: '',
+  };
 
-    const filteredAppointments = this.appointments.filter(
-      (appointment) =>
-        selectedDoctorIds.length === 0 ||
-        selectedDoctorIds.includes(appointment.doctor.id)
-    );
+  graphMedicosCadastrados: any = {
+    title: 'Médicos ativos',
+    description: 'Quantidade',
+    descriptionValue: '',
+    totalValue: '',
+  };
 
-    const consolidatedEvents = this.consolidateEvents(filteredAppointments);
-    this.calendarOptions.events = consolidatedEvents;
-    if (this.calendarComponent) {
-      this.calendarComponent.getApi().refetchEvents();
-    }
-    this.displayedAppointments = this.appointments.filter(
-      (appointment) =>
-        appointment.date.includes(this.selectedDate) &&
-        (selectedDoctorIds.length === 0 ||
-          selectedDoctorIds.includes(appointment.doctor.id))
-    );
+  graphFuncionariosCadastrados: any = {
+    title: 'Funcionários ativos',
+    description: 'Quantidade',
+    descriptionValue: '',
+    totalValue: '',
+  };
+
+  mockedGraphsData = [
+    this.graphPacientesCadastradas,
+    this.graphMedicosCadastrados,
+    this.graphFuncionariosCadastrados,
+  ];
+
+  constructor(
+    private medicos: MedicosService,
+    private funcionarios: FuncionariosService,
+    private pacientes: PacientesService,
+    private consultas: ConsultasService
+  ) {
+    registerLocaleData(localePt);
   }
 
-  consolidateEvents(appointments) {
-    const eventsByDay = {};
-    appointments.forEach((appointment) => {
-      const date = appointment.date;
-      if (!eventsByDay[date]) {
-        eventsByDay[date] = {
-          start: date,
-          count: 0,
-          title: 'Consultas',
-          icon: 'assets/img/icone-medicos.svg',
-          details: [],
-        };
-      }
-      eventsByDay[date].count++;
-      eventsByDay[date].details.push({
-        doctorName: appointment.doctor.name,
-        doctorSpecialty: appointment.doctor.specialty,
-        patientName: appointment.patient.name,
-      });
-    });
+  ngOnInit(): void {
+    this.getAppointments();
+    this.getMedicos();
+    this.getPacientes();
+    this.getFuncionario();
+    this.updateAspectRatio();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-    return Object.values(eventsByDay);
+  getAppointments() {
+    this.consultas.getData().subscribe({
+      next: (response: any) => {
+        // Mapeia consultas normais e de retorno
+        this.appointments = response.flatMap((appointment) => {
+          // Define o título como "Consulta" para a consulta principal
+          const mainAppointment = {
+            title: 'Consulta',
+            date: new Date(appointment.appointmentDate)
+              .toISOString()
+              .split('T')[0],
+            doctor: appointment.doctorData,
+            patient: appointment.pacientData,
+          };
+
+          // Define o título como "Retorno" para cada consulta de retorno
+          const returnAppointments = appointment.appointmentsReturn.map(
+            (returnAppt) => ({
+              title: 'Retorno',
+              date: new Date(returnAppt.appointmentDate)
+                .toISOString()
+                .split('T')[0],
+              doctor: returnAppt.doctorData,
+              patient: appointment.pacientData,
+            })
+          );
+
+          // Combina a consulta principal com as consultas de retorno
+          return [mainAppointment, ...returnAppointments];
+        });
+
+        // Consolida e atualiza os eventos no calendário
+        this.calendarOptions.events = this.consolidateEvents(this.appointments);
+        if (this.calendarComponent) {
+          this.calendarComponent.getApi().refetchEvents();
+        }
+      },
+      error: (error) => console.error('Erro ao carregar consultas:', error),
+    });
   }
 
   getMedicos() {
@@ -249,64 +182,95 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
   getPacientes() {
     this.pacientes.getData().subscribe({
       next: (response) => {
-        const mappedDoctors = response
-          .filter((medico: any) => medico.isActive === true)
-          .map((medico: any) => ({
-            id: medico.id,
-            name: medico.name.split(' ')[0],
-            gender: medico.gender,
-            checked: false,
-          }));
-
-        this.graphPacientesCadastradas.descriptionValue = mappedDoctors.length;
-        this.graphPacientesCadastradas.totalValue = mappedDoctors.length;
+        this.graphPacientesCadastradas.descriptionValue = response.length;
+        this.graphPacientesCadastradas.totalValue = response.length;
       },
-      error: (error) => {
-        console.error('Erro ao carregar médicos:', error);
-      },
+      error: (error) => console.error('Erro ao carregar pacientes:', error),
     });
   }
 
   getFuncionario() {
     this.funcionarios.getData().subscribe({
       next: (response) => {
-        const mappedDoctors = response
-          .filter((medico: any) => medico.isActive === true)
-          .map((medico: any) => ({
-            id: medico.id,
-            name: medico.name.split(' ')[0],
-            gender: medico.gender,
-            checked: false,
-          }));
-
-        this.graphFuncionariosCadastrados.descriptionValue =
-          mappedDoctors.length;
-        this.graphFuncionariosCadastrados.totalValue = mappedDoctors.length;
+        this.graphFuncionariosCadastrados.descriptionValue = response.length;
+        this.graphFuncionariosCadastrados.totalValue = response.length;
       },
-      error: (error) => {
-        console.error('Erro ao carregar médicos:', error);
-      },
+      error: (error) => console.error('Erro ao carregar funcionários:', error),
     });
   }
-  // Navegar para o mês e ano selecionados
+
+  handleDateClick(arg) {
+    this.selectedDate = arg.dateStr;
+    const selectedDoctors = this.doctors
+      .filter((doctor) => doctor.checked)
+      .map((doctor) => doctor.id);
+
+    this.displayedAppointments = this.appointments.filter(
+      (appointment) =>
+        appointment.date.includes(this.selectedDate) &&
+        (selectedDoctors.length === 0 ||
+          selectedDoctors.includes(appointment.doctor.id))
+    );
+  }
+
+  filterAppointments() {
+    this.displayedAppointments = [];
+    const selectedDoctorIds = this.doctors
+      .filter((doctor) => doctor.checked)
+      .map((doctor) => doctor.id);
+
+    const filteredAppointments = this.appointments.filter(
+      (appointment) =>
+        selectedDoctorIds.length === 0 ||
+        selectedDoctorIds.includes(appointment.doctor.id)
+    );
+
+    this.calendarOptions.events = this.consolidateEvents(filteredAppointments);
+    if (this.calendarComponent) {
+      this.calendarComponent.getApi().refetchEvents();
+    }
+  }
+
+  consolidateEvents(appointments) {
+    const eventsByDay = {};
+    appointments.forEach((appointment) => {
+      const date = appointment.date;
+      if (!eventsByDay[date]) {
+        eventsByDay[date] = {
+          start: date,
+          count: 0,
+          title: 'Consultas',
+          icon: 'assets/img/icone-medicos.svg',
+          details: [],
+        };
+      }
+      eventsByDay[date].count++;
+      eventsByDay[date].details.push({
+        doctorName: appointment.doctor.name,
+        doctorSpecialty: appointment.doctor.specialtyType.specialtyName,
+        patientName: appointment.patient.name,
+      });
+    });
+    return Object.values(eventsByDay);
+  }
+
+  customEventContent(arg) {
+    const element = document.createElement('div');
+    element.classList.add('custom-event');
+    element.innerHTML = `
+        <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="width: 16px; height: 16px; margin-right: 4px;">
+        <span>${arg.event._def.extendedProps.count} </span>
+    `;
+    return { domNodes: [element] };
+  }
+
   updateCalendar() {
     const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
     this.calendarComponent.getApi().gotoDate(selectedDate);
-  }
-  ngOnInit(): void {
-    this.getFuncionario();
-    this.getMedicos();
-    this.getPacientes();
-
-    this.updateAspectRatio();
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth', // opcional, para uma rolagem suave
-    });
   }
 
   updateAspectRatio() {
@@ -316,12 +280,15 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Define a proporção conforme o tamanho da tela
   getAspectRatio(): number {
     return window.innerWidth < 768 ? 1.35 : 1.75;
   }
 
-  // Escuta o evento de redimensionamento da tela
+  onMonthYearChange() {
+    this.displayedAppointments = [];
+    this.updateCalendar();
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.updateAspectRatio();
@@ -329,12 +296,11 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.adjustCalendarEventStyles();
-    // Insere os selects de mês e ano no lado direito do FullCalendar
     const calendarToolbarRight = document.querySelector(
       '.fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:last-child'
     );
     if (calendarToolbarRight && this.dateSelector) {
-      calendarToolbarRight.appendChild(this.dateSelector.nativeElement); // Adiciona os selects no lado direito
+      calendarToolbarRight.appendChild(this.dateSelector.nativeElement);
     }
   }
 
@@ -346,41 +312,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       eventHarnesses.forEach((el: HTMLElement) => {
         el.style.display = 'flex';
         el.style.justifyContent = 'center';
-        el.style.width = 'auto';
-        el.style.marginTop = '0';
       });
     }, 100);
   }
-
-  graphPacientesCadastradas: any = {
-    title: 'Pacientes ativos',
-    description: 'Quantidade',
-    descriptionValue: '',
-    description2: '',
-    description2Value: '',
-    totalValue: '',
-  };
-
-  graphMedicosCadastrados: any = {
-    title: 'Médicos ativos',
-    description: 'Quantidade',
-    descriptionValue: '',
-    description2: '',
-    description2Value: '',
-    totalValue: '',
-  };
-  graphFuncionariosCadastrados: any = {
-    title: 'Funcionários ativos',
-    description: 'Quantidade',
-    descriptionValue: '',
-    description2: '',
-    description2Value: '',
-    totalValue: '',
-  };
-
-  mockedGraphsData = [
-    this.graphPacientesCadastradas,
-    this.graphMedicosCadastrados,
-    this.graphFuncionariosCadastrados,
-  ];
 }
