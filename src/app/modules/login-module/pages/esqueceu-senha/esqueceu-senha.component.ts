@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { confirmarSenhaValidator } from '../../../../core/validators/confirmarSenhaValidator';
+import { LoginService } from '../../../../core/services/login.service';
 
 @Component({
   selector: 'app-esqueceu-senha',
@@ -35,7 +36,7 @@ export class EsqueceuSenhaComponent implements OnInit {
   passwordsMatch = false;
   isValid = false;
 
-  constructor(private toastr: ToastrService) {}
+  constructor(private toastr: ToastrService, private login: LoginService) {}
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
   }
@@ -45,11 +46,10 @@ export class EsqueceuSenhaComponent implements OnInit {
   private _initForm() {
     const queryParams = this.activatedRoute.snapshot.queryParams;
     if (!queryParams['token']) {
-      // this.router.navigate(['/login']);
+      this.router.navigate(['/login']);
     }
     this.form = this.fb.group(
       {
-        codUsuario: [queryParams['codUsuario']],
         token: [queryParams['token']],
         senha: ['', [Validators.required, this.senhaValidator]],
         confirmarSenha: ['', [Validators.required]],
@@ -138,25 +138,24 @@ export class EsqueceuSenhaComponent implements OnInit {
   toggleHideSenha(): void {
     this.hideSenha = !this.hideSenha;
   }
-
   protected mudarSenha(): void {
     const redefinir = {
-      guidResetSenha: this.form.value.token,
-      novaSenha: this.form.value.senha,
+      newPassword: this.form.value.senha,
     };
-    this.subscription$
-      .add
-      // this.autenticarService.redefinirSenha(redefinir).subscribe({
-      //   next: () => {
-      //     this.toastr.success('Senha redefinida com sucesso');
-      //     this.router.navigate(['/login']);
-      //   },
-      //   error: (error) => {
-      //     error.error.Errors.forEach((errorMessage: any) => {
-      //       this.toastr.error(errorMessage);
-      //     });
-      //   },
-      // })
-      ();
+
+    const token = this.form.value.token; // Extrai o token do formulário
+
+    this.subscription$.add(
+      this.login.putRedefinirSenha(redefinir, token).subscribe({
+        next: (response) => {
+          this.toastr.success('Senha redefinida com sucesso');
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Detalhes do erro:', error);
+          this.toastr.error('Erro ao redefinir senha. Tente novamente.');
+        },
+      })
+    );
   }
 }

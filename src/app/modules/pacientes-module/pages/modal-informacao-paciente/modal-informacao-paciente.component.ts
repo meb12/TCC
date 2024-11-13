@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConsultasService } from '../../../../core/services/consultas.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-informacao-paciente',
@@ -63,7 +64,11 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     });
   }
 
-  constructor(private consultas1: ConsultasService) {}
+  redirectToConsulta(id: number): void {
+    this.router.navigate([`/pacientes/consulta/individual/${id}`]);
+  }
+
+  constructor(private consultas1: ConsultasService, private router: Router) {}
 
   ngOnInit() {
     console.log('infos', this.data);

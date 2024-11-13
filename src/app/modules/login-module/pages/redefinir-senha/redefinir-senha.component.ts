@@ -28,10 +28,18 @@ export class RedefinirSenhaComponent implements OnInit {
   enviarEmail() {
     this.login.postRedefinirSenha(this.form.value).subscribe({
       next: (response) => {
-        this.toastr.success('Email de redefinição de senha enviado');
-        this.router.navigateByUrl('/login');
+        if (response.status === 200) {
+          // Verifica se o status é 200
+          this.toastr.success('Email de redefinição de senha enviado');
+          this.router.navigateByUrl('/login');
+        } else {
+          this.toastr.error(
+            'Erro ao enviar email de redefinição de senha. Tente novamente.'
+          );
+        }
       },
       error: (error) => {
+        console.error('Error details:', error);
         this.toastr.error(
           'Erro ao enviar email de redefinição de senha. Tente novamente.'
         );

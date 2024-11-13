@@ -7,6 +7,7 @@ import { PacientesComponent } from './pages/pacientes/pacientes.component';
 import { ConsultaComponent } from './pages/consulta/consulta.component';
 import { ModalInformacaoPacienteComponent } from './pages/modal-informacao-paciente/modal-informacao-paciente.component';
 import { ExclusaoModalPacienteComponent } from './pages/exclusao-modal-paciente/exclusao-modal-paciente.component';
+import { ConsultaIndividualComponent } from './pages/consulta-individual/consulta-individual.component';
 
 @NgModule({
   imports: [CommonModule, PacientesRoutingModule, SharedModule],
@@ -15,6 +16,7 @@ import { ExclusaoModalPacienteComponent } from './pages/exclusao-modal-paciente/
     ConsultaComponent,
     ModalInformacaoPacienteComponent,
     ExclusaoModalPacienteComponent,
+    ConsultaIndividualComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

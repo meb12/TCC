@@ -1,0 +1,100 @@
+<div>
+  <button class="btn-voltar" (click)="voltar()">
+    <img src="assets/img/voltar.svg" /> Voltar
+  </button>
+</div>
+
+<div class="margin-top">
+  <div class="consulta-header">
+    <div>
+      <span class="patient-title">{{ data?.pacientData.name }}</span>
+    </div>
+    <div>
+      <span class="patient-subtitle">
+        {{ "Cod. " + data?.pacientData.id }}</span
+      >
+    </div>
+  </div>
+  <div class="consulta-header">
+    <span>{{
+      "Data de nasc.: " + formatarValor("data", data?.pacientData.dateOfBirth)
+    }}</span>
+    <span>{{ "Sexo: " + data?.gender }}</span>
+    <span>{{ "CPF: " + formatarValor("cpf", data?.pacientData.cpf) }}</span>
+    <span>{{
+      "RG: " + (data?.pacientData.documentNumber || "Não informado")
+    }}</span>
+  </div>
+  <div class="consulta-header gap">
+    <span>{{
+      "Cel.: " + formatarValor("telefone", data?.pacientData.cellphone)
+    }}</span>
+  </div>
+  <div class="consulta-header">
+    <span>
+      {{
+        data?.pacientData.streetName +
+          ", " +
+          data?.pacientData.streetNumber +
+          " - " +
+          data?.pacientData.neighborhood +
+          ", " +
+          data?.pacientData.city +
+          " - " +
+          data?.pacientData.stateName +
+          ", CEP: " +
+          data?.pacientData.cep
+      }}
+    </span>
+  </div>
+</div>
+<div class="consulta-header1">
+  <span class="consulta-title"> {{ "Consulta #" + data.id }}</span>
+  <div class="consulta-container">
+    <span class="consulta-title1">{{
+      "Data: " + formatarValor("data", data.appointmentDate)
+    }}</span>
+    <span class="consulta-title1">{{
+      "Horário: " + formatarValor("data", data.appointmentDate)
+    }}</span>
+    <span class="consulta-title1">{{ data.doctorData.name }}</span>
+    <span class="consulta-title1">{{
+      data.doctorData.specialtyType.specialtyName
+    }}</span>
+    <span class="consulta-title1 observacao"> {{ "Observações" }} </span>
+    <span class="consulta-title1"> {{ data.observation }} </span>
+  </div>
+</div>
+
+<div class="consulta-container">
+  <span class="consulta-title"> {{ "Anexos" }}</span>
+  <div class="attachment-list">
+    <div *ngFor="let file of files">
+      <div class="attachment-item">
+        <img src="assets/img/pdf.svg" alt="PDF icon" class="attachment-icon" />
+      </div>
+      <span class="attachment-name">{{ file.name }}.pdf</span>
+    </div>
+    <div>
+      <div class="attachment-item">
+        <img
+          src="assets/img/add-icon.svg"
+          alt="PDF icon"
+          class="attachment-icon"
+        />
+      </div>
+      <span class="attachment-name">Novo</span>
+    </div>
+  </div>
+</div>
+<div class="consulta-container">
+  <span class="consulta-title"> {{ "Retornos" }}</span>
+  <div class="return-item" *ngFor="let appointment of data.appointmentsReturn">
+    <span>Retorno #{{ appointment.id }}</span>
+    <span
+      >{{ formatDate(appointment.appointmentDate) }}
+      {{ formatTime(appointment.appointmentDate) }}</span
+    >
+  </div>
+</div>
+<div class="padding"></div>

@@ -1,0 +1,173 @@
+.consulta-header {
+  display: flex;
+  align-items: center;
+  gap: 46px;
+  margin: 18px 0px;
+}
+.patient-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.patient-subtitle {
+  font-size: 14px;
+  color: #818181;
+}
+
+.gap {
+  display: flex;
+  gap: 95px;
+}
+
+.consulta-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin-top: 30px;
+}
+
+.consulta-title1 {
+  font-size: 18px;
+}
+
+.consulta-header1,
+.consulta-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.attachments-container {
+  padding: 1rem;
+}
+
+.attachment-list {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.attachment-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+  width: 80px;
+}
+
+.attachment-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.attachment-item.new {
+  cursor: pointer;
+}
+.attachment-list {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.attachment-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+  width: 80px;
+}
+
+.attachment-name {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.attachment-item.new {
+  cursor: pointer;
+}
+
+.attachment-name {
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+  margin-top: 0.5rem;
+}
+.attachment-icon {
+  width: 30px;
+  height: 50px;
+}
+
+.btn-voltar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-around;
+  background-color: #ffffff;
+  border: 2px solid #dcdcdc;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 101px;
+  height: 36px;
+  color: #595959;
+  font-weight: 500;
+  box-shadow: 0px 2px 5px rgba(181, 180, 180, 0.26); /* Sombra para efeito elevado */
+  transition: box-shadow 0.2s ease-in-out, background-color 0.2s;
+}
+
+.btn-voltar:hover {
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); /* Sombra mais forte ao passar o mouse */
+}
+
+.btn-voltar:active {
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3); /* Sombra ao clicar */
+}
+
+.btn-voltar:focus {
+  outline: none; /* Remove a borda padrão ao focar */
+}
+
+.margin-top {
+  margin-top: 40px;
+}
+.observacao {
+  font-weight: 700;
+}
+.return-container {
+  padding: 1rem;
+}
+
+.return-item {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  max-width: 400px;
+  justify-content: space-between;
+}
+
+.return-item span:first-child {
+  font-weight: 500;
+}
+
+.return-item span:last-child {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.padding {
+  padding-bottom: 30px;
+}

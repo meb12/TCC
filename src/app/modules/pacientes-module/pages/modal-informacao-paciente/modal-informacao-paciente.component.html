@@ -68,7 +68,11 @@
     <!-- Consultations Tab -->
 
     <div class="consulta-container1" *ngIf="activeTab === 'consultas'">
-      <div *ngFor="let consulta of consultas" class="consulta-card">
+      <div
+        *ngFor="let consulta of consultas"
+        class="consulta-card"
+        (click)="redirectToConsulta(consulta.id)"
+      >
         <div>
           <span class="consulta-title">Consulta #{{ consulta.id }}</span>
           <span class="consulta-date">{{

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -24,9 +24,17 @@ export class LoginService {
 
     return this.http.post(this.apiUrl, body, { headers });
   }
-
-  postRedefinirSenha(data: any): Observable<any> {
-    return this.http.post(this.apiUrl + '/send-mail-to-reset', data);
+  postRedefinirSenha(data: any): Observable<HttpResponse<any>> {
+    return this.http.post(this.apiUrl + '/send-mail-to-reset', data, {
+      observe: 'response',
+      responseType: 'text',
+    });
+  }
+  putRedefinirSenha(data: any, token: string): Observable<any> {
+    return this.http.put(this.apiUrl + '/reset-password', data, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: 'text' as 'json', // Define o responseType como texto
+    });
   }
 
   // Armazena o token no localStorage
