@@ -41,6 +41,7 @@ export class EsqueceuSenhaComponent implements OnInit {
     this.subscription$.unsubscribe();
   }
   ngOnInit(): void {
+    localStorage.clear();
     this._initForm();
   }
   private _initForm() {

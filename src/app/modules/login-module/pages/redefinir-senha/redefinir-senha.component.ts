@@ -20,6 +20,7 @@ export class RedefinirSenhaComponent implements OnInit {
   constructor(private toastr: ToastrService, private login: LoginService) {}
 
   ngOnDestroy(): void {
+    localStorage.clear();
     this.subscription$.unsubscribe();
   }
   ngOnInit(): void {
