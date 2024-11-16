@@ -1,4 +1,5 @@
 <div class="container">
+  <app-loader *ngIf="isLoading$ | async"></app-loader>
   <div class="side-one">
     <img
       class="side-one-image"
