@@ -42,7 +42,7 @@ export class MedicosComponent implements OnInit {
     { header: 'CRM', key: 'doctorData.crm', type: 'text' },
     {
       header: 'Especialidade',
-      key: 'doctorData.specialtyType.specialtyName',
+      key: 'doctorData.specialtyType.description',
       type: 'text',
     },
     { header: 'Status', key: 'isActive', type: 'text' },
@@ -92,14 +92,14 @@ export class MedicosComponent implements OnInit {
         const name = item.name?.toLowerCase() || '';
         const id = item.id?.toString() || '';
         const crm = item.doctorData?.crm?.toLowerCase() || '';
-        const specialtyName =
-          item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
+        const description =
+          item.doctorData?.specialtyType?.description?.toLowerCase() || '';
 
         return (
           name.includes(lowerSearchValue) ||
           id.includes(lowerSearchValue) ||
           crm.includes(lowerSearchValue) ||
-          specialtyName.includes(lowerSearchValue)
+          description.includes(lowerSearchValue)
         );
       });
 

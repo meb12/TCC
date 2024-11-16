@@ -13,7 +13,7 @@ export class ExclusaoModalPacienteComponent implements OnInit {
   @Input()
   item: {
     id: number;
-    specialtyName: string;
+    description: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
     cellphone: string;
@@ -29,7 +29,7 @@ export class ExclusaoModalPacienteComponent implements OnInit {
         id: number;
         intervalBetweenAppointments: string;
         isActive: boolean;
-        specialtyName: string;
+        description: string;
       };
     };
     documentNumber: string;

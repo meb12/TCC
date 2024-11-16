@@ -20,7 +20,7 @@ export class EspecialidadesComponent implements OnInit {
   tipo = '';
   item: {
     id: number;
-    specialtyName: string;
+    description: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
     cellphone: string;
@@ -36,7 +36,7 @@ export class EspecialidadesComponent implements OnInit {
         id: number;
         intervalBetweenAppointments: string;
         isActive: boolean;
-        specialtyName: string;
+        description: string;
       };
     };
     documentNumber: string;
@@ -74,7 +74,7 @@ export class EspecialidadesComponent implements OnInit {
   filteredData = this.tableData;
 
   tableColumns: ITableColumn[] = [
-    { header: 'Nome', key: 'specialtyName', type: 'text' },
+    { header: 'Nome', key: 'description', type: 'text' },
     { header: 'Código', key: 'id', type: 'text' },
     { header: 'Intervalo', key: 'intervalBetweenAppointments', type: 'text' },
     { header: 'Status', key: 'isActive', type: 'text' },
@@ -102,7 +102,7 @@ export class EspecialidadesComponent implements OnInit {
   onSearchChange(searchValue: any) {
     this.filteredData = this.tableData.filter(
       (item) =>
-        item.specialtyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchValue.toLowerCase()) ||
         item.id.toString().includes(searchValue)
     );
   }

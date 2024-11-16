@@ -201,7 +201,7 @@ export class CadastroComponent implements OnInit {
       next: (response) => {
         this.especialidadesData = response.map((response) => ({
           id: response.id,
-          name: response.specialtyName,
+          name: response.description,
         }));
       },
       error: (error) => {

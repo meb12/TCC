@@ -51,7 +51,7 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
 
   item: {
     id: number;
-    specialtyName: string;
+    description: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
     cellphone: string;
@@ -67,7 +67,7 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
         id: number;
         intervalBetweenAppointments: string;
         isActive: boolean;
-        specialtyName: string;
+        description: string;
       };
     };
     documentNumber: string;
@@ -191,8 +191,8 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
       const name = item.name?.toLowerCase() || '';
       const id = item.id?.toString() || '';
       const crm = item.doctorData?.crm?.toLowerCase() || '';
-      const specialtyName =
-        item.doctorData?.specialtyType?.specialtyName?.toLowerCase() || '';
+      const description =
+        item.doctorData?.specialtyType?.description?.toLowerCase() || '';
       const isActive = item.isActive;
 
       // Verifica se o item corresponde ao filtro de pesquisa
@@ -200,7 +200,7 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
         ? name.includes(lowerSearchValue) ||
           id.includes(lowerSearchValue) ||
           crm.includes(lowerSearchValue) ||
-          specialtyName.includes(lowerSearchValue)
+          description.includes(lowerSearchValue)
         : true;
 
       // Verifica se o item corresponde ao filtro selecionado

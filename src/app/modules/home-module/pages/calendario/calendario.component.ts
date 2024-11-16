@@ -251,7 +251,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
       eventsByDay[date].count++;
       eventsByDay[date].details.push({
         doctorName: appointment.doctor.name,
-        doctorSpecialty: appointment.doctor.specialtyType.specialtyName,
+        doctorSpecialty: appointment.doctor.specialtyType.description,
         patientName: appointment.patient.name,
       });
     });

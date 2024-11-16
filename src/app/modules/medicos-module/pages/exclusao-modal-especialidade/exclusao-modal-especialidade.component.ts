@@ -14,7 +14,7 @@ export class ExclusaoModalEspecialidadeComponent implements OnInit {
   @Input()
   item: {
     id: number;
-    specialtyName: string;
+    description: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
     cellphone: string;
@@ -30,7 +30,7 @@ export class ExclusaoModalEspecialidadeComponent implements OnInit {
         id: number;
         intervalBetweenAppointments: string;
         isActive: boolean;
-        specialtyName: string;
+        description: string;
       };
     };
     documentNumber: string;
@@ -68,7 +68,7 @@ export class ExclusaoModalEspecialidadeComponent implements OnInit {
     if (this.tipo === 'especialidade') {
       const formNovo = {
         id: this.item.id,
-        description: this.item.specialtyName,
+        description: this.item.description,
         intervalBetweenAppointments: this.item.intervalBetweenAppointments,
         isActive: false,
       };

@@ -13,7 +13,7 @@ export class EspecialidadesModalComponent implements OnInit {
   @Input()
   item: {
     id: number;
-    specialtyName: string;
+    description: string;
     intervalBetweenAppointments: string;
     isActive: boolean;
   };
@@ -32,7 +32,7 @@ export class EspecialidadesModalComponent implements OnInit {
   ngOnInit() {
     if (this.tipo == 'editar') {
       this.form = {
-        description: this.item.specialtyName,
+        description: this.item.description,
         intervalBetweenAppointments: this.item.intervalBetweenAppointments,
         isActive: this.item.isActive,
       };

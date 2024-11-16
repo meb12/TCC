@@ -113,7 +113,7 @@ export class ConsultaComponent implements OnInit {
       next: (response) => {
         this.especialidadesData = response.map((response) => ({
           id: response.id,
-          name: response.specialtyName,
+          name: response.description,
         }));
       },
       error: (error) => {
@@ -177,7 +177,7 @@ export class ConsultaComponent implements OnInit {
           value: medico.id, // O ID do médico será usado como "value"
           name: medico.name, // Título conforme o gênero
           especialidadeId: medico.doctorData.specialtyType.id, // ID da especialidade
-          especialidade: medico.doctorData.specialtyType.specialtyName, // Nome da especialidade
+          especialidade: medico.doctorData.specialtyType.description, // Nome da especialidade
           intervaloConsulta:
             medico.doctorData.specialtyType.intervalBetweenAppointments, // Intervalo entre consultas
           status: medico.isActive,
