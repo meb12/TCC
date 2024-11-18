@@ -16,6 +16,7 @@ export class InputComponentComponent implements OnInit {
   @Input() name!: string;
   @Input() placeholder: string = '';
   @Input() isRequired: boolean = true;
+  @Input() mostrarSenha: boolean = false;
 
   ngOnInit(): void {
     this.originalType = this.type;

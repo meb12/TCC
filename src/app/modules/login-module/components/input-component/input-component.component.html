@@ -1,7 +1,16 @@
 <div class="form-group">
-  <label for="{{ name }}" class="label-form" *ngIf="label !== ''">{{
-    label
-  }}</label>
+  <div class="header">
+    <label for="{{ name }}" class="label-form" *ngIf="label !== ''">{{
+      label
+    }}</label>
+    <div
+      [routerLink]="['solicitarRedefinicaoSenha/esqueceuSenha']"
+      class="forgot-password"
+      *ngIf="mostrarSenha"
+    >
+      Esqueceu a senha?
+    </div>
+  </div>
   <mat-form-field class="input-form">
     <input
       name="{{ name }}"
@@ -13,6 +22,7 @@
       [placeholder]="placeholder"
       [required]="isRequired"
     />
+
     <button
       *ngIf="originalType === 'password'"
       type="button"

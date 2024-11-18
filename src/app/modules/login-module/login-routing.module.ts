@@ -13,7 +13,11 @@ export const routes: Routes = [
       { path: '', component: LoginComponent },
       { path: 'esqueceuSenha', component: EsqueceuSenhaComponent },
       {
-        path: 'solicitarRedefinicaoSenha',
+        path: 'solicitarRedefinicaoSenha/esqueceuSenha',
+        component: RedefinirSenhaComponent,
+      },
+      {
+        path: 'solicitarRedefinicaoSenha/primeiroAcesso',
         component: RedefinirSenhaComponent,
       },
     ],

@@ -22,35 +22,56 @@
 
     <!-- Patient Information Tab -->
     <div class="consulta-container" *ngIf="activeTab === 'informacoes'">
-      <div class="consulta-header">
-        <div>
-          <span class="patient-title">{{ data.name }}</span>
+      <div class="grid">
+        <div class="corpo">
+          <div class="consulta-header">
+            <div>
+              <span class="patient-title">{{ data.name }}</span>
+            </div>
+            <div>
+              <span class="patient-subtitle"> {{ "Cod." + data.id }}</span>
+            </div>
+          </div>
+          <div class="consulta-header">
+            <span>
+              {{
+                "Data de Nascimento: " + formatarValor("data", data.dateOfBirth)
+              }}</span
+            >
+            <span> {{ "Sexo: " + data.gender }}</span>
+            <span> {{ "CPF: " + formatarValor("cpf", data.cpf) }}</span>
+            <span>
+              {{ "RG: " + formatarValor("rg", data.documentNumber) }}</span
+            >
+          </div>
+          <div class="consulta-header gap">
+            <span>
+              {{
+                "Celular: " + formatarValor("telefone", data.cellphone)
+              }}</span
+            >
+          </div>
+          <div class="consulta-header">
+            <span>
+              Endereço: {{ data.streetName }}, {{ data.streetNumber }} -
+              {{ data.neighborhood }}, {{ data.city }} - {{ data.stateName }},
+              CEP:
+              {{ data.cep }}
+            </span>
+          </div>
         </div>
-        <div>
-          <span class="patient-subtitle"> {{ "Cod." + data.id }}</span>
+        <div class="foto">
+          <div class="patient-photo">
+            <img
+              [src]="
+                data.photo
+                  ? 'data:image/png;base64,' + data.photo
+                  : 'assets/img/image-avatar.svg'
+              "
+              alt="Foto do Paciente"
+            />
+          </div>
         </div>
-      </div>
-      <div class="consulta-header">
-        <span>
-          {{
-            "Data de Nascimento: " + formatarValor("data", data.dateOfBirth)
-          }}</span
-        >
-        <span> {{ "Sexo: " + data.gender }}</span>
-        <span> {{ "CPF: " + formatarValor("cpf", data.cpf) }}</span>
-        <span> {{ "RG: " + formatarValor("rg", data.documentNumber) }}</span>
-      </div>
-      <div class="consulta-header gap">
-        <span>
-          {{ "Celular: " + formatarValor("telefone", data.cellphone) }}</span
-        >
-      </div>
-      <div class="consulta-header">
-        <span>
-          Endereço: {{ data.streetName }}, {{ data.streetNumber }} -
-          {{ data.neighborhood }}, {{ data.city }} - {{ data.stateName }}, CEP:
-          {{ data.cep }}
-        </span>
       </div>
       <div>
         <p class="patient-title-alergia">Informações Médicas</p>
@@ -68,6 +89,7 @@
     <!-- Consultations Tab -->
 
     <div class="consulta-container1" *ngIf="activeTab === 'consultas'">
+      <div *ngIf="consultas.length == 0">Não há consultas disponíveis.</div>
       <div
         *ngFor="let consulta of consultas"
         class="consulta-card"

@@ -36,3 +36,17 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.forgot-password {
+  color: #000;
+  text-decoration: none;
+  font-weight: 700;
+  &:hover {
+    text-decoration: underline;
+  }
+  cursor: pointer;
+}

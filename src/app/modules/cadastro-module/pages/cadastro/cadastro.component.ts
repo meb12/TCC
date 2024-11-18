@@ -244,6 +244,14 @@ export class CadastroComponent implements OnInit {
   }
 
   handleConfirm() {
+    this.form.allergies = this.form.allergies.map((allergy) => {
+      if (typeof allergy === 'object') {
+        const { isEditing, ...rest } = allergy;
+        return rest;
+      }
+      return allergy; // Caso não seja um objeto esperado
+    });
+
     if (this.form.tipoCadastro == 1) {
       if (!this.tipoAcao) {
         const FormNovo = {

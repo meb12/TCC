@@ -14,10 +14,11 @@
     <app-input-component
       name="password"
       [control]="form.get('senha')!"
-      label="Senha:"
+      label="Senha"
       type="password"
       placeholder="Digite sua senha"
       [isRequired]="true"
+      [mostrarSenha]="true"
     >
     </app-input-component>
     <button
@@ -34,10 +35,10 @@
   </form>
   <div class="remember-forgot" style="text-align: end">
     <a
-      [routerLink]="['solicitarRedefinicaoSenha']"
+      [routerLink]="['solicitarRedefinicaoSenha/primeiroAcesso']"
       class="forgot-password-link"
       href="#"
-      >Esqueceu a senha?</a
+      >Primeiro acesso?</a
     >
   </div>
 </div>

@@ -255,4 +255,58 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-top: 20px;
+}
+
+.patient-photo {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 8px; /* Bordas arredondadas */
+  margin-left: 20px; /* Espaçamento da foto */
+}
+
+.patient-photo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */
+  gap: 20px; /* Espaçamento entre as colunas */
+  align-items: center; /* Alinha verticalmente */
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+}
+
+.foto {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinha ao topo */
+}
+
+.patient-photo {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.patient-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConsultasService } from '../../../../core/services/consultas.service';
 import { Router } from '@angular/router';
+import { FuncionariosService } from '../../../../core/services/funcionarios.service';
 
 @Component({
   selector: 'app-modal-informacao-paciente',
@@ -52,6 +53,17 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     }
   }
 
+  getFoto() {
+    this.foto.getDataId(this.data.id).subscribe({
+      next: (response) => {
+        this.data.photo = response.photo;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar especialidades:', error);
+      },
+    });
+  }
+
   getConsultas() {
     this.consultas1.getDataPacienteId(this.data.id).subscribe({
       next: (response) => {
@@ -68,10 +80,14 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     this.router.navigate([`/pacientes/consulta/individual/${id}`]);
   }
 
-  constructor(private consultas1: ConsultasService, private router: Router) {}
+  constructor(
+    private consultas1: ConsultasService,
+    private router: Router,
+    private foto: FuncionariosService
+  ) {}
 
   ngOnInit() {
-    console.log('infos', this.data);
+    this.getFoto();
     this.getConsultas(); // Corrige a chamada do método, adicionando os parênteses
   }
 }

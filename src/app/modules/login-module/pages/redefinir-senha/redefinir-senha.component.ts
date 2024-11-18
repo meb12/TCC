@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router'; // Importa ActivatedRoute
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { LoginService } from '../../../../core/services/login.service';
@@ -14,8 +14,10 @@ export class RedefinirSenhaComponent implements OnInit {
   private subscription$ = new Subscription();
   form!: FormGroup;
   fb = inject(FormBuilder);
-  // autenticarService = inject(AutenticarService);
   router = inject(Router);
+  activatedRoute = inject(ActivatedRoute); // Injeta ActivatedRoute
+
+  primeiroAcesso: boolean = true; // Define como true por padrão
 
   constructor(private toastr: ToastrService, private login: LoginService) {}
 
@@ -23,9 +25,12 @@ export class RedefinirSenhaComponent implements OnInit {
     localStorage.clear();
     this.subscription$.unsubscribe();
   }
+
   ngOnInit(): void {
     this._initEnviarEmailForm();
+    this._checkRoute(); // Chama o método para verificar a rota
   }
+
   enviarEmail() {
     this.login.postRedefinirSenha(this.form.value).subscribe({
       next: (response) => {
@@ -52,5 +57,15 @@ export class RedefinirSenhaComponent implements OnInit {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
+  }
+
+  private _checkRoute() {
+    // Verifica se a rota contém "/esqueceuSenha"
+    const currentRoute = this.activatedRoute.snapshot.routeConfig?.path;
+
+    console.log(currentRoute);
+    if (currentRoute === 'solicitarRedefinicaoSenha/esqueceuSenha') {
+      this.primeiroAcesso = false; // Define como false se a rota for /esqueceuSenha
+    }
   }
 }

@@ -1,8 +1,13 @@
 <app-titulo
   title="Esqueceu sua senha?"
   subtitle="Digite seu e-mail para recuperar a senha."
+  *ngIf="!primeiroAcesso"
 ></app-titulo>
-
+<app-titulo
+  title="Primeiro acesso?"
+  subtitle="Digite seu e-mail para definir sua senha."
+  *ngIf="primeiroAcesso"
+></app-titulo>
 <form [formGroup]="form">
   <app-input-component
     name="email"

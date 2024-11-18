@@ -151,7 +151,7 @@
     transition: color 0.3s ease;
 
     &:hover {
-      color: #004080;
+      text-decoration: underline;
     }
   }
 
@@ -196,4 +196,50 @@
 
 mat-form-field.mat-mdc-form-field.input-form.ng-tns-c1798928316-0.mat-mdc-form-field-type-mat-input.mat-form-field-appearance-fill.mat-primary.ng-untouched.ng-pristine.ng-invalid.ng-star-inserted {
   border-bottom: none;
+}
+.senha-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.senha-group app-input-component {
+  flex: 1;
+}
+
+.forgot-password {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #38cb89;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #2a9f68;
+}
+
+.primeiro-acesso {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.primeiro-acesso p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.primeiro-acesso a {
+  font-size: 14px;
+  font-weight: 600;
+  color: #38cb89;
+  text-decoration: none;
+}
+
+.primeiro-acesso :hover {
+  color: #2a9f68;
+  text-decoration: underline;
 }
