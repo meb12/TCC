@@ -7,16 +7,13 @@ import { EspecialidadeService } from '../../../../core/services/especalidades.se
 import { TiposUsuariosService } from '../../../../core/services/user-types.service';
 import { ToastrService } from 'ngx-toastr';
 import { MedicosService } from '../../../../core/services/medicos.service';
-import { NgForm } from '@angular/forms';
 import { FuncionariosService } from '../../../../core/services/funcionarios.service';
 import { PacientesService } from '../../../../core/services/pacientes.service';
-
 interface Country {
   name: { common: string; official: string };
   translations: { por?: { official: string; common: string } };
   cca3: string;
 }
-
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
@@ -34,7 +31,8 @@ export class CadastroComponent implements OnInit {
     { value: 'Não Binário', name: 'Não Binário' },
     { value: 'Prefere não dizer', name: 'Prefere não dizer' },
   ];
-
+  base64Image: string | null = null;
+  imageSrc: string = 'assets/img/image-avatar.svg';
   // Remova a definição de FormGroup
   form: any = {
     // Formulário como um objeto simples
@@ -67,6 +65,7 @@ export class CadastroComponent implements OnInit {
   tipoCadastro: string = '';
   especialidadesData: any[] = [];
   cadastroOptions = [];
+  isFormValid: boolean = true;
 
   constructor(
     private cepService: CepService,
@@ -125,7 +124,6 @@ export class CadastroComponent implements OnInit {
     this.form.city = ''; // Ensure this is the correct property name
     this.form.stateName = '';
   }
-
   validateRouteOnLoad() {
     const urlSegments = this.router.url.split('/');
     if (urlSegments.length > 2) {
@@ -211,16 +209,14 @@ export class CadastroComponent implements OnInit {
   }
 
   getUserTypes(pesquisa?: string) {
-    // Verifica se já temos os dados carregados
     if (this.userTypesData.length > 0) {
       this.filtrarUserTypes(pesquisa);
       return;
     }
 
-    // Faz a chamada à API apenas se ainda não temos os dados
     this.tiposUsuarios.getUserTypes().subscribe({
       next: (response) => {
-        this.userTypesData = response; // Armazena o resultado para futuras utilizações
+        this.userTypesData = response;
         this.filtrarUserTypes(pesquisa);
       },
       error: (error) => {
@@ -229,7 +225,11 @@ export class CadastroComponent implements OnInit {
     });
   }
 
-  // Filtra os tipos de usuário com base no tipo de cadastro
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    fileInput?.click();
+  }
+
   filtrarUserTypes(pesquisa?: string) {
     if (this.form.tipoCadastro === 3) {
       this.cadastroOptions = this.userTypesData.filter(
@@ -268,15 +268,20 @@ export class CadastroComponent implements OnInit {
           },
         };
 
-        this.pacienteService.postData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Paciente cadastrado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
-          },
-        });
+        if (this.hasPhoto()) {
+          this.pacienteService.postData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Paciente cadastrado com sucesso!',
+                'paciente'
+              );
+            },
+            error: (error) => {
+              this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
+            },
+          });
+        }
       } else if (this.tipoAcao) {
         const FormNovo = {
           id: parseInt(this.tipoAcao, 10),
@@ -301,15 +306,21 @@ export class CadastroComponent implements OnInit {
             allergies: this.form.allergies,
           },
         };
-        this.pacienteService.putData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Funcionário editado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error('Erro ao editar funcionário. Tente novamente.');
-          },
-        });
+
+        if (this.hasPhoto()) {
+          this.pacienteService.putData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Paciente editado com sucesso!',
+                'paciente'
+              );
+            },
+            error: (error) => {
+              this.toastr.error('Erro ao editar paciete. Tente novamente.');
+            },
+          });
+        }
       }
     }
     if (this.form.tipoCadastro == 2) {
@@ -338,15 +349,20 @@ export class CadastroComponent implements OnInit {
             observation: this.form.observation,
           },
         };
-        this.medicosService.postData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Médico cadastrado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error('Erro ao cadastrar médico. Tente novamente.');
-          },
-        });
+        if (this.hasPhoto()) {
+          this.medicosService.postData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Médico cadastrado com sucesso!',
+                'medico'
+              );
+            },
+            error: (error) => {
+              this.toastr.error('Erro ao cadastrar médico. Tente novamente.');
+            },
+          });
+        }
       } else if (this.tipoAcao) {
         const FormNovo = {
           id: parseInt(this.tipoAcao, 10),
@@ -372,15 +388,20 @@ export class CadastroComponent implements OnInit {
             observation: this.form.observation,
           },
         };
-        this.medicosService.putData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Médico editado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error('Erro ao cadastrar médico. Tente novamente.');
-          },
-        });
+        if (this.hasPhoto()) {
+          this.medicosService.putData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Médico editado com sucesso!',
+                'medico'
+              );
+            },
+            error: (error) => {
+              this.toastr.error('Erro ao cadastrar médico. Tente novamente.');
+            },
+          });
+        }
       }
     }
     if (this.form.tipoCadastro == 3) {
@@ -404,17 +425,22 @@ export class CadastroComponent implements OnInit {
           isActive: true,
           login: this.form.email,
         };
-        this.funcionariosService.postData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Funcionário cadastrado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error(
-              'Erro ao cadastrar funcionário. Tente novamente.'
-            );
-          },
-        });
+        if (this.hasPhoto()) {
+          this.funcionariosService.postData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Funcionário cadastrado com sucesso!',
+                'funcionario'
+              );
+            },
+            error: (error) => {
+              this.toastr.error(
+                'Erro ao cadastrar funcionário. Tente novamente.'
+              );
+            },
+          });
+        }
       } else if (this.tipoAcao) {
         const FormNovo = {
           id: parseInt(this.tipoAcao, 10),
@@ -436,19 +462,23 @@ export class CadastroComponent implements OnInit {
           isActive: this.form.isActive,
           login: this.form.email,
         };
-        this.funcionariosService.putData(FormNovo).subscribe({
-          next: (response) => {
-            this.toastr.success('Funcionário editado com sucesso!');
-            this.router.navigateByUrl('/home');
-          },
-          error: (error) => {
-            this.toastr.error('Erro ao editar funcionário. Tente novamente.');
-          },
-        });
+        if (this.hasPhoto()) {
+          this.funcionariosService.putData(FormNovo).subscribe({
+            next: (response) => {
+              this.enviarFoto(
+                response.id,
+                'Funcionário editado com sucesso!',
+                'funcionario'
+              );
+            },
+            error: (error) => {
+              this.toastr.error('Erro ao editar funcionário. Tente novamente.');
+            },
+          });
+        }
       }
     }
   }
-
   handleCancel() {
     this.router.navigateByUrl('/home');
   }
@@ -485,9 +515,10 @@ export class CadastroComponent implements OnInit {
       return `${year}-${month}-${day}T00:00`;
     } else {
       // Se a data já estiver no formato correto ou em outro formato, retornar como está
-      return 'aaa';
+      return inputDate;
     }
   }
+
   inicializarFormulario() {
     if (this.form.tipoCadastro == 1 && this.tipoAcao) {
       this.pacienteService.getDataId(this.tipoAcao).subscribe({
@@ -513,6 +544,9 @@ export class CadastroComponent implements OnInit {
             isActive: response.isActive,
             allergies: response.pacientData.allergies || [],
           };
+          if (response.photo) {
+            this.exibirFotoBase64(response.photo);
+          }
         },
         error: (error) => {
           console.error('Erro ao carregar especialidades:', error);
@@ -548,6 +582,10 @@ export class CadastroComponent implements OnInit {
               allergies: response.pacientData?.allergies || [],
             },
           };
+
+          if (response.photo) {
+            this.exibirFotoBase64(response.photo);
+          }
         },
         error: (error) => {
           console.error('Erro ao carregar especialidades:', error);
@@ -577,6 +615,9 @@ export class CadastroComponent implements OnInit {
             isActive: response.isActive,
             allergies: response.allergies || [],
           };
+          if (response.photo) {
+            this.exibirFotoBase64(response.photo);
+          }
         },
         error: (error) => {
           console.error('Erro ao carregar especialidades:', error);
@@ -585,16 +626,12 @@ export class CadastroComponent implements OnInit {
     }
   }
 
-  isFormValid: boolean = true;
-
   onChildValidityChange(isValid: boolean) {
-    this.isFormValid = isValid; // Atualiza o estado do formulário com base na validade do campo filho
+    this.isFormValid = isValid;
   }
 
-  // Função de validação do formulário
   validaForm(): boolean {
-    var requiredFields = [];
-    // Verifica se os campos obrigatórios estão preenchidos
+    let requiredFields = [];
     if (this.form.tipoCadastro == 1 || this.form.tipoCadastro == 3) {
       requiredFields = [
         'name',
@@ -633,51 +670,44 @@ export class CadastroComponent implements OnInit {
       ];
     }
 
-    // Verifica se algum campo obrigatório está vazio
     const hasEmptyFields = requiredFields.some((field) => !this.form[field]);
     if (hasEmptyFields) {
-      return true; // Inválido se houver campos obrigatórios vazios
+      return true;
     }
 
     if (!this.validaCpf(this.form.cpf)) {
-      return true; // Inválido se o CPF não for válido
+      return true;
     }
 
     if (!this.validaEmail(this.form.email)) {
-      return true; // Inválido se o e-mail não for válido
+      return true;
     }
 
     if (!/^\d{5}-?\d{3}$/.test(this.form.cep)) {
-      return true; // Inválido se o CEP não for válido
+      return true;
     }
     if (!this.validaDataNascimento(this.form.dateOfBirth)) {
-      return true; // Inválido se a data de nascimento for inválida ou futura
+      return true;
     }
 
-    // Caso todas as validações passem, o formulário é válido
     return false;
   }
 
   validaDataNascimento(dateOfBirth: string): boolean {
     let birthDate: Date;
-
-    // Verifica se a data está no formato DDMMYYYY
     if (dateOfBirth.length === 8 && /^\d{8}$/.test(dateOfBirth)) {
       const day = parseInt(dateOfBirth.substring(0, 2), 10);
       const month = parseInt(dateOfBirth.substring(2, 4), 10) - 1;
       const year = parseInt(dateOfBirth.substring(4, 8), 10);
       birthDate = new Date(year, month, day);
-    }
-    // Verifica se a data está no formato DD-MM-YYYY
-    else if (/^\d{2}-\d{2}-\d{4}$/.test(dateOfBirth)) {
+    } else if (/^\d{2}-\d{2}-\d{4}$/.test(dateOfBirth)) {
       const [day, month, year] = dateOfBirth.split('-').map(Number);
       birthDate = new Date(year, month - 1, day);
     } else {
-      return false; // Formato inválido
+      return false;
     }
     const currentDate = new Date();
 
-    // Verifica se a data é inválida ou futura
     if (
       birthDate.getFullYear() !== (birthDate.getFullYear() || 0) ||
       birthDate.getMonth() !== (birthDate.getMonth() || 0) ||
@@ -691,15 +721,10 @@ export class CadastroComponent implements OnInit {
   }
 
   validaCpf(cpf: string): boolean {
-    // Remove caracteres não numéricos
     cpf = cpf.replace(/[^\d]+/g, '');
-
-    // Verifica se o CPF tem 11 dígitos e se não é uma sequência de números iguais
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
       return false;
     }
-
-    // Validação do primeiro dígito verificador
     let sum = 0;
     for (let i = 0; i < 9; i++) {
       sum += parseInt(cpf.charAt(i)) * (10 - i);
@@ -707,8 +732,6 @@ export class CadastroComponent implements OnInit {
     let remainder = (sum * 10) % 11;
     if (remainder === 10 || remainder === 11) remainder = 0;
     if (remainder !== parseInt(cpf.charAt(9))) return false;
-
-    // Validação do segundo dígito verificador
     sum = 0;
     for (let i = 0; i < 10; i++) {
       sum += parseInt(cpf.charAt(i)) * (11 - i);
@@ -716,23 +739,18 @@ export class CadastroComponent implements OnInit {
     remainder = (sum * 10) % 11;
     if (remainder === 10 || remainder === 11) remainder = 0;
     if (remainder !== parseInt(cpf.charAt(10))) return false;
-
-    // CPF válido
     return true;
   }
 
-  // Exemplo de função para validar e-mail
   validaEmail(email: string): boolean {
     const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     return emailPattern.test(email);
   }
 
-  // Método para habilitar a edição de uma alergia
   editAllergy(index: number) {
     this.form.allergies[index].isEditing = true;
   }
 
-  // Método para salvar a edição de uma alergia
   saveAllergy(index: number) {
     this.form.allergies[index].isEditing = false;
   }
@@ -740,5 +758,224 @@ export class CadastroComponent implements OnInit {
   onEditAllergy(index: number, event: Event) {
     const input = event.target as HTMLInputElement;
     this.form.allergies[index].allergy = input.value;
+  }
+
+  enviarFoto(id: any, mensagem: string, tipo: string): void {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const formData = new FormData();
+
+    // Verifica se o arquivo foi selecionado
+    if (fileInput?.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+
+      // Nome do campo deve ser "photo", conforme esperado pelo backend
+      formData.append('photo', file);
+      formData.append('id', id.toString()); // ID adicionado ao `FormData` conforme necessário
+
+      // Verifica o conteúdo do FormData antes do envio (debug)
+      console.log('FormData antes do envio:', formData.get('photo'));
+
+      // Envia o FormData para o backend
+      this.funcionariosService.putFoto(id, formData).subscribe({
+        next: (response) => {
+          this.toastr.success(mensagem);
+          if (tipo == 'medico') {
+            this.router.navigateByUrl('/medicos/listagem');
+          }
+
+          if (tipo == 'funcionario') {
+            this.router.navigateByUrl('/funcionarios/listagem');
+          }
+
+          if (tipo == 'paciente') {
+            this.router.navigateByUrl('/pacientes/listagem');
+          }
+        },
+        error: (error) => {
+          this.toastr.error('Erro ao atualizar a foto. Tente novamente.');
+        },
+      });
+    } else {
+      this.toastr.error('Nenhuma foto selecionada.');
+    }
+  }
+
+  base64ToBlob(base64: string): Blob {
+    const byteCharacters = atob(base64.split(',')[1]);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset++) {
+      byteArrays.push(byteCharacters.charCodeAt(offset));
+    }
+    return new Blob([new Uint8Array(byteArrays)], { type: 'image/png' });
+  }
+
+  hasPhoto(): boolean {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const previewImage = document.getElementById(
+      'previewImage'
+    ) as HTMLImageElement;
+
+    // Verifica se há arquivos selecionados no input de arquivo
+    const hasFile = fileInput?.files?.length > 0;
+
+    // Verifica se há uma imagem na pré-visualização que não seja o avatar padrão
+    const imageSrc = previewImage?.getAttribute('src');
+    const hasValidPreview =
+      imageSrc && imageSrc !== 'assets/img/image-avatar.svg';
+
+    // Se nenhuma foto válida for encontrada
+    if (!hasFile && !hasValidPreview) {
+      this.toastr.error('Nenhuma foto selecionada');
+      return false;
+    }
+
+    // Retorna true se houver um arquivo ou uma pré-visualização válida
+    return true;
+  }
+
+  exibirFotoBase64(base64Image: string) {
+    let mimePrefix = '';
+
+    // Tentativa de detecção de tipo MIME com base em características conhecidas do Base64
+    if (base64Image.trim().startsWith('/9j/')) {
+      mimePrefix = 'data:image/jpeg;base64,'; // JPEG
+    } else if (base64Image.trim().startsWith('iVBORw0KGgo=')) {
+      mimePrefix = 'data:image/png;base64,'; // PNG
+    } else if (base64Image.trim().startsWith('R0lGOD')) {
+      mimePrefix = 'data:image/gif;base64,'; // GIF
+    } else if (
+      base64Image.trim().startsWith('PHN') ||
+      base64Image.trim().includes('<svg')
+    ) {
+      mimePrefix = 'data:image/svg+xml;base64,'; // SVG
+    } else {
+      // Caso não possamos detectar o tipo, assumimos JPEG por padrão
+      mimePrefix = 'data:image/jpeg;base64,';
+    }
+
+    // Adiciona o prefixo MIME à string base64
+    this.base64Image = `${mimePrefix}${base64Image}`;
+
+    // Obtendo a referência ao preview da imagem
+    const previewImage = document.getElementById(
+      'previewImage'
+    ) as HTMLImageElement;
+    const uploadText = document.getElementById('uploadText') as HTMLSpanElement;
+
+    // Verifica se o elemento da imagem existe antes de tentar definir o src
+    if (previewImage) {
+      previewImage.src = this.base64Image;
+      previewImage.style.display = 'block'; // Garante que a imagem estará visível
+
+      if (uploadText) {
+        uploadText.style.display = 'none'; // Esconde o texto "Adicionar Foto"
+      }
+
+      // Para depuração: verifica o caminho da imagem
+      console.log('Preview Image SRC:', previewImage.src);
+    } else {
+      console.error('Elemento da imagem não encontrado!');
+    }
+
+    // Atualiza o campo de input com um "arquivo fictício" criado a partir do Base64
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      try {
+        const byteString = atob(this.base64Image.split(',')[1]);
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+
+        let blob: Blob;
+        if (this.base64Image.startsWith('data:image/svg+xml')) {
+          blob = new Blob([ab], { type: 'image/svg+xml' });
+        } else if (this.base64Image.startsWith('data:image/png')) {
+          blob = new Blob([ab], { type: 'image/png' });
+        } else if (this.base64Image.startsWith('data:image/jpeg')) {
+          blob = new Blob([ab], { type: 'image/jpeg' });
+        } else if (this.base64Image.startsWith('data:image/gif')) {
+          blob = new Blob([ab], { type: 'image/gif' });
+        } else {
+          // Caso não seja nenhum dos formatos conhecidos, assumimos JPEG como padrão
+          blob = new Blob([ab], { type: 'image/jpeg' });
+        }
+
+        const file = new File([blob], 'imagem_generica', { type: blob.type });
+
+        // Atualizar o arquivo do input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+      } catch (error) {
+        console.error('Erro ao converter base64 para Blob:', error);
+      }
+    } else {
+      console.error('Input de arquivo não encontrado!');
+    }
+  }
+
+  onFileSelected(event: Event | string): void {
+    let file: File | null = null;
+
+    if (typeof event === 'string') {
+      // Se for uma string, assumimos que é uma base64
+      const base64Image = event;
+      const byteString = atob(base64Image.split(',')[1]);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+
+      // Criar um Blob a partir do byte array
+      const blob = new Blob([ia], { type: 'image/png' });
+      file = new File([blob], 'imagem.png', { type: 'image/png' });
+    } else {
+      // Caso seja um evento, tratamos como o evento de seleção do arquivo
+      const fileInput = event.target as HTMLInputElement;
+      if (fileInput?.files && fileInput.files[0]) {
+        file = fileInput.files[0];
+      }
+    }
+
+    if (file) {
+      // Verifica se o arquivo é do tipo imagem
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione um arquivo de imagem.');
+        return;
+      }
+
+      // Exibir a imagem selecionada para pré-visualização
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target) {
+          const previewImage = document.getElementById(
+            'previewImage'
+          ) as HTMLImageElement;
+          const uploadText = document.getElementById(
+            'uploadText'
+          ) as HTMLSpanElement;
+
+          previewImage.src = e.target.result as string;
+          previewImage.style.display = 'block';
+          if (uploadText) {
+            uploadText.style.display = 'none';
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+
+      // Atualizar o input de arquivo com o arquivo criado
+      const fileInput = document.getElementById(
+        'fileInput'
+      ) as HTMLInputElement;
+      if (fileInput) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+      }
+    }
   }
 }

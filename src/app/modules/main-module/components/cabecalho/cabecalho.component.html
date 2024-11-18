@@ -1,7 +1,7 @@
 <header>
   <div class="user">
     <div class="user-photo">
-      <img src="assets/img/perfil.svg" class="icone" />
+      <img [src]="userPhoto" class="icone" />
     </div>
     <div class="user-info">
       <!-- {{ getNome() }} -->
@@ -10,12 +10,12 @@
         <span class="user-name"> {{ getNome() }}</span>
         <span class="user-role">{{ getCargo() }}</span>
       </div>
-      <div class="user-sub-info">
+      <!-- <div class="user-sub-info">
         <span class="logout" (click)="logout()">
           <img src="assets/img/sair.svg" />
           <span>Sair</span>
         </span>
-      </div>
+      </div> -->
     </div>
   </div>
 </header>

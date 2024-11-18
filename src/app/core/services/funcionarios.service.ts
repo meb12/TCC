@@ -26,4 +26,8 @@ export class FuncionariosService {
   putData(data: any): Observable<any> {
     return this.http.put(this.baseURL, data);
   }
+  putFoto(id: any, formData: FormData): Observable<any> {
+    // Enviando a requisição PATCH com ID na URL e FormData no corpo
+    return this.http.patch(`${this.baseURL}/${id}/user-photo`, formData);
+  }
 }

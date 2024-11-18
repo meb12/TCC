@@ -50,7 +50,7 @@ button {
 }
 
 .header {
-  width: 24%;
+  width: 30%;
 }
 
 .consulta-header {
@@ -206,4 +206,72 @@ h1 {
 }
 .btn-alergia1 {
   margin-top: 10px !important;
+}
+.upload-square {
+  width: 150px;
+  height: 150px;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden; /* Garante que a imagem não ultrapasse os limites do contêiner */
+  background-color: #d9d9d9;
+}
+
+.upload-square:hover {
+  border-color: #aaa;
+}
+
+.upload-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.preview-image {
+  position: absolute; /* Faz com que a imagem seja posicionada no topo do contêiner */
+  width: 100%; /* Garante que a imagem ocupe toda a largura do contêiner */
+  height: 100%; /* Garante que a imagem ocupe toda a altura do contêiner */
+  object-fit: cover; /* Faz com que a imagem cubra todo o contêiner, mantendo a proporção */
+  top: 0; /* Posiciona a imagem no topo do contêiner */
+  left: 0; /* Posiciona a imagem no lado esquerdo do contêiner */
+  background-color: #d9d9d9;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+}
+.form-row .col-span-2 {
+  grid-column: span 2; /* Campo ocupa 2 colunas */
+}
+.teste-div {
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    1fr
+  ); /* 4 colunas para informações pessoais */
+}
+.col-span-2 {
+  grid-column: span 2; /* Ocupar 2 colunas */
+}
+
+.row-span-2 {
+  grid-row: span 2; /* Ocupar 2 linhas */
+}
+
+.row-foto {
+  display: flex;
+  justify-content: end;
+}
+
+.icone {
+  height: 20px;
+  width: 20px;
 }

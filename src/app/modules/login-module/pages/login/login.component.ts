@@ -49,6 +49,7 @@ export class LoginComponent implements OnInit {
             id: response.id,
             name: response.name,
             email: response.email,
+            foto: response.photo,
             userType: {
               id: response.userType.id,
               name: response.userType.name,

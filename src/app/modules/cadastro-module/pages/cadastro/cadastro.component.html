@@ -8,34 +8,65 @@
   </div>
 </div>
 <form #meuForm="ngForm" class="form-container">
-  <div class="header">
-    <!-- Readonly Tipo de cadastro -->
-    <app-input
-      (validChange)="onChildValidityChange($event)"
-      label="Tipo de cadastro"
-      name="tipoCadastroLabel"
-      [(ngModel)]="form.tipoCadastroLabel"
-      inputClassName="input-standard"
-      [readOnly]="true"
-      type="readonly"
-      *ngIf="form.tipoCadastro === 1 || form.tipoCadastro === 2"
-    ></app-input>
+  <div class="teste-div">
+    <div>
+      <div class="header">
+        <!-- Readonly Tipo de cadastro -->
+        <app-input
+          (validChange)="onChildValidityChange($event)"
+          label="Tipo de cadastro"
+          name="tipoCadastroLabel"
+          [(ngModel)]="form.tipoCadastroLabel"
+          inputClassName="input-standard"
+          [readOnly]="true"
+          type="readonly"
+          *ngIf="form.tipoCadastro === 1 || form.tipoCadastro === 2"
+        ></app-input>
 
-    <!-- Select Tipo de cadastro, displayed if tipoCadastro is empty -->
-    <app-input
-      (validChange)="onChildValidityChange($event)"
-      label="Tipo de cadastro"
-      type="select"
-      width="100%"
-      name="userType"
-      [selectData]="cadastroOptions"
-      [(ngModel)]="form.userType"
-      [requiredInput]="true"
-      *ngIf="form.tipoCadastro === 3"
-    ></app-input>
+        <!-- Select Tipo de cadastro, displayed if tipoCadastro is empty -->
+        <app-input
+          (validChange)="onChildValidityChange($event)"
+          label="Tipo de cadastro"
+          type="select"
+          width="100%"
+          name="userType"
+          [selectData]="cadastroOptions"
+          [(ngModel)]="form.userType"
+          [requiredInput]="true"
+          *ngIf="form.tipoCadastro === 3"
+        ></app-input>
+      </div>
+
+      <h3>Informações Pessoais</h3>
+    </div>
+
+    <div class="row-foto">
+      <!-- Upload de Foto com Quadrado -->
+      <div class="row-foto">
+        <!-- Upload de Foto com Quadrado -->
+        <div class="upload-square" (click)="triggerFileInput()">
+          <img
+            id="previewImage"
+            [src]="imageSrc"
+            [ngClass]="{
+              foto: imageSrc === 'assets/img/image-avatar.svg',
+              'preview-image': imageSrc !== 'assets/img/image-avatar.svg'
+            }"
+          />
+
+          <span id="uploadText" class="upload-text"></span>
+          <input
+            type="file"
+            id="fileInput"
+            name="profilePicture"
+            accept="image/jpeg"
+            class="hidden-input"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+      </div>
+    </div>
   </div>
-
-  <h3>Informações Pessoais</h3>
   <div class="form-row">
     <!-- Name Input -->
     <app-input
@@ -229,7 +260,7 @@
         [placeholder]="'Digite novas alergias'"
       ></app-input>
       <button (click)="addAllergy()" class="alergias-btn add-btn btn-alergia2">
-        +
+        <img src="assets/img/add.svg" alt="" class="icone" />
       </button>
     </div>
   </div>
@@ -252,14 +283,14 @@
           (click)="editAllergy(i)"
           class="alergias-btn edit-btn btn-alergia1"
         >
-          Editar
+          <img src="assets/img/edit.svg" alt="" class="icone" />
         </button>
         <button
           *ngIf="allergy.isEditing"
           (click)="saveAllergy(i)"
           class="alergias-btn save-btn btn-alergia1"
         >
-          Salvar
+          <img src="assets/img/save.svg" alt="" class="icone" />
         </button>
       </div>
     </div>

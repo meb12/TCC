@@ -7,12 +7,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./cabecalho.component.css'],
 })
 export class CabecalhoComponent implements OnInit {
+  userPhoto: string = 'assets/img/perfil.svg';
+
   constructor(private router: Router) {}
   ngOnInit() {
     window.scrollTo({
       top: 0,
       behavior: 'smooth', // opcional, para uma rolagem suave
     });
+
+    const userInfo = localStorage.getItem('userInfo'); // Obtém o objeto userInfo
+    if (userInfo) {
+      const parsedUserInfo = JSON.parse(userInfo); // Converte a string JSON em objeto
+      if (parsedUserInfo.foto) {
+        this.userPhoto = `data:image/png;base64,${parsedUserInfo.foto}`; // Adiciona o prefixo
+      }
+    }
   }
   getNome(): string {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
