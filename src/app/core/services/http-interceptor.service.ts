@@ -7,15 +7,21 @@ import {
   HttpResponse,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { LoaderService } from './loader.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
   private requests: HttpRequest<any>[] = [];
 
-  constructor(private loaderService: LoaderService) {}
+  constructor(
+    private loaderService: LoaderService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -46,6 +52,13 @@ export class HttpInterceptorService implements HttpInterceptor {
         error: (err: HttpErrorResponse) => {
           this.removeRequest(authRequest);
         },
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          // Token expirado ou não autorizado
+          this.handleUnauthorized();
+        }
+        return throwError(() => error);
       })
     );
   }
@@ -58,5 +71,17 @@ export class HttpInterceptorService implements HttpInterceptor {
     if (this.requests.length === 0) {
       this.loaderService.hide();
     }
+  }
+
+  private handleUnauthorized() {
+    // Limpa o localStorage
+    localStorage.clear();
+    // Exibe mensagem de erro
+    this.toastr.error(
+      'Sua sessão expirou. Faça login novamente.',
+      'Erro de Autenticação'
+    );
+    // Redireciona para a página de login
+    this.router.navigate(['/login']);
   }
 }

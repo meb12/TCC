@@ -79,8 +79,12 @@ export class PacientesComponent implements OnInit {
   fetchPacientes() {
     this.pacientesService.getData().subscribe({
       next: (response) => {
-        // Mapeia a resposta para incluir o isActive como string
-        this.tableData = response;
+        // Mapeia a resposta para incluir o CPF e telefone formatados
+        this.tableData = response.map((item: any) => ({
+          ...item,
+          cpf: this.formatCpf(item.cpf),
+          cellphone: this.formatPhone(item.cellphone),
+        }));
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os dados
         this.updatePaginatedData(); // Atualiza os dados paginados
       },
@@ -169,5 +173,15 @@ export class PacientesComponent implements OnInit {
 
   cadastrar() {
     this.router.navigate(['/cadastro/paciente']);
+  }
+
+  formatCpf(cpf: string): string {
+    if (!cpf) return '';
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+
+  formatPhone(phone: string): string {
+    if (!phone) return '';
+    return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   }
 }
