@@ -1,18 +1,50 @@
-.root {
-  width: 90vw !important;
+/* Container principal */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh !important;
 }
-
-.not-found {
+.not-found-container {
   text-align: center;
-  margin-top: 50px;
 }
 
-.not-found h1 {
+/* Estilização do título */
+.not-found-container h1 {
+  font-size: 2.5em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Estilização da imagem */
+.error-image {
+  max-width: 300px;
+  margin: 20px auto;
+  display: block;
+}
+
+/* Estilização dos links */
+.link {
+  color: #3caf50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+
+.title {
   font-size: 48px;
-  color: #ff4a4a;
+  color: #636363;
 }
 
-.not-found p {
-  font-size: 18px;
-  color: #666;
+.subtitle {
+  font-size: 28px;
 }
