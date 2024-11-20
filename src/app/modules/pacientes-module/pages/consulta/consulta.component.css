@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 46px;
-  margin: 18px 0px;
+  margin: 15px 0px;
 }
 
 .grid {
@@ -83,13 +83,11 @@ h2 {
   display: flex !important;
   align-items: center !important;
   justify-content: space-around;
-  background-color: #307ac1;
-  border: 2px solid #0a4072;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
   height: 36px;
-  color: #ffffff;
   font-weight: 500;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.26); /* Sombra para efeito elevado */
   transition: box-shadow 0.2s ease-in-out, background-color 0.2s;
@@ -109,4 +107,51 @@ h2 {
 
 .patient-title {
   text-transform: uppercase;
+}
+
+.grid1 {
+  display: grid;
+  grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */
+  gap: 20px; /* Espaçamento entre as colunas */
+  align-items: center; /* Alinha verticalmente */
+  margin-bottom: 20px;
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+}
+
+.foto {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinha ao topo */
+}
+
+.patient-photo {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.patient-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #45a049;
+}
+.btn-primary:disabled {
+  background-color: #d6d6d6;
 }

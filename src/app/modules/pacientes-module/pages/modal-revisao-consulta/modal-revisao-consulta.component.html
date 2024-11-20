@@ -1,0 +1,82 @@
+<div class="modal-container" (click)="onBackdropClick($event)">
+  <div class="modal">
+    <!-- Close Button -->
+    <!-- <button class="close-button" (click)="closeModal()">✕</button> -->
+
+    <!-- Patient Information Tab -->
+    <div class="consulta-container">
+      <h1>Revise as informações da consulta</h1>
+      <div class="grid">
+        <div class="corpo">
+          <div class="consulta-header">
+            <div>
+              <span class="patient-title">{{ data.pacientId.name }}</span>
+            </div>
+            <div>
+              <span class="patient-subtitle">
+                {{ "Cod." + data.pacientId.id }}</span
+              >
+            </div>
+          </div>
+          <div class="consulta-header">
+            <span>
+              {{
+                "Data de Nascimento: " +
+                  formatarValor("data", data.pacientId.dateOfBirth)
+              }}</span
+            >
+            <span> {{ "Sexo: " + data.pacientId.gender }}</span>
+            <span>
+              {{ "CPF: " + formatarValor("cpf", data.pacientId.cpf) }}</span
+            >
+            <span>
+              {{
+                "RG: " + formatarValor("rg", data.pacientId.documentNumber)
+              }}</span
+            >
+          </div>
+          <div class="consulta-header gap">
+            <span>
+              {{
+                "Celular: " +
+                  formatarValor("telefone", data.pacientId.cellphone)
+              }}</span
+            >
+
+            <span>
+              Endereço: {{ data.pacientId.streetName }},
+              {{ data.pacientId.streetNumber }} -
+              {{ data.pacientId.neighborhood }}, {{ data.pacientId.city }} -
+              {{ data.pacientId.stateName }}, CEP:
+              {{ data.pacientId.cep }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="especialidade-container">
+        <div class="row">
+          <span class="label">Especialidade:</span>
+          <span class="value">{{ data.EspecialidadeDescricao }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Médico(a):</span>
+          <span class="value">{{ data.medicoDescricao }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Data:</span>
+          <span class="value">{{ formatarValor("data", data.date) }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Horário:</span>
+          <span class="value">{{ data.horario }}</span>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-secondary" (click)="closeModal()">Voltar</button>
+        <button [disabled]="" class="btn btn-primary" (click)="salvar()">
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

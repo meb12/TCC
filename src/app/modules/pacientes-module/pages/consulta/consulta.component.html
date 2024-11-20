@@ -8,43 +8,50 @@
   <h1 class="consulta-title">Nova Consulta<span class="dot">.</span></h1>
   <div></div>
 </div>
-<div>
-  <div class="consulta-header">
-    <div>
-      <span class="patient-title">{{ data.name }}</span>
+<div class="grid1">
+  <div class="corpo">
+    <div class="consulta-header">
+      <div>
+        <span class="patient-title">{{ data?.name }}</span>
+      </div>
+      <div>
+        <span class="patient-subtitle"> {{ "Cod." + data?.id }}</span>
+      </div>
     </div>
-    <div>
-      <span class="patient-subtitle"> {{ "Cod. " + data.id }}</span>
+    <div class="consulta-header">
+      <span>
+        {{
+          "Data de Nascimento: " + formatarValor("data", data?.dateOfBirth)
+        }}</span
+      >
+      <span> {{ "Sexo: " + data?.gender }}</span>
+      <span> {{ "CPF: " + formatarValor("cpf", data?.cpf) }}</span>
+      <span> {{ "RG: " + formatarValor("rg", data?.documentNumber) }}</span>
+    </div>
+    <div class="consulta-header gap">
+      <span>
+        {{ "Celular: " + formatarValor("telefone", data?.cellphone) }}</span
+      >
+    </div>
+    <div class="consulta-header">
+      <span>
+        Endereço: {{ data?.streetName }}, {{ data?.streetNumber }} -
+        {{ data?.neighborhood }}, {{ data?.city }} - {{ data?.stateName }}, CEP:
+        {{ data?.cep }}
+      </span>
     </div>
   </div>
-  <div class="consulta-header">
-    <span>{{
-      "Data de nasc.: " + formatarValor("data", data.dateOfBirth)
-    }}</span>
-    <span>{{ "Sexo: " + data.gender }}</span>
-    <span>{{ "CPF: " + formatarValor("cpf", data.cpf) }}</span>
-    <span>{{ "RG: " + (data.documentNumber || "Não informado") }}</span>
-  </div>
-  <div class="consulta-header gap">
-    <span>{{ "Tel.: " + (data.telefone || "Não informado") }}</span>
-    <span>{{ "Cel.: " + formatarValor("telefone", data.cellphone) }}</span>
-  </div>
-  <div class="consulta-header">
-    <span>
-      {{
-        data.streetName +
-          ", " +
-          data.streetNumber +
-          " - " +
-          data.neighborhood +
-          ", " +
-          data.city +
-          " - " +
-          data.stateName +
-          ", CEP: " +
-          data.cep
-      }}
-    </span>
+  <div class="foto">
+    <div class="patient-photo">
+      <img
+        [src]="
+          data?.photo
+            ? 'data:image/png;base64,' + data?.photo
+            : 'assets/img/image-avatar.svg'
+        "
+        alt="Foto do Paciente"
+      />
+    </div>
   </div>
 </div>
 <form class="grid">
@@ -73,6 +80,7 @@
     [(ngModel)]="form.date"
     inputClassName="input-standard"
     (ngModelChange)="onDateChange($event)"
+    [isDataConsulta]="true"
   ></app-input>
   <app-input
     type="select"
@@ -82,13 +90,18 @@
     [(ngModel)]="form.horario"
     [selectData]="horarioOptions"
   ></app-input>
-  <app-input
-    type="textarea"
-    label="Observações"
-    name="descricaoAdvertencia"
-    maxLength="150"
-    class="grid-2fr"
-  ></app-input>
 </form>
 
-<button class="btn-confirmar">Confirmar</button>
+<button
+  class="btn-primary btn-confirmar"
+  (click)="confirmar()"
+  [disabled]="!formValido()"
+>
+  Agendar
+</button>
+
+<app-modal-revisao-consulta
+  *ngIf="isPacienteModalOpen"
+  (close)="closePacienteModal()"
+  [data]="formSubmit"
+></app-modal-revisao-consulta>

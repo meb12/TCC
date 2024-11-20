@@ -3,6 +3,7 @@ import { EspecialidadeService } from '../../../../core/services/especalidades.se
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { PacientesService } from '../../../../core/services/pacientes.service';
+import { ConsultasService } from '../../../../core/services/consultas.service';
 
 @Component({
   selector: 'app-consulta',
@@ -11,16 +12,18 @@ import { PacientesService } from '../../../../core/services/pacientes.service';
 })
 export class ConsultaComponent implements OnInit {
   data;
-
+  isPacienteModalOpen = false;
   id: number;
-
+  private lastDateValue: string = '';
   form: any = {
     especialidades: '',
     medico: '',
     date: '',
     horario: '',
-    observacao: 0,
+    observacao: null,
   };
+
+  formSubmit: any;
 
   medicosOptions = [];
 
@@ -35,12 +38,19 @@ export class ConsultaComponent implements OnInit {
   especialidadesData: any[] = [];
 
   horarioOptions = [];
+  private lastMedicoValue: any = null;
 
   onEspecialidadeChange(especialidadeValue: number) {
+    // Quando a especialidade muda, limpar os campos relacionados
     this.form.medico = '';
     this.form.date = '';
-    // Filter the medicos based on the selected especialidadeId
+    this.form.horario = '';
 
+    // Resetar as listas filtradas e as opções de horário disponíveis
+    this.filteredMedicos = [];
+    this.horarioOptions = [];
+
+    // Filtrar os médicos baseados no especialidadeId selecionado
     this.filteredMedicos = this.medicosOptions.filter(
       (medico) =>
         medico.especialidadeId === especialidadeValue && medico.status === true
@@ -48,47 +58,106 @@ export class ConsultaComponent implements OnInit {
   }
 
   onMedicoChange(medicoValue: any) {
-    this.getHorariosDisponiveis();
+    // Evitar chamadas repetidas
+    if (this.lastMedicoValue !== medicoValue) {
+      this.lastMedicoValue = medicoValue;
+      this.getHorariosIndisponiveis();
+    }
   }
 
-  onDateChange(dateValue: any) {
-    this.getHorariosDisponiveis();
+  onDateChange(dateValue: string) {
+    // Evitar chamadas repetidas
+    if (this.lastDateValue !== dateValue && dateValue.length === 8) {
+      this.lastDateValue = dateValue;
+      this.getHorariosIndisponiveis();
+    }
   }
 
+  getHorariosIndisponiveis() {
+    this.horarioOptions = [];
+    this.form.horario = null;
+    if (this.form.medico && this.form.date.length == 8) {
+      this.consulta
+        .getHorarios(
+          this.form.medico,
+          this.formatarDataParaDateTime(this.form.date)
+        )
+        .subscribe({
+          next: (response) => {
+            this.unavailableTimes = {
+              doctorId: response.doctorId,
+              doctorName: response.doctorName,
+              spcialty: [
+                {
+                  name: response.specialtyType.specialtyName,
+                  id: response.specialtyType.id,
+                  interval: response.specialtyType.interval,
+                },
+              ],
+              unavailableTimes: response.unavailableTimes,
+            };
+
+            this.getHorariosDisponiveis();
+          },
+          error: (error) => {
+            console.error('Erro ao carregar especialidades:', error);
+          },
+        });
+    }
+  }
   getHorariosDisponiveis() {
     const horariosFuncionamento = [];
     const inicio = 9; // 9h
     const fim = 18; // 18h
-    // Extrair o intervalo da especialidade
     const especialidade = this.unavailableTimes.spcialty[0];
     const intervalo =
       parseInt(especialidade.interval.split(':')[0]) * 60 +
       parseInt(especialidade.interval.split(':')[1]); // Intervalo em minutos
     let minutosTotais = inicio * 60; // Converter o horário de início em minutos
+
+    // Obter a data atual e a hora atual
+    const hoje = new Date();
+    const horaAtual = hoje.getHours() * 60 + hoje.getMinutes(); // Hora atual em minutos
+
+    // Verificar se a data selecionada é o dia de hoje
+    const dataSelecionada = this.formatarDataParaDateTime(this.form.date).split(
+      ' '
+    )[0];
+    const dataHoje = hoje.toISOString().split('T')[0];
+
     // Criar todos os horários disponíveis no intervalo de funcionamento
     while (minutosTotais < fim * 60) {
-      // Enquanto dentro do horário de funcionamento
       const horas = Math.floor(minutosTotais / 60);
       const minutos = minutosTotais % 60;
       const horaFormatada = String(horas).padStart(2, '0');
       const minutoFormatado = String(minutos).padStart(2, '0');
-      horariosFuncionamento.push(`${horaFormatada}:${minutoFormatado}`);
+      const horarioCompleto = `${horaFormatada}:${minutoFormatado}`;
+
+      // Adicionar horário somente se for maior que o horário atual quando a data for hoje
+      if (dataSelecionada !== dataHoje || minutosTotais >= horaAtual) {
+        horariosFuncionamento.push(horarioCompleto);
+      }
+
       minutosTotais += intervalo; // Avançar pelo intervalo definido
     }
-    // Pegar os horários indisponíveis do objeto
+
     const unavailableTimes = this.unavailableTimes.unavailableTimes;
+
     // Filtrar horários disponíveis removendo os horários indisponíveis
     const horariosDisponiveis = horariosFuncionamento.filter((horario) => {
       const horarioMinuto =
         parseInt(horario.split(':')[0]) * 60 + parseInt(horario.split(':')[1]);
+
       if (unavailableTimes.includes(horario)) {
         return false;
       }
+
       // Verificar se existe um horário que começa dentro do intervalo de indisponibilidade
       for (let i = 0; i < unavailableTimes.length; i++) {
         const unavailableMinuto =
           parseInt(unavailableTimes[i].split(':')[0]) * 60 +
           parseInt(unavailableTimes[i].split(':')[1]);
+
         if (
           horarioMinuto >= unavailableMinuto &&
           horarioMinuto < unavailableMinuto + intervalo
@@ -98,6 +167,7 @@ export class ConsultaComponent implements OnInit {
       }
       return true;
     });
+
     // Formatar horários disponíveis
     const horariosDisponiveisFormatados = horariosDisponiveis.map(
       (horario) => ({
@@ -105,6 +175,7 @@ export class ConsultaComponent implements OnInit {
         name: horario,
       })
     );
+
     this.horarioOptions = horariosDisponiveisFormatados;
   }
 
@@ -122,7 +193,6 @@ export class ConsultaComponent implements OnInit {
     });
   }
   getPaciente() {
-    console.log('chegando', this.id);
     this.pacientes.getDataId(this.id).subscribe({
       next: (response) => {
         this.data = response;
@@ -166,7 +236,8 @@ export class ConsultaComponent implements OnInit {
     private pacientes: PacientesService,
     private router: Router,
     private medicos: MedicosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private consulta: ConsultasService
   ) {}
 
   getMedicos() {
@@ -214,5 +285,101 @@ export class ConsultaComponent implements OnInit {
     this.getEspecialidades();
     this.getMedicos();
     this.getPaciente();
+  }
+  formatarDataParaDateTime(dataString: string): string {
+    const dia = parseInt(dataString.substring(0, 2));
+    const mes = parseInt(dataString.substring(2, 4)); // Meses começam do zero em JavaScript
+    const ano = parseInt(dataString.substring(4, 8));
+    return `${ano}-${mes}-${dia} `;
+  }
+
+  confirmar() {
+    console.log('aa', this.form);
+
+    this.isPacienteModalOpen = true;
+    this.formSubmit = {
+      date: this.formatarDataParaDateTime(this.form.date),
+      observation: null,
+      isActive: true,
+      doctorId: this.form.medico,
+      medicoDescricao: this.getMedicoDescricao(this.form.medico),
+      EspecialidadeDescricao: this.getEspecialidadeDescricao(
+        this.form.especialidades
+      ),
+      pacientId: this.data,
+      horario: this.form.horario,
+      idPaciente: this.id,
+    };
+  }
+  getMedicoDescricao(id: any) {
+    if (!this.medicosOptions) {
+      console.error('A lista de médicos ainda não foi carregada.');
+      return undefined;
+    }
+
+    // Encontra o médico pelo ID
+    const medico = this.medicosOptions.find((m: any) => m.value === id);
+
+    // Retorna o nome do médico ou "undefined" se não encontrado
+    return medico ? medico.name : undefined;
+  }
+  getEspecialidadeDescricao(id: any) {
+    if (!this.especialidadesData) {
+      console.error('A lista de especialidades ainda não foi carregada.');
+      return undefined;
+    }
+
+    // Encontra a especialidade pelo ID
+    const especialidade = this.especialidadesData.find((e: any) => e.id === id);
+
+    // Retorna o nome da especialidade ou "undefined" se não encontrada
+    return especialidade ? especialidade.name : undefined;
+  }
+  closePacienteModal() {
+    this.isPacienteModalOpen = false;
+  }
+  formValido(): boolean {
+    // Validar data
+    if (this.form.date.length !== 8) {
+      return false; // Data incompleta ou inválida
+    }
+
+    const day = parseInt(this.form.date.substring(0, 2), 10);
+    const month = parseInt(this.form.date.substring(2, 4), 10);
+    const year = parseInt(this.form.date.substring(4, 8), 10);
+
+    if (
+      isNaN(day) ||
+      isNaN(month) ||
+      isNaN(year) ||
+      day > 31 ||
+      month > 12 ||
+      day < 1 ||
+      month < 1
+    ) {
+      return false; // Data inválida
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Ignorar horas para comparar apenas a data
+
+    const selectedDate = new Date(year, month - 1, day);
+
+    if (selectedDate < today) {
+      return false; // Data no passado
+    }
+
+    // Validar se médico e horário estão selecionados
+    if (
+      this.form.medico === '' ||
+      this.form.medico === null ||
+      this.form.horario === '' ||
+      this.form.horario === null
+    ) {
+      return false;
+    }
+
+    // Se todas as condições forem atendidas, o formulário é válido
+    return true;
   }
 }

@@ -60,7 +60,8 @@
         'input-invalid':
           (requiredInput && valueTouched && !value) ||
           (value && !dataValida) ||
-          (value && dataFutura)
+          (value && dataFutura && isDataNascimento) ||
+          (value && dataPassado && isDataConsulta)
       }"
     />
   </div>
@@ -77,8 +78,18 @@
     <div *ngIf="!dataValida" class="error-message">Data inválida</div>
 
     <!-- Exibe a mensagem de "A data não pode ser no futuro" se a data for válida, mas futura -->
-    <div *ngIf="dataValida && dataFutura" class="error-message">
+    <div
+      *ngIf="dataValida && dataFutura && isDataNascimento"
+      class="error-message"
+    >
       A data não pode ser no futuro
+    </div>
+
+    <div
+      *ngIf="dataValida && dataPassado && isDataConsulta"
+      class="error-message"
+    >
+      A data não pode ser no passado
     </div>
   </div>
 </div>

@@ -84,6 +84,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   pesquisar = '';
   @Input() isCpf: boolean = false;
   cpfValido: boolean = true;
+  @Input() isDataConsulta: boolean = false;
+  dataConsultaValida: boolean = true;
   @Input() isRg: boolean = false;
   rgValido: boolean = true;
   @Input() isEmail: boolean = false;
@@ -92,6 +94,7 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   dataValida: boolean = true; // Indica se a data é válida
   dataFutura: boolean = false; // Indica se a data é no futuro
   // Armazena o valor e o rótulo da opção selecionada
+  dataPassado: boolean = false;
 
   @Input() selectedLabel: string = '';
   @Output() validChange: EventEmitter<boolean> = new EventEmitter();
@@ -275,6 +278,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
       this.emailValido = this.validarEmail(value);
     } else if (this.isDataNascimento) {
       this.validaData(value);
+    } else if (this.isDataConsulta) {
+      this.validaDataConsulta(value);
     }
     this.checkValidity();
   }
@@ -343,6 +348,49 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
     }
 
     this.dataFutura = selectedDate > currentDate;
+  }
+
+  validaDataConsulta(value: string) {
+    console.log(value);
+
+    if (value.length !== 8) {
+      this.dataValida = false;
+      this.dataPassado = false;
+      return;
+    }
+
+    const day = parseInt(value.substring(0, 2), 10); // Extrai o dia
+    const month = parseInt(value.substring(2, 4), 10); // Extrai o mês
+    const year = parseInt(value.substring(4, 8), 10); // Extrai o ano
+
+    // Validação básica de dia, mês e ano
+    if (
+      isNaN(day) ||
+      isNaN(month) ||
+      isNaN(year) ||
+      day < 1 ||
+      day > 31 || // Dia inválido
+      month < 1 ||
+      month > 12 // Mês inválido
+    ) {
+      this.dataValida = false;
+      this.dataPassado = false;
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Remove as horas para considerar apenas a data
+
+    const selectedDate = new Date(year, month - 1, day); // Cria a data selecionada
+
+    // Verifica se a data selecionada é válida e está no presente ou futuro
+    if (selectedDate >= today) {
+      this.dataValida = true;
+      this.dataPassado = false; // Não está no passado
+    } else {
+      this.dataValida = true;
+      this.dataPassado = true; // Está no passado
+    }
   }
 
   validarCPF(cpf: string): boolean {

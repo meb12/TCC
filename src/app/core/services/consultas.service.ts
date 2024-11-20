@@ -27,6 +27,12 @@ export class ConsultasService {
     return this.http.get(this.baseURL + '/' + id);
   }
 
+  getHorarios(id: any, date: any): Observable<any> {
+    return this.http.get(
+      this.baseURL + '/unavailable-times?doctorUserId=' + id + '&date=' + date
+    );
+  }
+
   putData(data: any): Observable<any> {
     return this.http.put(this.baseURL, data);
   }
