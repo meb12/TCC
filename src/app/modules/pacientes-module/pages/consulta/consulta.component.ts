@@ -76,7 +76,39 @@ export class ConsultaComponent implements OnInit {
   getHorariosIndisponiveis() {
     this.horarioOptions = [];
     this.form.horario = null;
-    if (this.form.medico && this.form.date.length == 8) {
+
+    // Validar se a data é válida e se está no presente ou futuro
+    if (this.form.date.length !== 8) {
+      return; // Data incompleta ou inválida, não faz a requisição
+    }
+
+    const day = parseInt(this.form.date.substring(0, 2), 10);
+    const month = parseInt(this.form.date.substring(2, 4), 10);
+    const year = parseInt(this.form.date.substring(4, 8), 10);
+
+    if (
+      isNaN(day) ||
+      isNaN(month) ||
+      isNaN(year) ||
+      day > 31 ||
+      month > 12 ||
+      day < 1 ||
+      month < 1
+    ) {
+      return; // Data inválida, não faz a requisição
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Ignorar horas para comparar apenas a data
+
+    const selectedDate = new Date(year, month - 1, day);
+
+    if (selectedDate < today) {
+      return; // Data no passado, não faz a requisição
+    }
+
+    // Faz a requisição apenas se a data for hoje ou no futuro
+    if (this.form.medico) {
       this.consulta
         .getHorarios(
           this.form.medico,
@@ -105,6 +137,7 @@ export class ConsultaComponent implements OnInit {
         });
     }
   }
+
   getHorariosDisponiveis() {
     const horariosFuncionamento = [];
     const inicio = 9; // 9h
