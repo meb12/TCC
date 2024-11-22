@@ -34,7 +34,7 @@
 .consulta-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 .attachments-container {
   padding: 1rem;
@@ -60,6 +60,7 @@
 .attachment-icon {
   width: 50px;
   height: 50px;
+  cursor: pointer;
 }
 
 .attachment-item.new {
@@ -83,7 +84,7 @@
 }
 
 .attachment-name {
-  font-size: 0.9rem;
+  font-size: 12px;
   margin-top: 0.5rem;
 }
 
@@ -170,4 +171,299 @@
 
 .padding {
   padding-bottom: 30px;
+}
+.especialidade-container {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column; /* Garante que as linhas fiquem empilhadas */
+  gap: 12px; /* Espaçamento entre as linhas */
+
+  span {
+    font-size: 18px;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: flex-start; /* Alinha os itens à esquerda */
+  gap: 10px; /* Espaçamento entre o rótulo e o valor */
+}
+
+.label {
+  font-weight: bold;
+  width: 150px; /* Define uma largura fixa para os rótulos */
+  text-align: left; /* Alinha o texto dos rótulos à direita */
+}
+
+.value {
+  text-align: left; /* Alinha o texto dos valores à esquerda */
+}
+.value-bold {
+  text-align: left;
+  font-weight: 700;
+}
+.patient-photo {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 8px; /* Bordas arredondadas */
+  margin-left: 20px; /* Espaçamento da foto */
+}
+
+.patient-photo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */
+  gap: 20px; /* Espaçamento entre as colunas */
+  align-items: center; /* Alinha verticalmente */
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+}
+
+.foto {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinha ao topo */
+}
+
+.patient-photo {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.patient-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachment-label {
+  cursor: pointer;
+}
+
+.file-input {
+  display: none; /* Esconde o input */
+}
+
+.attachment-name {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.attachment-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.attachment-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attachment-name-container {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 12px;
+  position: relative;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.edit-icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 22px;
+}
+
+.edit-input {
+  width: 80px;
+  padding: 4px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+.save-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.save-icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.observation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.observation-header {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.observation-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.edit-icon,
+.save-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #007bff;
+  margin-left: 8px;
+  transition: color 0.2s;
+}
+
+.edit-icon:hover,
+.save-icon:hover {
+  color: #0056b3;
+}
+
+.observation-view {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.observation-edit textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+.edit-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #007bff;
+  position: absolute; /* Fixa o ícone ao lado direito */
+  right: 0; /* Ajusta o alinhamento */
+  top: 0; /* Alinha ao topo */
+  margin-left: auto;
+  transition: color 0.2s;
+}
+
+.edit-icon:hover {
+  color: #0056b3;
+}
+
+.observation-edit {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+.save-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #007bff;
+}
+
+.save-icon:hover {
+  color: #0056b3;
+}
+
+.icone {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  button {
+    border: 1px solid #0061be;
+    border-radius: 10px;
+    color: white;
+    background-color: #307ac1;
+    padding: 5px;
+    cursor: pointer;
+  }
+}
+
+.grid1 {
+  display: grid;
+  grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */
+  gap: 20px; /* Espaçamento entre as colunas */
+  align-items: end; /* Alinha verticalmente */
 }

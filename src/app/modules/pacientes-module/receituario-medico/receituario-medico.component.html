@@ -1,0 +1,29 @@
+<div id="pdf-content">
+  <div class="header">
+    <h1>{{ name }}</h1>
+    <h2>Médica - {{ especialidade }}</h2>
+  </div>
+
+  <div class="prescription-area">
+    <textarea
+      [(ngModel)]="prescription"
+      placeholder="Escreva a prescrição médica aqui"
+    ></textarea>
+  </div>
+
+  <div class="footer">
+    <input type="text" [(ngModel)]="currentDate" />
+  </div>
+</div>
+
+<!-- Botão para gerar o PDF -->
+<!-- <button (click)="generatePDF()">Gerar PDF</button> -->
+<div class="button-group">
+  <button class="btn btn-secondary" (click)="voltar()">Voltar</button>
+  <button
+    class="btn btn-primary"
+    (click)="generateAndUploadPDF('prescription')"
+  >
+    Salvar
+  </button>
+</div>

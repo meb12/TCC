@@ -9,6 +9,7 @@ import { ModalInformacaoPacienteComponent } from './pages/modal-informacao-pacie
 import { ExclusaoModalPacienteComponent } from './pages/exclusao-modal-paciente/exclusao-modal-paciente.component';
 import { ConsultaIndividualComponent } from './pages/consulta-individual/consulta-individual.component';
 import { ModalRevisaoConsultaComponent } from './pages/modal-revisao-consulta/modal-revisao-consulta.component';
+import { ReceituarioMedicoComponent } from './receituario-medico/receituario-medico.component';
 
 @NgModule({
   imports: [CommonModule, PacientesRoutingModule, SharedModule],
@@ -19,6 +20,7 @@ import { ModalRevisaoConsultaComponent } from './pages/modal-revisao-consulta/mo
     ExclusaoModalPacienteComponent,
     ConsultaIndividualComponent,
     ModalRevisaoConsultaComponent,
+    ReceituarioMedicoComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

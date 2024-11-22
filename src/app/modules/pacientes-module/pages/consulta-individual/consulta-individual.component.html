@@ -4,83 +4,177 @@
   </button>
 </div>
 
-<div class="margin-top">
-  <div class="consulta-header">
-    <div>
-      <span class="patient-title">{{ data?.pacientData.name }}</span>
+<div class="grid">
+  <div class="corpo">
+    <div class="consulta-header">
+      <div>
+        <span class="patient-title">{{ data.pacientData.name }}</span>
+      </div>
+      <div>
+        <span class="patient-subtitle">
+          {{ "Cod." + data.pacientData.id }}</span
+        >
+      </div>
     </div>
-    <div>
-      <span class="patient-subtitle">
-        {{ "Cod. " + data?.pacientData.id }}</span
+    <div class="consulta-header">
+      <span>
+        {{
+          "Data de Nascimento: " +
+            formatarValor("data", data.pacientData.dateOfBirth)
+        }}</span
+      >
+      <span> {{ "Sexo: " + data.pacientData.gender }}</span>
+      <span> {{ "CPF: " + formatarValor("cpf", data.pacientData.cpf) }}</span>
+      <span>
+        {{
+          "RG: " + formatarValor("rg", data.pacientData.documentNumber)
+        }}</span
       >
     </div>
+    <div class="consulta-header gap">
+      <span>
+        {{
+          "Celular: " + formatarValor("telefone", data.pacientData.cellphone)
+        }}</span
+      >
+
+      <span>
+        Endereço: {{ data.pacientData.streetName }},
+        {{ data.pacientData.streetNumber }} -
+        {{ data.pacientData.neighborhood }}, {{ data.pacientData.city }} -
+        {{ data.pacientData.stateName }}, CEP:
+        {{ data.pacientData.cep }}
+      </span>
+    </div>
   </div>
-  <div class="consulta-header">
-    <span>{{
-      "Data de nasc.: " + formatarValor("data", data?.pacientData.dateOfBirth)
-    }}</span>
-    <span>{{ "Sexo: " + data?.pacientData.gender }}</span>
-    <span>{{ "CPF: " + formatarValor("cpf", data?.pacientData.cpf) }}</span>
-    <span>{{
-      "RG: " + (data?.pacientData.documentNumber || "Não informado")
-    }}</span>
-  </div>
-  <div class="consulta-header gap">
-    <span>{{
-      "Cel.: " + formatarValor("telefone", data?.pacientData.cellphone)
-    }}</span>
-  </div>
-  <div class="consulta-header">
-    <span>
-      {{
-        data?.pacientData.streetName +
-          ", " +
-          data?.pacientData.streetNumber +
-          " - " +
-          data?.pacientData.neighborhood +
-          ", " +
-          data?.pacientData.city +
-          " - " +
-          data?.pacientData.stateName +
-          ", CEP: " +
-          data?.pacientData.cep
-      }}
-    </span>
+  <div class="foto">
+    <div class="patient-photo">
+      <img
+        [src]="
+          photo
+            ? 'data:image/png;base64,' + photo
+            : 'assets/img/image-avatar.svg'
+        "
+        alt="Foto do Paciente"
+      />
+    </div>
   </div>
 </div>
 <div class="consulta-header1">
+  <span class="consulta-title">Alergias</span>
+  <div class="grid1">
+    <div>
+      <div
+        *ngIf="data.pacientData.allergies.length > 0; else noAllergies"
+        class="allergy-grid"
+      >
+        <div
+          *ngFor="let allergy of data.pacientData.allergies"
+          class="allergy-item"
+        >
+          {{ allergy.allergy }}
+        </div>
+      </div>
+      <ng-template #noAllergies>
+        <span>Nenhuma alergia informada pelo paciente</span>
+      </ng-template>
+    </div>
+    <div class="buttons">
+      <button>Reagendar</button>
+      <button>Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="consulta-header1">
   <span class="consulta-title"> {{ "Consulta #" + data.id }}</span>
-  <div class="consulta-container">
-    <span class="consulta-title1">{{
-      "Data: " + formatarValor("data", data.appointmentDate)
-    }}</span>
-    <span class="consulta-title1">{{
-      "Horário: " + formatarValor("data", data.appointmentDate)
-    }}</span>
-    <span class="consulta-title1">{{ data.doctorData.name }}</span>
-    <span class="consulta-title1">{{
-      data.doctorData.specialtyType.description
-    }}</span>
-    <span class="consulta-title1 observacao"> {{ "Observações" }} </span>
-    <span class="consulta-title1"> {{ data.observation }} </span>
+  <div class="especialidade-container">
+    <div class="row">
+      <span class="label">Especialidade:</span>
+      <span class="value">{{
+        data.doctorData.specialtyType.specialtyName
+      }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Médico(a):</span>
+      <span class="value">{{ data.doctorData.name }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Data:</span>
+      <span class="value">{{
+        formatarValor("data", data.appointmentDate)
+      }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Horário:</span>
+      <span class="value">{{
+        formatarValor("hora", data.appointmentDate)
+      }}</span>
+    </div>
+    <div class="row">
+      <span class="label">Status:</span>
+      <span class="value-bold" [style.color]="getStatusColor(data.status)">{{
+        data.status
+      }}</span>
+    </div>
   </div>
 </div>
 
 <div class="consulta-container">
-  <span class="consulta-title"> {{ "Anexos" }}</span>
+  <span class="consulta-title">{{ "Exames" }}</span>
   <div class="attachment-list">
-    <div *ngFor="let file of files">
+    <!-- Listar arquivos -->
+    <div *ngFor="let file of data.exams" class="attachment-wrapper">
       <div class="attachment-item">
-        <img src="assets/img/pdf.svg" alt="PDF icon" class="attachment-icon" />
-      </div>
-      <span class="attachment-name">{{ file.name }}.pdf</span>
-    </div>
-    <div>
-      <div class="attachment-item">
+        <!-- Ícone de exclusão -->
+        <button class="delete-icon" (click)="deleteFile(file, 'exam')">
+          <img src="assets/img/excluir.svg" alt="Delete" />
+        </button>
         <img
-          src="assets/img/add-icon.svg"
+          src="assets/img/pdf.svg"
           alt="PDF icon"
           class="attachment-icon"
+          (click)="download(file)"
+        />
+      </div>
+      <div class="attachment-name-container">
+        <!-- Campo de edição e salvar -->
+        <span
+          *ngIf="!file.isEditing"
+          (click)="editFile(file)"
+          class="edit-name"
+        >
+          {{
+            file.fileName.length > 10
+              ? (file.fileName | slice : 0 : 10) + "..."
+              : file.fileName
+          }}
+        </span>
+        <div *ngIf="file.isEditing" class="edit-input-container">
+          <input type="text" [(ngModel)]="file.newName" class="edit-input" />
+          <button (click)="saveFile(file)" class="save-icon">
+            <img src="assets/img/save.svg" alt="Save" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão de upload -->
+    <div>
+      <div class="attachment-item">
+        <label for="file-upload" class="attachment-label">
+          <img
+            src="assets/img/add-icon.svg"
+            alt="Add file"
+            class="attachment-icon"
+          />
+        </label>
+        <input
+          type="file"
+          id="file-upload"
+          class="file-input"
+          accept=".pdf"
+          (change)="handleFileUpload($event, 'exam')"
         />
       </div>
       <span class="attachment-name">Novo</span>
@@ -88,13 +182,101 @@
   </div>
 </div>
 <div class="consulta-container">
+  <span class="consulta-title">{{ "Receitas" }}</span>
+  <div class="attachment-list">
+    <!-- Listar arquivos -->
+    <div *ngFor="let file of data.prescription" class="attachment-wrapper">
+      <div class="attachment-item">
+        <!-- Ícone de exclusão -->
+        <button class="delete-icon" (click)="deleteFile(file, 'prescription')">
+          <img src="assets/img/excluir.svg" alt="Delete" />
+        </button>
+        <img
+          src="assets/img/pdf.svg"
+          alt="PDF icon"
+          class="attachment-icon"
+          (click)="download(file)"
+        />
+      </div>
+      <div class="attachment-name-container">
+        <!-- Campo de edição e salvar -->
+        <span
+          *ngIf="!file.isEditing"
+          (click)="editFile(file)"
+          class="edit-name"
+        >
+          {{
+            file.fileName.length > 10
+              ? (file.fileName | slice : 0 : 10) + "..."
+              : file.fileName
+          }}
+        </span>
+        <div *ngIf="file.isEditing" class="edit-input-container">
+          <input type="text" [(ngModel)]="file.newName" class="edit-input" />
+          <button (click)="saveFile(file)" class="save-icon">
+            <img src="assets/img/save.svg" alt="Save" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão de upload -->
+    <div>
+      <div class="attachment-item">
+        <label class="attachment-label" (click)="receita()">
+          <img
+            src="assets/img/add-icon.svg"
+            alt="Add file"
+            class="attachment-icon"
+          />
+        </label>
+      </div>
+      <span class="attachment-name">Novo</span>
+    </div>
+  </div>
+</div>
+
+<div class="consulta-container">
+  <div class="observation-header">
+    <label for="observations" class="consulta-title">Observações</label>
+    <ng-container *ngIf="!isEditing">
+      <img
+        class="icone"
+        src="assets/img/editar.svg"
+        alt="Save"
+        (click)="toggleEdit()"
+      />
+    </ng-container>
+    <ng-container *ngIf="isEditing">
+      <img
+        class="icone"
+        src="assets/img/save.svg"
+        alt="Save"
+        (click)="saveObservation()"
+      />
+    </ng-container>
+  </div>
+
+  <div *ngIf="!isEditing" class="observation-view">
+    <span>{{ data.observation }}</span>
+  </div>
+
+  <div *ngIf="isEditing" class="observation-edit">
+    <textarea [(ngModel)]="data.observation" id="observations"></textarea>
+  </div>
+</div>
+
+<div class="consulta-container" *ngIf="data.appointmentsReturn.length > 0">
   <span class="consulta-title"> {{ "Retornos" }}</span>
+
   <div class="return-item" *ngFor="let appointment of data.appointmentsReturn">
     <span>Retorno #{{ appointment.id }}</span>
     <span
       >{{ formatDate(appointment.appointmentDate) }}
-      {{ formatTime(appointment.appointmentDate) }}</span
+      {{ formatTime(appointment.appointmentDate) }} -
+      {{ appointment.status }}</span
     >
   </div>
 </div>
+
 <div class="padding"></div>
