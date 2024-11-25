@@ -18,9 +18,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     const userInfo = JSON.parse(localStorage.getItem('token') || '{}');
     const token = userInfo;
 
-    console.log('token', token);
     if (token) {
-      console.log('Token encontrado:', token); // Verifique se o token é exibido
       const authReq = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

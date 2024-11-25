@@ -15,6 +15,8 @@ import { TiposUsuariosService } from '../../../../core/services/user-types.servi
 })
 export class FuncionariosComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  searchValue: string = ''; // Valor da busca
+  selectedValue: number | string = 80; // Valor selecionado no dropdown
 
   // Defina o dataSource sem inicializar com tableData
   dataSource = new MatTableDataSource<any>();
@@ -88,9 +90,9 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
   };
 
   selectData = [
-    { value: 10, name: 'Ativos' },
-    { value: 20, name: 'Inativos' },
-    { value: 30, name: 'Todos' },
+    { value: 60, name: 'Ativos' },
+    { value: 70, name: 'Inativos' },
+    { value: 80, name: 'Todos' },
   ];
 
   tableColumns: ITableColumn[] = [
@@ -130,10 +132,19 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
   getFuncionarios() {
     this.funcionarioService.getData().subscribe({
       next: (response) => {
-        this.tableData = response;
+        // Recupera o usuário atual do localStorage
+        const currentUser = JSON.parse(
+          localStorage.getItem('userInfo') || '{}'
+        );
+
+        // Filtra a lista de funcionários para remover o usuário atual
+        this.tableData = response.filter(
+          (user: any) => user.id !== currentUser.id
+        );
+
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os itens
         this.paginator.length = this.filteredData.length; // Define o `length` inicial do paginator
-        this.updatePaginatedData();
+        this.updatePaginatedData(); // Atualiza os dados paginados
       },
       error: (error) => {
         console.error('Erro ao carregar funcionários:', error);
@@ -141,90 +152,45 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onSelectChange(selectedValue: any) {
-    switch (selectedValue) {
-      case 10:
-        // Filtra apenas os itens ativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === true
-        );
-        break;
-      case 20:
-        // Filtra apenas os itens inativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === false
-        );
-        break;
-      case 30:
-        // Exibe todos os itens
-        this.filteredData = [...this.tableData];
-        break;
-      default:
-        // Filtra pelo cargo usando o selectedValue que corresponde ao id do cargo
-        this.filteredData = this.tableData.filter(
-          (item) => item.userType?.id === selectedValue
-        );
-        break;
-    }
+  applyFilters() {
+    const lowerSearchValue = this.searchValue?.toLowerCase().trim() || '';
+    const selectedValue = this.selectedValue;
 
-    // Atualiza o `length` do paginator com base no número de itens filtrados
+    this.filteredData = this.tableData.filter((item) => {
+      // Critérios de busca
+      const name = item.name?.toLowerCase() || '';
+      const id = item.id?.toString() || '';
+      const matchesSearch =
+        lowerSearchValue === '' || // Se não houver busca, considera todos
+        name.includes(lowerSearchValue) ||
+        id.includes(lowerSearchValue);
+
+      // Critérios de seleção
+      const matchesSelect =
+        selectedValue === 80 || // "80" para "todos"
+        (selectedValue === 60 && item.isActive === true) || // Ativos
+        (selectedValue === 70 && item.isActive === false) || // Inativos
+        (typeof selectedValue === 'number' &&
+          item.userType?.id === selectedValue); // Por cargo
+
+      return matchesSearch && matchesSelect;
+    });
+
+    // Atualiza o paginator e os dados paginados
     this.paginator.length = this.filteredData.length;
-
-    // Redefine para a primeira página dos resultados filtrados
     this.currentPage = 0;
     this.paginator.pageIndex = this.currentPage;
-
-    // Atualiza `paginatedData` para exibir a página correta
     this.updatePaginatedData();
   }
 
   onSearchChange(searchValue: string) {
-    const lowerSearchValue = searchValue.toLowerCase().trim();
+    this.searchValue = searchValue; // Atualiza o valor de busca
+    this.applyFilters(); // Aplica os filtros combinados
+  }
 
-    // Aplica o filtro de select baseado no valor selecionado
-    const selectedValue = this.selectData.find(
-      (option) => option.value === this.selectedFilter
-    )?.value;
-
-    // Filtrar os dados com base no valor de pesquisa e no filtro selecionado
-    this.filteredData = this.tableData.filter((item) => {
-      const name = item.name?.toLowerCase() || '';
-      const id = item.id?.toString() || '';
-      const crm = item.doctorData?.crm?.toLowerCase() || '';
-      const description =
-        item.doctorData?.specialtyType?.description?.toLowerCase() || '';
-      const isActive = item.isActive;
-
-      // Verifica se o item corresponde ao filtro de pesquisa
-      const matchesSearch = lowerSearchValue
-        ? name.includes(lowerSearchValue) ||
-          id.includes(lowerSearchValue) ||
-          crm.includes(lowerSearchValue) ||
-          description.includes(lowerSearchValue)
-        : true;
-
-      // Verifica se o item corresponde ao filtro selecionado
-      const matchesFilter =
-        selectedValue === 10
-          ? isActive === true
-          : selectedValue === 20
-          ? isActive === false
-          : selectedValue === 30
-          ? true
-          : item.userType?.id === selectedValue;
-
-      return matchesSearch && matchesFilter;
-    });
-
-    // Atualiza o `length` do paginator para refletir o número de resultados filtrados
-    this.paginator.length = this.filteredData.length;
-
-    // Redefine a página para a primeira página dos resultados filtrados
-    this.currentPage = 0;
-    this.paginator.pageIndex = this.currentPage;
-
-    // Atualiza `paginatedData` com os resultados filtrados
-    this.updatePaginatedData();
+  onSelectChange(selectedValue: number | string) {
+    this.selectedValue = selectedValue; // Atualiza o valor selecionado
+    this.applyFilters(); // Aplica os filtros combinados
   }
 
   updatePaginatedData() {

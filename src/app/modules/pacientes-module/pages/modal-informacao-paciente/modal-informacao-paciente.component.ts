@@ -67,8 +67,7 @@ export class ModalInformacaoPacienteComponent implements OnInit {
   getConsultas() {
     this.consultas1.getDataPacienteId(this.data.id).subscribe({
       next: (response) => {
-        this.consultas = response; // Popula a lista de consultas com os dados da resposta
-        console.log('Consultas carregadas:', this.consultas);
+        this.consultas = response;
       },
       error: (error) => {
         console.error('Erro ao carregar consultas:', error);

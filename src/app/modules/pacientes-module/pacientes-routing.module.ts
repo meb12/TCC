@@ -19,6 +19,10 @@ export const routes: Routes = [
     component: ConsultaIndividualComponent,
   },
   {
+    path: 'retorno/individual/:id',
+    component: ConsultaIndividualComponent,
+  },
+  {
     path: 'consulta/receita/:id',
     component: ReceituarioMedicoComponent,
   },

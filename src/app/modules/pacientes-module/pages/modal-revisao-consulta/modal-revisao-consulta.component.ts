@@ -86,9 +86,9 @@ export class ModalRevisaoConsultaComponent implements OnInit {
       },
     });
 
-    console.log(submitForm);
+
   }
   ngOnInit() {
-    console.log('data recebida', this.data);
+
   }
 }

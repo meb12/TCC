@@ -1,0 +1,177 @@
+<div class="modal-container" (click)="onBackdropClick($event)">
+  <div class="modal">
+    @if (step == 1 ) {
+    <div class="consulta-container">
+      <h1>Novo retorno - Consulta #{{ data.id }}</h1>
+      <div class="grid">
+        <div class="corpo">
+          <div class="consulta-header">
+            <div>
+              <span class="patient-title">{{ data.pacientData.name }}</span>
+            </div>
+            <div>
+              <span class="patient-subtitle">
+                {{ "Cod." + data.pacientData.id }}</span
+              >
+            </div>
+          </div>
+          <div class="consulta-header">
+            <span>
+              {{
+                "Data de Nascimento: " +
+                  formatarValor("data", data.pacientData.dateOfBirth)
+              }}</span
+            >
+            <span> {{ "Sexo: " + data.pacientData.gender }}</span>
+            <span>
+              {{ "CPF: " + formatarValor("cpf", data.pacientData.cpf) }}</span
+            >
+            <span>
+              {{
+                "RG: " + formatarValor("rg", data.pacientData.documentNumber)
+              }}</span
+            >
+          </div>
+          <div class="consulta-header gap">
+            <span>
+              {{
+                "Celular: " +
+                  formatarValor("telefone", data.pacientData.cellphone)
+              }}</span
+            >
+
+            <span>
+              Endereço: {{ data.pacientData.streetName }},
+              {{ data.pacientData.streetNumber }} -
+              {{ data.pacientData.neighborhood }}, {{ data.pacientData.city }} -
+              {{ data.pacientData.stateName }}, CEP:
+              {{ data.pacientData.cep }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <form class="grid">
+        <app-input
+          type="readonly"
+          width="100%"
+          name="especialidades"
+          label="Especialidade"
+          [(ngModel)]="form.especialidadeNome"
+          [selectData]="especialidadesData"
+        ></app-input>
+        <app-input
+          type="select"
+          width="100%"
+          name="medico"
+          label="Médico(a)"
+          [(ngModel)]="form.medico"
+          [selectData]="filteredMedicos"
+          (ngModelChange)="onMedicoChange($event)"
+        ></app-input>
+        <app-input
+          label="Data da consulta"
+          name="date"
+          type="date"
+          [(ngModel)]="form.date"
+          inputClassName="input-standard"
+          (ngModelChange)="onDateChange($event)"
+          [isDataConsulta]="true"
+        ></app-input>
+        <app-input
+          type="select"
+          width="100%"
+          name="horario"
+          label="Horário"
+          [(ngModel)]="form.horario"
+          [selectData]="horarioOptions"
+        ></app-input>
+      </form>
+      <div class="button-group">
+        <button class="btn btn-secondary" (click)="closeModal()">Voltar</button>
+        <button
+          [disabled]="!formValido()"
+          class="btn btn-primary"
+          (click)="salvar()"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+    } @if(step == 2) {
+    <div class="consulta-container">
+      <h1>Revise as informações do retorno</h1>
+      <div class="grid">
+        <div class="corpo">
+          <div class="consulta-header">
+            <div>
+              <span class="patient-title">{{ data.pacientData.name }}</span>
+            </div>
+            <div>
+              <span class="patient-subtitle">
+                {{ "Cod." + data.pacientData.id }}</span
+              >
+            </div>
+          </div>
+          <div class="consulta-header">
+            <span>
+              {{
+                "Data de Nascimento: " +
+                  formatarValor("data", data.pacientData.dateOfBirth)
+              }}</span
+            >
+            <span> {{ "Sexo: " + data.pacientData.gender }}</span>
+            <span>
+              {{ "CPF: " + formatarValor("cpf", data.pacientData.cpf) }}</span
+            >
+            <span>
+              {{
+                "RG: " + formatarValor("rg", data.pacientData.documentNumber)
+              }}</span
+            >
+          </div>
+          <div class="consulta-header gap">
+            <span>
+              {{
+                "Celular: " +
+                  formatarValor("telefone", data.pacientData.cellphone)
+              }}</span
+            >
+
+            <span>
+              Endereço: {{ data.pacientData.streetName }},
+              {{ data.pacientData.streetNumber }} -
+              {{ data.pacientData.neighborhood }}, {{ data.pacientData.city }} -
+              {{ data.pacientData.stateName }}, CEP:
+              {{ data.pacientData.cep }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="especialidade-container">
+        <div class="row">
+          <span class="label">Especialidade:</span>
+          <span class="value">{{ form.especialidadeNome }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Médico(a):</span>
+          <span class="value">{{ form.nomeMedico }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Data:</span>
+          <span class="value">{{ formatarValor("data", form.date) }}</span>
+        </div>
+        <div class="row">
+          <span class="label">Horário:</span>
+          <span class="value">{{ form.horario }}</span>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-secondary" (click)="voltar()">Voltar</button>
+        <button [disabled]="" class="btn btn-primary" (click)="enviar()">
+          Salvar
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</div>

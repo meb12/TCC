@@ -5,6 +5,7 @@ import { FuncionariosService } from '../../../../core/services/funcionarios.serv
 import { Observable } from 'rxjs';
 import { DocumentosService } from '../../../../core/services/documentos.service';
 import { ToastrService } from 'ngx-toastr';
+import { RetornosService } from '../../../../core/services/retornos.service';
 
 @Component({
   selector: 'app-consulta-individual',
@@ -18,13 +19,15 @@ export class ConsultaIndividualComponent implements OnInit {
   isEditing: boolean = false; // Estado para alternar entre visualização e edição
   observationText: string = '';
   files = [];
-
+  isPacienteModalOpen = false;
+  tipoConsulta: string | null = null;
   constructor(
     private router: Router,
     private consultas: ConsultasService,
     private foto: FuncionariosService,
     private documentos: DocumentosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private retorno: RetornosService
   ) {
     this.router.onSameUrlNavigation = 'reload';
   }
@@ -32,7 +35,13 @@ export class ConsultaIndividualComponent implements OnInit {
   ngOnInit() {
     const urlSegments = this.router.url.split('/');
     this.consultaId = urlSegments[4];
-    this.getConsultas();
+    this.tipoConsulta = urlSegments[2];
+    console.log(this.tipoConsulta);
+    if (this.tipoConsulta == 'consulta') {
+      this.getConsultas();
+    } else {
+      this.getRetorno();
+    }
   }
 
   formatarValor(tipo: string, valor: string): string {
@@ -73,12 +82,42 @@ export class ConsultaIndividualComponent implements OnInit {
       },
     });
   }
+  getRetorno() {
+    this.retorno.getDataId(this.consultaId).subscribe({
+      next: (response) => {
+        // Combina os dados da API com os dados mockados
+        this.data = {
+          ...response, // Inclui todos os dados da resposta original
+          pacientData: {
+            id: 128,
+            name: 'paciente certo duda',
+            email: 'awi@gmail.com',
+            cellphone: '11111111111',
+            dateOfBirth: '2003-02-12T00:00:00',
+            cpf: '82706585021',
+            documentNumber: '438425546',
+            isActive: true,
+            gender: 'Feminino',
+            allergies: [
+              {
+                id: 5,
+                allergy: '1',
+              },
+            ],
+          },
+        };
+        this.getFoto(); // Chama o método getFoto
+      },
+      error: (error) => {
+        console.error('Erro ao carregar consultas:', error);
+      },
+    });
+  }
 
   getFoto() {
     this.foto.getDataId(this.data.pacientData.id).subscribe({
       next: (response) => {
         this.photo = response.photo;
-        console.log('this.photo', this.photo);
       },
       error: (error) => {
         console.error('Erro ao carregar especialidades:', error);
@@ -98,7 +137,13 @@ export class ConsultaIndividualComponent implements OnInit {
     return date.toLocaleDateString('pt-BR');
   }
   voltar() {
-    this.router.navigate(['/pacientes/listagem']);
+    if (this.tipoConsulta == 'consulta') {
+      this.router.navigate(['/pacientes/listagem']);
+    } else {
+      this.router.navigate([
+        `/pacientes/consulta/individual/${this.consultaId}`,
+      ]);
+    }
   }
 
   handleFileUpload(event: Event, tipo: string): void {
@@ -199,21 +244,31 @@ export class ConsultaIndividualComponent implements OnInit {
       isActive: this.data.isActive,
     };
 
-    console.log('this', this.data.observation);
-
     // Verifica se a observação é nula ou vazia
     if (this.data.observation !== null && this.data.observation.trim() !== '') {
-      this.consultas.putData(submitForm).subscribe({
-        next: (response) => {
-          this.toastr.success('Observações salvas com sucesso!');
-          this.getConsultas();
-        },
-        error: (error) => {
-          console.log(error);
-          this.toastr.error(error.error);
-          this.getConsultas();
-        },
-      });
+      if (this.tipoConsulta == 'consulta') {
+        this.consultas.putData(submitForm).subscribe({
+          next: (response) => {
+            this.toastr.success('Observações salvas com sucesso!');
+            this.getConsultas();
+          },
+          error: (error) => {
+            this.toastr.error(error.error);
+            this.getConsultas();
+          },
+        });
+      } else {
+        this.retorno.putData(submitForm).subscribe({
+          next: (response) => {
+            this.toastr.success('Observações salvas com sucesso!');
+            this.getConsultas();
+          },
+          error: (error) => {
+            this.toastr.error(error.error);
+            this.getRetorno();
+          },
+        });
+      }
     } else {
       this.toastr.error('Não é possível salvar uma observação vazia');
     }
@@ -230,5 +285,19 @@ export class ConsultaIndividualComponent implements OnInit {
       default:
         return ''; // Sem cor
     }
+  }
+
+  adicionarNovoRetorno() {
+    // Aqui você pode abrir um modal ou redirecionar para uma página de cadastro de retorno.
+    this.isPacienteModalOpen = true;
+  }
+
+  closePacienteModal() {
+    this.isPacienteModalOpen = false;
+    this.getConsultas();
+  }
+
+  abrirRetorno(id: number) {
+    this.router.navigate([`/pacientes/retorno/individual/${id}`]);
   }
 }

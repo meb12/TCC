@@ -14,6 +14,9 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 export class MedicosComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  searchValue: string = ''; // Armazena o valor da busca
+  selectedValue: number | string = 80; // Valor padrão como "Todos"
+
   constructor(
     private especialidades: EspecialidadeService,
     private toastr: ToastrService,
@@ -25,10 +28,11 @@ export class MedicosComponent implements OnInit {
   tipo = '';
   item: any;
   selectData = [
-    { value: 1, name: 'Ativos' },
-    { value: 2, name: 'Inativos' },
-    { value: 3, name: 'Todos' },
+    { value: 60, name: 'Ativos' },
+    { value: 70, name: 'Inativos' },
+    { value: 80, name: 'Todos' },
   ];
+  especialidadesData = [];
 
   tableData: any[] = [];
   filteredData: any[] = [];
@@ -69,14 +73,59 @@ export class MedicosComponent implements OnInit {
 
   ngOnInit() {
     this.getMedicos();
+    this.getEspecialidades();
   }
 
+  getEspecialidades() {
+    this.especialidades.getData().subscribe({
+      next: (response) => {
+        const especialidadesOptions = response.map((response) => ({
+          value: `especialidade_${response.id}`, // Prefixo para diferenciar especialidades
+          name: response.description,
+          isEspecialidade: true, // Adiciona uma flag para identificar especialidades
+        }));
+
+        // Adiciona as especialidades ao dropdown
+        this.selectData = [
+          { value: 60, name: 'Ativos' },
+          { value: 70, name: 'Inativos' },
+          { value: 80, name: 'Todos' },
+          ...especialidadesOptions, // Adiciona as especialidades
+        ];
+      },
+      error: (error) => {
+        console.error('Erro ao carregar especialidades:', error);
+      },
+    });
+  }
+
+  // getMedicos() {
+  //   this.medicos.getData().subscribe({
+  //     next: (response) => {
+  //       this.tableData = response;
+  //       this.filteredData = [...this.tableData];
+  //       this.updatePaginatedData();
+  //     },
+  //     error: (error) => {
+  //       console.error('Erro ao carregar médicos:', error);
+  //     },
+  //   });
+  // }
   getMedicos() {
     this.medicos.getData().subscribe({
       next: (response) => {
-        this.tableData = response;
-        this.filteredData = [...this.tableData];
-        this.updatePaginatedData();
+        // Recupera o usuário atual do localStorage
+        const currentUser = JSON.parse(
+          localStorage.getItem('userInfo') || '{}'
+        );
+
+        // Filtra a lista de médicos para remover o médico atual
+        this.tableData = response.filter(
+          (medico: any) => medico.id !== currentUser.id
+        );
+
+        this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os itens
+        this.updatePaginatedData(); // Atualiza os dados paginados
       },
       error: (error) => {
         console.error('Erro ao carregar médicos:', error);
@@ -84,61 +133,52 @@ export class MedicosComponent implements OnInit {
     });
   }
 
-  onSearchChange(searchValue: string) {
-    const lowerSearchValue = searchValue.toLowerCase().trim();
+  applyFilters() {
+    const lowerSearchValue = this.searchValue?.toLowerCase().trim() || '';
+    const selectedValue = this.selectedValue;
 
-    if (lowerSearchValue) {
-      this.filteredData = this.tableData.filter((item) => {
-        const name = item.name?.toLowerCase() || '';
-        const id = item.id?.toString() || '';
-        const crm = item.doctorData?.crm?.toLowerCase() || '';
-        const description =
-          item.doctorData?.specialtyType?.description?.toLowerCase() || '';
+    this.filteredData = this.tableData.filter((item) => {
+      // Critérios de busca
+      const name = item.name?.toLowerCase() || '';
+      const id = item.id?.toString() || '';
+      const crm = item.doctorData?.crm?.toLowerCase() || '';
+      const description =
+        item.doctorData?.specialtyType?.description?.toLowerCase() || '';
+      const matchesSearch =
+        lowerSearchValue === '' || // Se não houver busca, considera tudo
+        name.includes(lowerSearchValue) ||
+        id.includes(lowerSearchValue) ||
+        crm.includes(lowerSearchValue) ||
+        description.includes(lowerSearchValue);
 
-        return (
-          name.includes(lowerSearchValue) ||
-          id.includes(lowerSearchValue) ||
-          crm.includes(lowerSearchValue) ||
-          description.includes(lowerSearchValue)
-        );
-      });
+      // Critérios de seleção
+      const matchesSelect =
+        selectedValue === 80 || // "80" para "todos"
+        (selectedValue === 60 && item.isActive === true) || // Ativos
+        (selectedValue === 70 && item.isActive === false) || // Inativos
+        (typeof selectedValue === 'string' && // Especialidades
+          selectedValue.startsWith('especialidade_') &&
+          item.doctorData?.specialtyType?.id ===
+            parseInt(selectedValue.replace('especialidade_', ''), 10));
 
-      this.paginator.length = this.filteredData.length;
-      this.currentPage = 0;
-      this.paginator.pageIndex = this.currentPage;
-      this.updatePaginatedData();
-    } else {
-      this.filteredData = [...this.tableData];
-      this.paginator.length = this.filteredData.length;
-      this.currentPage = 0;
-      this.paginator.pageIndex = this.currentPage;
-      this.updatePaginatedData();
-    }
-  }
+      return matchesSearch && matchesSelect;
+    });
 
-  onSelectChange(selectedValue: any) {
-    switch (selectedValue) {
-      case 1:
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === true
-        );
-        break;
-      case 2:
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === false
-        );
-        break;
-      case 3:
-        this.filteredData = [...this.tableData];
-        break;
-      default:
-        this.filteredData = [...this.tableData];
-    }
-
+    // Atualiza a paginação
     this.paginator.length = this.filteredData.length;
     this.currentPage = 0;
     this.paginator.pageIndex = this.currentPage;
     this.updatePaginatedData();
+  }
+
+  onSearchChange(searchValue: string) {
+    this.searchValue = searchValue; // Armazena o valor da busca
+    this.applyFilters(); // Aplica os filtros combinados
+  }
+
+  onSelectChange(selectedValue: number | string) {
+    this.selectedValue = selectedValue; // Armazena o valor selecionado
+    this.applyFilters(); // Aplica os filtros combinados
   }
 
   updatePaginatedData() {

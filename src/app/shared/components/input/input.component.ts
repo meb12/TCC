@@ -351,8 +351,6 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   validaDataConsulta(value: string) {
-    console.log(value);
-
     if (value.length !== 8) {
       this.dataValida = false;
       this.dataPassado = false;

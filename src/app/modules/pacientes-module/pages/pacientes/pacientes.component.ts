@@ -96,13 +96,18 @@ export class PacientesComponent implements OnInit {
 
   onSearchChange(searchValue: string) {
     const lowerSearchValue = searchValue.toLowerCase();
-    this.filteredData = this.tableData.filter(
-      (item) =>
-        item.name.toLowerCase().includes(lowerSearchValue) ||
-        item.id.toString().includes(searchValue) ||
-        item.cpf.includes(searchValue) ||
-        item.cellphone.includes(searchValue)
-    );
+    this.filteredData = this.tableData.filter((item) => {
+      // Remove os caracteres não numéricos do CPF
+      const unmaskedCpf = item.cpf.replace(/\D/g, ''); // Remove tudo que não for número
+
+      return (
+        item.name.toLowerCase().includes(lowerSearchValue) || // Filtra por nome
+        item.id.toString().includes(searchValue) || // Filtra por ID
+        unmaskedCpf.includes(searchValue.replace(/\D/g, '')) || // Filtra por CPF sem máscara
+        item.cellphone.includes(searchValue) // Filtra por celular
+      );
+    });
+
     this.currentPage = 0; // Reseta para a primeira página
     this.updatePaginatedData();
   }

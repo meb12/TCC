@@ -63,7 +63,7 @@ export class RedefinirSenhaComponent implements OnInit {
     // Verifica se a rota contém "/esqueceuSenha"
     const currentRoute = this.activatedRoute.snapshot.routeConfig?.path;
 
-    console.log(currentRoute);
+
     if (currentRoute === 'solicitarRedefinicaoSenha/esqueceuSenha') {
       this.primeiroAcesso = false; // Define como false se a rota for /esqueceuSenha
     }

@@ -465,5 +465,19 @@ textarea {
   display: grid;
   grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */
   gap: 20px; /* Espaçamento entre as colunas */
-  align-items: end; /* Alinha verticalmente */
+  align-items: start; /* Alinha verticalmente */
+}
+.novo-retorno {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.novo-retorno:hover {
+  background-color: #f0f0f0; /* Exemplo de destaque */
+}
+
+.icone-novo {
+  height: 20px;
 }

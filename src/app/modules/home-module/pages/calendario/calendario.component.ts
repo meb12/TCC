@@ -122,6 +122,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   getAppointments() {
     this.consultas.getData().subscribe({
       next: (response: any) => {
+        console.log(response);
         // Mapeia consultas normais e de retorno
         this.appointments = response.flatMap((appointment) => {
           // Define o título como "Consulta" para a consulta principal
@@ -132,6 +133,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
               .split('T')[0],
             doctor: appointment.doctorData,
             patient: appointment.pacientData,
+            hora: appointment.appointmentDate.split('T')[1].slice(0, 5),
           };
 
           // Define o título como "Retorno" para cada consulta de retorno
@@ -143,6 +145,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
                 .split('T')[0],
               doctor: returnAppt.doctorData,
               patient: appointment.pacientData,
+              hora: returnAppt.appointmentDate.split('T')[1].slice(0, 5),
             })
           );
 
@@ -215,6 +218,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         (selectedDoctors.length === 0 ||
           selectedDoctors.includes(appointment.doctor.id))
     );
+    console.log(this.displayedAppointments);
   }
 
   filterAppointments() {

@@ -58,9 +58,7 @@ export class ExclusaoModalPacienteComponent implements OnInit {
 
   formNovo = {};
 
-  ngOnInit() {
-    console.log('item recebido', this.item);
-  }
+  ngOnInit() {}
 
   salvar() {
     const formNovo = {

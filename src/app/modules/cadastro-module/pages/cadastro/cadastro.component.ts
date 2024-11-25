@@ -244,13 +244,16 @@ export class CadastroComponent implements OnInit {
   }
 
   handleConfirm() {
-    this.form.allergies = this.form.allergies.map((allergy) => {
-      if (typeof allergy === 'object') {
-        const { isEditing, ...rest } = allergy;
-        return rest;
-      }
-      return allergy; // Caso não seja um objeto esperado
-    });
+    console.log(this.form.tipoCadastro);
+    if (this.form.length > 0) {
+      this.form.allergies = this.form.allergies.map((allergy) => {
+        if (typeof allergy === 'object') {
+          const { isEditing, ...rest } = allergy;
+          return rest;
+        }
+        return allergy; // Caso não seja um objeto esperado
+      });
+    }
 
     if (this.form.tipoCadastro == 1) {
       if (!this.tipoAcao) {
@@ -325,7 +328,7 @@ export class CadastroComponent implements OnInit {
               );
             },
             error: (error) => {
-              this.toastr.error('Erro ao editar paciete. Tente novamente.');
+              this.toastr.error('Erro ao editar paciente. Tente novamente.');
             },
           });
         }
@@ -780,9 +783,6 @@ export class CadastroComponent implements OnInit {
       formData.append('photo', file);
       formData.append('id', id.toString()); // ID adicionado ao `FormData` conforme necessário
 
-      // Verifica o conteúdo do FormData antes do envio (debug)
-      console.log('FormData antes do envio:', formData.get('photo'));
-
       // Envia o FormData para o backend
       this.funcionariosService.putFoto(id, formData).subscribe({
         next: (response) => {
@@ -880,7 +880,6 @@ export class CadastroComponent implements OnInit {
       }
 
       // Para depuração: verifica o caminho da imagem
-      console.log('Preview Image SRC:', previewImage.src);
     } else {
       console.error('Elemento da imagem não encontrado!');
     }

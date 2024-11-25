@@ -120,6 +120,8 @@
   </div>
 </div>
 
+@if(tipoConsulta == 'consulta') {
+
 <div class="consulta-container">
   <span class="consulta-title">{{ "Exames" }}</span>
   <div class="attachment-list">
@@ -235,6 +237,7 @@
     </div>
   </div>
 </div>
+}
 
 <div class="consulta-container">
   <div class="observation-header">
@@ -266,17 +269,39 @@
   </div>
 </div>
 
-<div class="consulta-container" *ngIf="data.appointmentsReturn.length > 0">
+@if (tipoConsulta == 'consulta') {
+<div class="consulta-container">
   <span class="consulta-title"> {{ "Retornos" }}</span>
 
-  <div class="return-item" *ngFor="let appointment of data.appointmentsReturn">
+  <div
+    class="return-item"
+    *ngFor="let appointment of data.appointmentsReturn"
+    (click)="abrirRetorno(appointment.id)"
+  >
     <span>Retorno #{{ appointment.id }}</span>
-    <span
-      >{{ formatDate(appointment.appointmentDate) }}
+    <span>
+      {{ formatDate(appointment.appointmentDate) }}
       {{ formatTime(appointment.appointmentDate) }} -
-      {{ appointment.status }}</span
-    >
+      {{ appointment.status }}
+    </span>
+  </div>
+
+  <!-- Novo retorno -->
+  <div class="return-item" (click)="adicionarNovoRetorno()">
+    <span>Novo retorno</span>
+    <img
+      src="assets/img/add-icon.svg"
+      class="icone-novo"
+      alt="Adicionar novo retorno"
+    />
   </div>
 </div>
+}
 
 <div class="padding"></div>
+<app-modal-revisao-retorno
+  *ngIf="isPacienteModalOpen"
+  (close)="closePacienteModal()"
+  [data]="data"
+  [id]="this.consultaId"
+></app-modal-revisao-retorno>
