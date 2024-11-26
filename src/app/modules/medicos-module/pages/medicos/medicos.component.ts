@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { MedicosService } from '../../../../core/services/medicos.service';
 import { Router } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-medicos',
@@ -210,5 +212,76 @@ export class MedicosComponent implements OnInit {
 
   cadastrar() {
     this.router.navigate(['/cadastro/medico']);
+  }
+
+  exportToXlsx() {
+    // Cria uma nova planilha
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Médicos');
+
+    // Remove a coluna "Ações" e define as colunas com largura e título
+    const filteredColumns = this.tableColumns.filter(
+      (column) => column.key !== 'actions' // Exclui a coluna "Ações"
+    );
+
+    worksheet.columns = filteredColumns.map((column) => ({
+      header: column.header,
+      key: column.key,
+      width: 20, // Define uma largura padrão
+    }));
+
+    // Adiciona os dados da página atual ao Excel
+    this.paginatedData.forEach((data) => {
+      const row = { ...data };
+
+      // Substitui os valores de "isActive" (Status) por "Ativo" ou "Inativo"
+      if (row.isActive !== undefined) {
+        row.isActive = row.isActive ? 'Ativo' : 'Inativo'; // "true" -> "Ativo", "false" -> "Inativo"
+      }
+
+      // Corrige caminhos aninhados para CRM e Especialidade
+      row['doctorData.crm'] = row.doctorData?.crm || '';
+      row['doctorData.specialtyType.description'] =
+        row.doctorData?.specialtyType?.description || '';
+
+      worksheet.addRow(row); // Adiciona a linha formatada à planilha
+    });
+
+    // Estiliza o cabeçalho da planilha
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: '029af7' }, // Fundo azul claro
+      };
+      cell.font = { bold: true }; // Define o texto em negrito
+      cell.alignment = { horizontal: 'center', vertical: 'middle' }; // Centraliza o texto
+    });
+
+    // Estiliza as células de dados
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.eachCell((cell, colNumber) => {
+          // Centraliza o conteúdo de todas as células
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+          // Adiciona cor personalizada à coluna "Status"
+          if (filteredColumns[colNumber - 1]?.key === 'isActive') {
+            cell.font = {
+              bold: true, // Texto em negrito
+              color: {
+                argb: cell.value === 'Ativo' ? 'FF008000' : 'FFFF0000', // Verde para "Ativo", Vermelho para "Inativo"
+              },
+            };
+          }
+        });
+      }
+    });
+
+    // Gera o arquivo Excel e faz o download
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      saveAs(new Blob([buffer]), 'medicos_paginados.xlsx'); // Nome do arquivo gerado
+    });
   }
 }

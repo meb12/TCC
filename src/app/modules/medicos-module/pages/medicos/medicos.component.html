@@ -16,6 +16,16 @@
       ></app-input>
     </div>
     <div class="header-buttons">
+      <button
+        class="segundario"
+        [style.width]="'100%'"
+        (click)="exportToXlsx()"
+      >
+        <div class="button-display">
+          <img src="assets/img/file_export.svg" alt="" class="icone" />
+          {{ "Exportar" }}
+        </div>
+      </button>
       <button class="primario" [style.width]="'100%'" (click)="cadastrar()">
         {{ "Cadastrar" }}
       </button>

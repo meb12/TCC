@@ -45,7 +45,7 @@ h1 {
   align-self: flex-end;
   justify-content: flex-end;
   gap: 32px;
-  width: 10%;
+  width: 20%;
 }
 
 .buttons-table {
@@ -110,4 +110,16 @@ button.secundario:hover {
   display: flex;
   justify-content: flex-end;
   align-items: end;
+}
+
+.button-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.icone {
+  height: 18px;
 }

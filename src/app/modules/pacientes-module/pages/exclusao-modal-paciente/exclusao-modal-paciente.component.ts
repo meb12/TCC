@@ -63,12 +63,12 @@ export class ExclusaoModalPacienteComponent implements OnInit {
   salvar() {
     const formNovo = {
       id: this.item.id,
-      cpf: this.item.cpf,
+      cpf: this.unformat(this.item.cpf), // Remove a formatação do CPF
       documentNumber: this.item.documentNumber,
       name: this.item.name,
       dateOfBirth: this.item.dateOfBirth,
       email: this.item.email,
-      cellphone: this.item.cellphone,
+      cellphone: this.unformat(this.item.cellphone), // Remove a formatação do telefone
       userTypeId: this.item.userType.id,
       streetName: this.item.streetName,
       streetNumber: this.item.streetNumber,
@@ -96,6 +96,12 @@ export class ExclusaoModalPacienteComponent implements OnInit {
         this.toastr.error('Erro, tente novamente!');
       },
     });
+  }
+
+  // Função para remover a formatação
+  unformat(value: string): string {
+    if (!value) return '';
+    return value.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
   }
 
   closeOnClickOutside(event: MouseEvent) {

@@ -3,6 +3,8 @@ import { ITableColumn } from '../../../../shared/components/tabela/tabela.models
 import { Router } from '@angular/router';
 import { PacientesService } from '../../../../core/services/pacientes.service';
 import { PageEvent } from '@angular/material/paginator';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-pacientes',
@@ -21,9 +23,9 @@ export class PacientesComponent implements OnInit {
   data = '';
 
   selectData = [
-    { value: 1, name: 'Ativos' },
-    { value: 2, name: 'Inativos' },
-    { value: 3, name: 'Todos' },
+    { value: 60, name: 'Ativos' },
+    { value: 70, name: 'Inativos' },
+    { value: 80, name: 'Todos' },
   ];
 
   tableData: any[] = []; // Dados completos da tabela
@@ -32,6 +34,10 @@ export class PacientesComponent implements OnInit {
 
   pageSize = 5; // Número de itens por página
   currentPage = 0; // Página atual do paginator
+
+  searchValue: string = ''; // Valor da busca
+  selectedValue: number | string = 80; // Valor do filtro selecionado (80 para "Todos")
+  paginator: any = { length: 0, pageIndex: 0 }; // Paginador simulado para integração
 
   tableColumns: ITableColumn[] = [
     { header: 'Nome', key: 'name', type: 'text' },
@@ -94,45 +100,48 @@ export class PacientesComponent implements OnInit {
     });
   }
 
-  onSearchChange(searchValue: string) {
-    const lowerSearchValue = searchValue.toLowerCase();
-    this.filteredData = this.tableData.filter((item) => {
-      // Remove os caracteres não numéricos do CPF
-      const unmaskedCpf = item.cpf.replace(/\D/g, ''); // Remove tudo que não for número
+  applyFilters() {
+    const lowerSearchValue = this.searchValue?.toLowerCase().trim() || '';
+    const selectedValue = this.selectedValue;
 
-      return (
-        item.name.toLowerCase().includes(lowerSearchValue) || // Filtra por nome
-        item.id.toString().includes(searchValue) || // Filtra por ID
-        unmaskedCpf.includes(searchValue.replace(/\D/g, '')) || // Filtra por CPF sem máscara
-        item.cellphone.includes(searchValue) // Filtra por celular
-      );
+    this.filteredData = this.tableData.filter((item) => {
+      // Critérios de busca
+      const name = item.name?.toLowerCase() || '';
+      const id = item.id?.toString() || '';
+      const cpf = item.cpf?.toLowerCase() || '';
+      const phone = item.cellphone?.toLowerCase() || '';
+      const matchesSearch =
+        lowerSearchValue === '' || // Se não houver busca, considera tudo
+        name.includes(lowerSearchValue) ||
+        id.includes(lowerSearchValue) ||
+        cpf.includes(lowerSearchValue) ||
+        phone.includes(lowerSearchValue);
+
+      // Critérios de seleção
+      const matchesSelect =
+        selectedValue === 80 || // "80" para "todos"
+        (selectedValue === 60 && item.isActive === true) || // Ativos
+        (selectedValue === 70 && item.isActive === false); // Inativos
+
+      return matchesSearch && matchesSelect;
     });
 
-    this.currentPage = 0; // Reseta para a primeira página
+    // Atualiza a paginação
+    this.paginator.length = this.filteredData.length;
+    this.currentPage = 0;
+    this.paginator.pageIndex = this.currentPage;
     this.updatePaginatedData();
   }
 
-  onSelectChange(selectedValue: any) {
-    switch (selectedValue) {
-      case 1: // Ativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === true
-        );
-        break;
-      case 2: // Inativos
-        this.filteredData = this.tableData.filter(
-          (item) => item.isActive === false
-        );
-        break;
-      case 3: // Todos
-      default:
-        this.filteredData = [...this.tableData];
-        break;
-    }
-    this.currentPage = 0; // Reseta para a primeira página
-    this.updatePaginatedData();
+  onSearchChange(searchValue: string) {
+    this.searchValue = searchValue; // Armazena o valor da busca
+    this.applyFilters(); // Aplica os filtros combinados
   }
 
+  onSelectChange(selectedValue: number | string) {
+    this.selectedValue = selectedValue; // Armazena o valor selecionado
+    this.applyFilters(); // Aplica os filtros combinados
+  }
   updatePaginatedData() {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -188,5 +197,71 @@ export class PacientesComponent implements OnInit {
   formatPhone(phone: string): string {
     if (!phone) return '';
     return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  }
+
+  exportToXlsx() {
+    // Cria uma nova planilha
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Pacientes');
+
+    // Remove a coluna "Ações" e define as colunas com largura e título
+    const filteredColumns = this.tableColumns.filter(
+      (column) => column.key !== 'actions' // Exclui a coluna "Ações"
+    );
+
+    worksheet.columns = filteredColumns.map((column) => ({
+      header: column.header,
+      key: column.key,
+      width: 20, // Define uma largura padrão
+    }));
+
+    // Adiciona os dados da página atual ao Excel
+    this.paginatedData.forEach((data) => {
+      const row = { ...data };
+
+      // Substitui os valores de "isActive" (Status) por "Ativo" ou "Inativo"
+      if (row.isActive !== undefined) {
+        row.isActive = row.isActive ? 'Ativo' : 'Inativo'; // "true" -> "Ativo", "false" -> "Inativo"
+      }
+
+      worksheet.addRow(row); // Adiciona a linha formatada à planilha
+    });
+
+    // Estiliza o cabeçalho da planilha
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: '029af7' }, // Fundo azul claro
+      };
+      cell.font = { bold: true }; // Define o texto em negrito
+      cell.alignment = { horizontal: 'center', vertical: 'middle' }; // Centraliza o texto
+    });
+
+    // Estiliza as células de dados
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.eachCell((cell, colNumber) => {
+          // Centraliza o conteúdo de todas as células
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+          // Adiciona cor personalizada à coluna "Status"
+          if (filteredColumns[colNumber - 1]?.key === 'isActive') {
+            cell.font = {
+              bold: true, // Texto em negrito
+              color: {
+                argb: cell.value === 'Ativo' ? 'FF008000' : 'FFFF0000', // Verde para "Ativo", Vermelho para "Inativo"
+              },
+            };
+          }
+        });
+      }
+    });
+
+    // Gera o arquivo Excel e faz o download
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      saveAs(new Blob([buffer]), 'pacientes_paginados.xlsx'); // Nome do arquivo gerado
+    });
   }
 }
