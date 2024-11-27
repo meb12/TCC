@@ -4,6 +4,11 @@
   box-sizing: border-box; /* Garante que o padding e a borda não aumentem o tamanho */
 }
 
+.row-foto1 {
+  display: flex;
+  justify-content: end;
+}
+
 h3 {
   margin-top: 10px;
   font-size: 24px;
@@ -208,8 +213,10 @@ h1 {
   margin-top: 10px !important;
 }
 .upload-square {
+  width: 100%; /* Ocupar toda a largura da coluna */
+  height: 100%; /* Ocupar toda a altura da linha */
   width: 150px;
-  height: 150px;
+  height: 150px; /* Tamanho máximo opcional */
   border: 2px dashed #ccc;
   display: flex;
   justify-content: center;
@@ -217,8 +224,13 @@ h1 {
   position: relative;
   cursor: pointer;
   text-align: center;
-  overflow: hidden; /* Garante que a imagem não ultrapasse os limites do contêiner */
+  overflow: hidden;
   background-color: #d9d9d9;
+}
+.upload-square img {
+  object-fit: cover; /* A imagem preenche todo o contêiner */
+  width: 100%;
+  height: 100%;
 }
 
 .upload-square:hover {
@@ -268,7 +280,13 @@ h1 {
 
 .row-foto {
   display: flex;
-  justify-content: end;
+  justify-content: end; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  width: 100%; /* Ocupar toda a largura disponível */
+  height: 100%; /* Ocupar toda a altura disponível */
+  margin: 0; /* Remove margens externas */
+  padding: 0; /* Remove espaçamento interno */
+  box-sizing: border-box; /* Garante que padding e bordas sejam incluídos no tamanho total */
 }
 
 .icone {

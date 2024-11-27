@@ -40,22 +40,17 @@
       <h3>Informações Pessoais</h3>
     </div>
 
-    <div class="row-foto">
+    <div class="row-foto1">
       <!-- Upload de Foto com Quadrado -->
       <div class="row-foto">
-        <!-- Upload de Foto com Quadrado -->
         <div class="upload-square" (click)="triggerFileInput()">
           <img
             id="previewImage"
             [src]="imageSrc"
             class="preview-image"
-            [ngClass]="{
-              foto: imageSrc === 'assets/img/image-avatar.svg',
-              'preview-image': imageSrc !== 'assets/img/image-avatar.svg'
-            }"
+            alt="Preview"
           />
-
-          <span id="uploadText" class="upload-text"></span>
+          <span id="uploadText" class="upload-text">Upload</span>
           <input
             type="file"
             id="fileInput"

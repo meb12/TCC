@@ -89,17 +89,45 @@
     <!-- Consultations Tab -->
 
     <div class="consulta-container1" *ngIf="activeTab === 'consultas'">
+      <div class="status">
+        <app-input
+          label="Status"
+          type="select"
+          width="100%"
+          name="status"
+          [selectData]="Status"
+          [(ngModel)]="form.status"
+          (ngModelChange)="filterConsultas()"
+        ></app-input>
+      </div>
+      <!-- <div>
+        <select id="status-filter">
+          <option value="">Todos</option>
+          <option value="Agendada">Agendada</option>
+          <option value="Realizada">Realizada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+      </div> -->
       <div *ngIf="consultas.length == 0">Não há consultas disponíveis.</div>
       <div
-        *ngFor="let consulta of consultas"
+        *ngFor="let consulta of consultasFiltradas"
         class="consulta-card"
         (click)="redirectToConsulta(consulta.id)"
       >
-        <div>
-          <span class="consulta-title">Consulta #{{ consulta.id }}</span>
-          <span class="consulta-date">{{
-            formatarValor("data", consulta.appointmentDate)
-          }}</span>
+        <div class="header-consulta-status">
+          <div>
+            <span class="consulta-title">Consulta #{{ consulta.id }}</span>
+            <span class="consulta-date"
+              >{{ formatarValor("data", consulta.appointmentDate) }} -
+              {{ formatarValor("hora", consulta.appointmentDate) }}
+            </span>
+          </div>
+          <span
+            class="consulta-date"
+            [style.color]="getStatusColor(consulta.status)"
+          >
+            <strong> {{ consulta.status }}</strong></span
+          >
         </div>
         <div class="title-container">
           <span class="consulta-medico">
@@ -109,9 +137,6 @@
           <span class="consulta-especialidade">
             {{ consulta.doctorData.specialtyType.description }}
           </span>
-        </div>
-        <div class="consulta-especialidade" *ngIf="consulta.observation">
-          <span><strong>Observação:</strong> {{ consulta.observation }}</span>
         </div>
       </div>
     </div>

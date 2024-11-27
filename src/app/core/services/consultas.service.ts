@@ -36,4 +36,8 @@ export class ConsultasService {
   putData(data: any): Observable<any> {
     return this.http.put(this.baseURL, data);
   }
+
+  getConsultaMedico(id: any): Observable<any> {
+    return this.http.get(this.baseURL + '?doctorUserId=' + id);
+  }
 }

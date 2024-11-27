@@ -10,10 +10,19 @@ import { FuncionariosService } from '../../../../core/services/funcionarios.serv
 })
 export class ModalInformacaoPacienteComponent implements OnInit {
   @Input() data;
-
+  selectedStatus: string = 'Agendada';
   activeTab = 'informacoes';
-
+  Status = [
+    { value: 'Agendada', name: 'Agendada' },
+    { value: 'Concluída', name: 'Concluída' },
+    { value: 'Cancelada', name: 'Cancelada' },
+  ];
+  form = {
+    status: '',
+  };
   consultas = []; // Remove os dados mockados e inicializa como um array vazio
+
+  consultasFiltradas: any[] = []; // Armazenar as consultas filtradas
 
   activateTab(tab: string) {
     this.activeTab = tab;
@@ -48,6 +57,12 @@ export class ModalInformacaoPacienteComponent implements OnInit {
       case 'rg':
         return valor.replace(/^(\d{2})(\d{3})(\d{3})(\d{1})$/, '$1.$2.$3-$4');
 
+      case 'hora':
+        // Se o valor contiver uma data/hora no formato 'YYYY-MM-DDTHH:mm:ss'
+        const [, hora] = valor.split('T'); // Pega a parte após 'T' (hora:minuto:segundo)
+        const [horaFormatada, minutos] = hora.split(':'); // Pega a parte da hora e os minutos
+        return `${horaFormatada}:${minutos}`; // Retorna a hora no formato HH:mm
+
       default:
         return '';
     }
@@ -68,6 +83,7 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     this.consultas1.getDataPacienteId(this.data.id).subscribe({
       next: (response) => {
         this.consultas = response;
+        this.filterConsultas();
       },
       error: (error) => {
         console.error('Erro ao carregar consultas:', error);
@@ -79,6 +95,19 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     this.router.navigate([`/pacientes/consulta/individual/${id}`]);
   }
 
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'Concluída':
+        return '#8CC738'; // Verde
+      case 'Finalizada':
+        return '#EE404C'; // Vermelho
+      case 'Agendada':
+        return '#398FE2'; // Azul
+      default:
+        return ''; // Sem cor
+    }
+  }
+
   constructor(
     private consultas1: ConsultasService,
     private router: Router,
@@ -88,5 +117,17 @@ export class ModalInformacaoPacienteComponent implements OnInit {
   ngOnInit() {
     this.getFoto();
     this.getConsultas(); // Corrige a chamada do método, adicionando os parênteses
+  }
+
+  filterConsultas() {
+    if (this.form.status) {
+      // Filtra as consultas com o status selecionado
+      this.consultasFiltradas = this.consultas.filter(
+        (consulta) => consulta.status === this.form.status
+      );
+    } else {
+      // Se não houver filtro (status vazio), mostra todas as consultas
+      this.consultasFiltradas = [...this.consultas];
+    }
   }
 }
