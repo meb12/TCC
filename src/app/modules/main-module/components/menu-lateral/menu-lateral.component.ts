@@ -75,10 +75,20 @@ export class MenuLateralComponent implements OnInit {
       ],
     },
   ];
+  permissoes: any;
+  permissoes1: any;
 
   constructor(private router: Router, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
+    const permissoesString = localStorage.getItem('userInfo');
+    if (permissoesString) {
+      this.permissoes1 = JSON.parse(permissoesString);
+      this.permissoes = this.permissoes1.userType.permissions;
+    } else {
+      console.log('Nenhuma permissão encontrada no localStorage.');
+    }
+
     // Chama o scroll no topo ao carregar a página
     this.scrollToTop();
 
@@ -178,6 +188,40 @@ export class MenuLateralComponent implements OnInit {
     }
   }
 
+  shouldDisplayMenu(item: any): boolean {
+    // Verifica a permissão para cada módulo baseado no nome do módulo
+    if (item.modulo === 'Pacientes') {
+      if (item.listSubmenu.menu == 'Cadastrar') {
+        return this.permissoes['canEditInfoPatient'];
+      }
+      return this.permissoes['listOfPatients'];
+    } else if (item.modulo === 'Médicos') {
+      return this.permissoes['listOfDoctors'];
+    } else if (item.modulo === 'Funcionários') {
+      return this.permissoes['listOfEmployees'];
+    }
+    return false;
+  }
+
+  isPacienteCadastrar(subItem: any): boolean {
+    if (subItem.route == 'cadastro/paciente' && subItem.menu == 'Cadastrar') {
+      return this.permissoes['canEditInfoPatient'];
+    }
+    if (subItem.route == 'pacientes/listagem' && subItem.menu == 'Listagem') {
+      return this.permissoes['listOfPatients'];
+    }
+    if (subItem.route == 'medicos/listagem,' && subItem.menu == 'Listagem') {
+      return this.permissoes['listOfDoctors'];
+    }
+    if (
+      subItem.route == 'funcionarios/listagem,' &&
+      subItem.menu == 'Listagem'
+    ) {
+      return this.permissoes['listOfEmployees'];
+    }
+
+    return true;
+  }
   sair() {
     this.router.navigate(['login']);
     localStorage.clear();

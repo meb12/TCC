@@ -9,11 +9,11 @@ import { EspecialidadeService } from '../../../../core/services/especalidades.se
 import { RetornosService } from '../../../../core/services/retornos.service';
 
 @Component({
-  selector: 'app-modal-revisao-retorno',
-  templateUrl: './modal-revisao-retorno.component.html',
-  styleUrls: ['./modal-revisao-retorno.component.css'],
+  selector: 'app-modal-reagendamento',
+  templateUrl: './modal-reagendamento.component.html',
+  styleUrls: ['./modal-reagendamento.component.css'],
 })
-export class ModalRevisaoRetornoComponent implements OnInit {
+export class ModalReagendamentoComponent implements OnInit {
   @Input() data;
 
   @Output() close = new EventEmitter<void>();
@@ -64,10 +64,10 @@ export class ModalRevisaoRetornoComponent implements OnInit {
       case 'data':
         if (valor.includes('T')) {
           const [date] = valor.split('T');
-          const [ano, mes, dia] = date.split('-').map((str) => str.trim()); // Remove espaços extras
+          const [ano, mes, dia] = date.split('-').map((str) => str.trim());
           return `${dia}/${mes}/${ano}`;
         } else if (valor.includes('-')) {
-          const [ano, mes, dia] = valor.split('-').map((str) => str.trim()); // Remove espaços extras
+          const [ano, mes, dia] = valor.split('-').map((str) => str.trim());
           return `${dia}/${mes}/${ano}`;
         } else if (/^\d{8}$/.test(valor)) {
           // Formato sem separadores (ex.: 29112025)
@@ -127,16 +127,15 @@ export class ModalRevisaoRetornoComponent implements OnInit {
     const adjustedDate = `${ano}-${mes}-${dia}T${horarioValue}`;
 
     const submitForm = {
-      date: adjustedDate,
-      observation: null,
+      id: this.data.id,
+      date: this.data.appointmentDate,
+      observation: this.data.observation,
       isActive: true,
-      doctorId: this.form.medico,
-      appointmentId: this.id,
     };
 
-    this.retornos.postData(submitForm).subscribe({
+    this.consultas.putData(submitForm).subscribe({
       next: (response) => {
-        this.toastr.success('Retorno agendado com sucesso!');
+        this.toastr.success('Reagendamento realizado com sucesso!');
         this.closeModal();
       },
       error: (error) => {
@@ -163,18 +162,6 @@ export class ModalRevisaoRetornoComponent implements OnInit {
     if (this.lastMedicoValue !== medicoValue) {
       this.lastMedicoValue = medicoValue;
 
-      // Encontrar o nome do médico com base no ID selecionado
-      const selectedMedico = this.medicosOptions.find(
-        (medico) => medico.value === medicoValue
-      );
-
-      // Atualizar o form com o nome do médico, se encontrado
-      if (selectedMedico) {
-        this.form.nomeMedico = selectedMedico.name;
-      } else {
-        this.form.nomeMedico = ''; // Limpar o nome se não encontrar
-      }
-
       this.getHorariosIndisponiveis();
     }
   }
@@ -191,6 +178,7 @@ export class ModalRevisaoRetornoComponent implements OnInit {
     this.horarioOptions = [];
     this.form.horario = null;
 
+    console.log(this.form.date.length);
     // Validar se a data é válida e se está no presente ou futuro
     if (this.form.date.length !== 8) {
       return; // Data incompleta ou inválida, não faz a requisição
@@ -221,6 +209,7 @@ export class ModalRevisaoRetornoComponent implements OnInit {
       return; // Data no passado, não faz a requisição
     }
 
+    console.log('this.medico', this.form.medico);
     // Faz a requisição apenas se a data for hoje ou no futuro
     if (this.form.medico) {
       this.consultas
@@ -332,47 +321,7 @@ export class ModalRevisaoRetornoComponent implements OnInit {
     const ano = parseInt(dataString.substring(4, 8));
     return `${ano}-${mes}-${dia} `;
   }
-  getMedicos() {
-    this.medicos.getData().subscribe({
-      next: (response) => {
-        // Mapeia a resposta da API para o formato esperado
-        this.medicosOptions = response.map((medico: any) => ({
-          value: medico.id, // O ID do médico será usado como "value"
-          name: medico.name, // Título conforme o gênero
-          especialidadeId: medico.doctorData.specialtyType.id, // ID da especialidade
-          especialidade: medico.doctorData.specialtyType.description, // Nome da especialidade
-          intervaloConsulta:
-            medico.doctorData.specialtyType.intervalBetweenAppointments, // Intervalo entre consultas
-          status: medico.isActive,
-        }));
 
-        this.filteredMedicos = this.medicosOptions.filter(
-          (medico) =>
-            medico.especialidadeId === this.form.especialidades &&
-            medico.status === true
-        );
-      },
-      error: (error) => {
-        console.error('Erro ao carregar médicos:', error);
-      },
-    });
-  }
-  onEspecialidadeChange(especialidadeValue: number) {
-    // Quando a especialidade muda, limpar os campos relacionados
-    this.form.medico = '';
-    this.form.date = '';
-    this.form.horario = '';
-
-    // Resetar as listas filtradas e as opções de horário disponíveis
-    this.filteredMedicos = [];
-    this.horarioOptions = [];
-
-    // Filtrar os médicos baseados no especialidadeId selecionado
-    this.filteredMedicos = this.medicosOptions.filter(
-      (medico) =>
-        medico.especialidadeId === especialidadeValue && medico.status === true
-    );
-  }
   formValido(): boolean {
     // Validar data
     if (this.form.date.length !== 8) {
@@ -418,11 +367,14 @@ export class ModalRevisaoRetornoComponent implements OnInit {
     return true;
   }
   ngOnInit() {
+    console.log('data', this.data);
     this.form.especialidades = this.data.doctorData.specialtyType.id;
     this.form.especialidadeNome =
       this.data.doctorData.specialtyType.specialtyName;
-    this.getEspecialidades();
-    this.getMedicos();
-    this.onEspecialidadeChange(this.form.especialidades);
+    this.form.medico = this.data.doctorData.id;
+    this.form.nomeMedico = this.data.doctorData.name;
+
+    console.log(this.data);
+    console.log(this.form);
   }
 }

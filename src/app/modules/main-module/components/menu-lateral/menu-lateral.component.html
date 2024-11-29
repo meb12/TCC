@@ -29,6 +29,7 @@
           *ngFor="let item of listMenu"
           [ngClass]="item.open ? 'menu-selecionado' : ''"
         >
+          @if( shouldDisplayMenu(item)) {
           <app-titulo-menu
             type="principal"
             [src]="item.src"
@@ -37,16 +38,21 @@
             (click)="selecionarMenu(item)"
           ></app-titulo-menu>
           <div class="sub-menu" *ngIf="item.open">
-            <app-titulo-menu
-              type="subtitulo"
-              *ngFor="let subItem of item.listSubmenu"
-              [src]="subItem.src"
-              [name]="subItem.menu"
-              [sair]="subItem.manutencao"
-              [open]="subItem.selecionado"
-              (click)="navegar(subItem)"
-            ></app-titulo-menu>
+            <ng-container *ngFor="let subItem of item.listSubmenu">
+              <!-- Aplica a condição para "Cadastrar" no submenu de Pacientes -->
+              @if (isPacienteCadastrar(subItem)) {
+              <app-titulo-menu
+                type="subtitulo"
+                [src]="subItem.src"
+                [name]="subItem.menu"
+                [sair]="subItem.manutencao"
+                [open]="subItem.selecionado"
+                (click)="navegar(subItem)"
+              ></app-titulo-menu>
+              }
+            </ng-container>
           </div>
+          }
         </div>
       </div>
 

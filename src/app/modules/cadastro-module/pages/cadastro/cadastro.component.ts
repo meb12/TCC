@@ -67,6 +67,8 @@ export class CadastroComponent implements OnInit {
   cadastroOptions = [];
   isFormValid: boolean = true;
 
+  permissoes: any;
+  permissoes1: any;
   constructor(
     private cepService: CepService,
     private router: Router,
@@ -82,6 +84,14 @@ export class CadastroComponent implements OnInit {
   }
 
   ngOnInit() {
+    const permissoesString = localStorage.getItem('userInfo');
+    if (permissoesString) {
+      this.permissoes1 = JSON.parse(permissoesString);
+      this.permissoes = this.permissoes1.userType.permissions;
+    } else {
+      console.log('Nenhuma permissão encontrada no localStorage.');
+    }
+    console.log(this.permissoes);
     this.setupRouteListener();
     this.validateRouteOnLoad();
     this.getEspecialidades();

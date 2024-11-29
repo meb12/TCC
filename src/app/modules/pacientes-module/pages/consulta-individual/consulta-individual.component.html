@@ -8,11 +8,11 @@
   <div class="corpo">
     <div class="consulta-header">
       <div>
-        <span class="patient-title">{{ data.pacientData.name }}</span>
+        <span class="patient-title">{{ data?.pacientData.name }}</span>
       </div>
       <div>
         <span class="patient-subtitle">
-          {{ "Cod." + data.pacientData.id }}</span
+          {{ "Cod." + data?.pacientData.id }}</span
         >
       </div>
     </div>
@@ -79,9 +79,25 @@
         <span>Nenhuma alergia informada pelo paciente</span>
       </ng-template>
     </div>
-    <div class="buttons">
-      <button>Reagendar</button>
-      <button>Cancelar</button>
+    <div
+      class="buttons"
+      *ngIf="this.permissoes['makeAppointment'] && data.status !== 'Cancelada'"
+    >
+      <button
+        [disabled]="!isButtonEnabled"
+        class="btn-consulta"
+        *ngIf="data.status !== 'Concluída'"
+        (click)="reagendar()"
+      >
+        Reagendar
+      </button>
+      <button
+        class="btn-consulta"
+        [disabled]="isButtonCancelado"
+        (click)="cancelarConsulta()"
+      >
+        Cancelar
+      </button>
     </div>
   </div>
 </div>
@@ -162,7 +178,7 @@
     </div>
 
     <!-- Botão de upload -->
-    <div>
+    <div *ngIf="this.permissoes['canTakeExams']">
       <div class="attachment-item">
         <label for="file-upload" class="attachment-label">
           <img
@@ -223,7 +239,7 @@
     </div>
 
     <!-- Botão de upload -->
-    <div>
+    <div *ngIf="this.permissoes['canTakeExams']">
       <div class="attachment-item">
         <label class="attachment-label" (click)="receita()">
           <img
@@ -242,7 +258,7 @@
 <div class="consulta-container">
   <div class="observation-header">
     <label for="observations" class="consulta-title">Observações</label>
-    <ng-container *ngIf="!isEditing">
+    <ng-container *ngIf="!isEditing && canEditObs()">
       <img
         class="icone"
         src="assets/img/editar.svg"
@@ -287,7 +303,11 @@
   </div>
 
   <!-- Novo retorno -->
-  <div class="return-item" (click)="adicionarNovoRetorno()">
+  <div
+    class="return-item"
+    (click)="adicionarNovoRetorno()"
+    *ngIf="this.permissoes['makeAppointment']"
+  >
     <span>Novo retorno</span>
     <img
       src="assets/img/add-icon.svg"
@@ -305,3 +325,17 @@
   [data]="data"
   [id]="this.consultaId"
 ></app-modal-revisao-retorno>
+
+<app-exclusao-consulta
+  (closeModal)="closeModal()"
+  *ngIf="showModalExclusao"
+  [item]="item"
+  [tipo]="tipo"
+></app-exclusao-consulta>
+
+<app-modal-reagendamento
+  *ngIf="isReagendamentoOpen"
+  (close)="closeReagendamentoModal()"
+  [data]="data"
+  [id]="this.consultaId"
+></app-modal-reagendamento>

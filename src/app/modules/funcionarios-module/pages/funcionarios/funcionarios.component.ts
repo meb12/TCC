@@ -140,10 +140,18 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
         );
 
         // Filtra a lista de funcionários para remover o usuário atual
-        this.tableData = response.filter(
+        let filteredUsers = response.filter(
           (user: any) => user.id !== currentUser.id
         );
 
+        // Se o usuário for um recepcionista, filtra os administradores
+        if (currentUser.userType.name === 'Recepcionista') {
+          filteredUsers = filteredUsers.filter(
+            (user: any) => user.userType.name !== 'Administrador'
+          );
+        }
+
+        this.tableData = filteredUsers;
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os itens
         this.paginator.length = this.filteredData.length; // Define o `length` inicial do paginator
         this.updatePaginatedData(); // Atualiza os dados paginados

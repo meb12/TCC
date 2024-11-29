@@ -145,11 +145,8 @@
   background-color: #fafafa;
   border: 1px solid #ddd;
   border-radius: 8px;
-
   display: flex;
-
   align-items: center;
-
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -158,6 +155,7 @@
   color: #333;
   max-width: 400px;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .return-item span:first-child {
@@ -451,16 +449,24 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  button {
-    border: 1px solid #0061be;
-    border-radius: 10px;
-    color: white;
-    background-color: #307ac1;
-    padding: 5px;
-    cursor: pointer;
-  }
 }
 
+.btn-consulta {
+  border: 1px solid #0061be;
+  border-radius: 10px;
+  color: white;
+  background-color: #307ac1;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.btn-consulta:disabled {
+  background-color: #9a9a9aed !important;
+  border: none !important;
+  color: black !important;
+  cursor: not-allowed !important; /* O cursor será mostrado como "não permitido" */
+  opacity: 0.6; /* Diminui a opacidade para mostrar visualmente que está desabilitado */
+}
 .grid1 {
   display: grid;
   grid-template-columns: 4fr 1fr; /* Ajusta a proporção: 80% corpo, 20% foto */

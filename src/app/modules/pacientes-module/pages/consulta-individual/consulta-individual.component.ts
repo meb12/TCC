@@ -20,7 +20,18 @@ export class ConsultaIndividualComponent implements OnInit {
   observationText: string = '';
   files = [];
   isPacienteModalOpen = false;
+  isReagendamentoOpen = false;
   tipoConsulta: string | null = null;
+  permissoes: any;
+  permissoes1: any;
+
+  isButtonEnabled: boolean = false;
+  isButtonCancelado: boolean = false;
+  showModalExclusao: boolean = false;
+  tipo = '';
+  idPaciente = 0;
+  item: any;
+
   constructor(
     private router: Router,
     private consultas: ConsultasService,
@@ -36,7 +47,13 @@ export class ConsultaIndividualComponent implements OnInit {
     const urlSegments = this.router.url.split('/');
     this.consultaId = urlSegments[4];
     this.tipoConsulta = urlSegments[2];
-    console.log(this.tipoConsulta);
+    const permissoesString = localStorage.getItem('userInfo');
+    if (permissoesString) {
+      this.permissoes1 = JSON.parse(permissoesString);
+      this.permissoes = this.permissoes1.userType.permissions;
+    } else {
+      console.log('Nenhuma permissão encontrada no localStorage.');
+    }
     if (this.tipoConsulta == 'consulta') {
       this.getConsultas();
     } else {
@@ -75,6 +92,9 @@ export class ConsultaIndividualComponent implements OnInit {
     this.consultas.getDataId(this.consultaId).subscribe({
       next: (response) => {
         this.data = response;
+        this.idPaciente = response.pacientData.id;
+        this.checkButtonState();
+        this.checkButtonCancel();
         this.getFoto();
       },
       error: (error) => {
@@ -89,7 +109,7 @@ export class ConsultaIndividualComponent implements OnInit {
         this.data = {
           ...response, // Inclui todos os dados da resposta original
           pacientData: {
-            id: 128,
+            id: 136,
             name: 'paciente certo duda',
             email: 'awi@gmail.com',
             cellphone: '11111111111',
@@ -292,12 +312,95 @@ export class ConsultaIndividualComponent implements OnInit {
     this.isPacienteModalOpen = true;
   }
 
+  reagendar() {
+    // Aqui você pode abrir um modal ou redirecionar para uma página de cadastro de retorno.
+    this.isReagendamentoOpen = true;
+  }
+
   closePacienteModal() {
     this.isPacienteModalOpen = false;
     this.getConsultas();
   }
 
+  closeReagendamentoModal() {
+    this.isReagendamentoOpen = false;
+    this.getConsultas();
+  }
+
   abrirRetorno(id: number) {
     this.router.navigate([`/pacientes/retorno/individual/${id}`]);
+  }
+
+  // Função para calcular a diferença de dias e habilitar/desabilitar o botão
+  checkButtonState(): void {
+    const appointmentDate = new Date(this.data.appointmentDate); // Data do agendamento
+    const currentDate = new Date(); // Data atual
+
+    // Calcula a diferença entre as datas, considerando horas, minutos e segundos
+    const diffInTime = appointmentDate.getTime() - currentDate.getTime();
+
+    // Converte a diferença de milissegundos para horas
+    const diffInHours = diffInTime / (1000 * 3600); // 1000ms * 3600s
+
+    console.log();
+    // Se a diferença for maior ou igual a 24 horas, habilita o botão
+    if (diffInHours >= 24) {
+      this.isButtonEnabled = true;
+    } else {
+      this.isButtonEnabled = false;
+    }
+  }
+
+  checkButtonCancel() {
+    if (
+      this.data.observation == '' ||
+      (this.data.observation == null && this.data.status == 'Agendado') ||
+      this.data.status == 'Concluído'
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  closeModal() {
+    this.showModalExclusao = false;
+    this.getConsultas();
+  }
+
+  cancelarConsulta() {
+    this.showModalExclusao = true;
+    this.tipo = 'consulta';
+    this.item = {
+      id: this.consultaId,
+      date: this.data.appointmentDate,
+      observation: this.data.observation,
+      isActive: false,
+      paciente: this.data.pacientData.name,
+      dataConsulta: this.formatarValor('data', this.data.appointmentDate),
+      sexo: this.data.pacientData.gender,
+    };
+  }
+
+  canEditObs(): boolean {
+    // Verifica se a consulta foi realizada nos últimos 24h a partir de data.appointmentDate
+    const now = new Date();
+    const appointmentDate = new Date(this.data.appointmentDate); // data.appointmentDate é a data da consulta
+    const timeDifference = now.getTime() - appointmentDate.getTime();
+    const timeDifferenceInHours = timeDifference / (1000 * 3600);
+
+    // Obtém o objeto userInfo do localStorage e extrai o ID do médico logado
+    const userInfo = localStorage.getItem('userInfo');
+    const loggedDoctorId = userInfo ? JSON.parse(userInfo).id : null;
+
+    // Verifica se o médico logado é o responsável pela consulta
+    const isResponsibleDoctor = this.data.doctorData.id === loggedDoctorId;
+
+    // A observação pode ser editada apenas se o tempo for inferior a 24h após a data da consulta e o médico for o responsável
+    return (
+      timeDifferenceInHours <= 24 &&
+      isResponsibleDoctor &&
+      this.permissoes['canEditObsAppointment']
+    );
   }
 }

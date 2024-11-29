@@ -27,7 +27,7 @@
         <app-input
           (validChange)="onChildValidityChange($event)"
           label="Tipo de cadastro"
-          type="select"
+          [type]="permissoes['canEditInfoPatient'] ? 'select' : 'readonly'"
           width="100%"
           name="userType"
           [selectData]="cadastroOptions"
@@ -67,7 +67,7 @@
     <!-- Name Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
-      type="text"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Nome"
       name="name"
       required="true"
@@ -81,7 +81,7 @@
     <app-input
       (validChange)="onChildValidityChange($event)"
       label="Data de Nascimento"
-      type="date"
+      [type]="permissoes['canEditInfoPatient'] ? 'date' : 'readonly'"
       name="dateOfBirth"
       inputClassName="input-standard"
       [(ngModel)]="form.dateOfBirth"
@@ -93,6 +93,7 @@
     <!-- CPF Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="CPF"
       name="cpf"
       inputClassName="input-standard"
@@ -108,6 +109,7 @@
     <!-- RG Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="RG"
       name="documentNumber"
       mask="00.000.000-0"
@@ -121,7 +123,7 @@
     <!-- Nacionalidade Select -->
     <app-input
       (validChange)="onChildValidityChange($event)"
-      type="select"
+      [type]="permissoes['canEditInfoPatient'] ? 'select' : 'readonly'"
       width="100%"
       name="gender"
       label="Sexo"
@@ -134,6 +136,7 @@
     <!-- Celular Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Celular"
       name="cellphone"
       inputClassName="input-standard"
@@ -148,6 +151,7 @@
     <!-- CEP Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="CEP"
       name="cep"
       inputClassName="input-standard"
@@ -161,6 +165,7 @@
     <!-- Logradouro Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Logradouro"
       name="streetName"
       inputClassName="input-standard"
@@ -172,6 +177,7 @@
     <!-- Número Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Número"
       name="streetNumber"
       inputClassName="input-standard"
@@ -185,6 +191,7 @@
     <!-- Bairro Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Bairro"
       name="neighborhood"
       inputClassName="input-standard"
@@ -196,6 +203,7 @@
     <!-- Cidade Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Cidade"
       name="city"
       [(ngModel)]="form.city"
@@ -207,6 +215,7 @@
     <!-- UF Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="UF"
       name="stateName"
       inputClassName="input-standard"
@@ -220,6 +229,7 @@
     <!-- Complemento Input -->
     <app-input
       (validChange)="onChildValidityChange($event)"
+      [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
       label="Complemento"
       name="complement"
       inputClassName="input-standard"
@@ -231,6 +241,7 @@
     <div class="grid-2fr">
       <app-input
         (validChange)="onChildValidityChange($event)"
+        [type]="permissoes['canEditInfoPatient'] ? 'text' : 'readonly'"
         label="E-mail"
         name="email"
         type="text"
@@ -255,7 +266,11 @@
         class="alergias"
         [placeholder]="'Digite novas alergias'"
       ></app-input>
-      <button (click)="addAllergy()" class="alergias-btn add-btn btn-alergia2">
+      <button
+        (click)="addAllergy()"
+        class="alergias-btn add-btn btn-alergia2"
+        *ngIf="permissoes['canEditAllergiesPatient']"
+      >
         <img src="assets/img/add.svg" alt="" class="icone" />
       </button>
     </div>
@@ -275,14 +290,14 @@
           class="alergias"
         />
         <button
-          *ngIf="!allergy.isEditing"
+          *ngIf="!allergy.isEditing && permissoes['canEditAllergiesPatient']"
           (click)="editAllergy(i)"
           class="alergias-btn edit-btn btn-alergia1"
         >
           <img src="assets/img/edit.svg" alt="" class="icone" />
         </button>
         <button
-          *ngIf="allergy.isEditing"
+          *ngIf="allergy.isEditing && permissoes['canEditAllergiesPatient']"
           (click)="saveAllergy(i)"
           class="alergias-btn save-btn btn-alergia1"
         >
