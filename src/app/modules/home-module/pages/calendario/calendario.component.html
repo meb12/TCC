@@ -1,4 +1,27 @@
 <div class="calendar-layout">
+  <!-- calendar.component.html -->
+  <div class="calendar-container">
+    <!-- Lista de médicos com checkboxes -->
+
+    <!-- Filtros de mês e ano -->
+    <div #dateSelector class="date-selector">
+      <select [(ngModel)]="selectedMonth" (change)="onMonthYearChange()">
+        <option *ngFor="let month of monthOptions" [value]="month.value">
+          {{ month.label }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="selectedYear" (change)="onMonthYearChange()">
+        <option *ngFor="let year of yearOptions" [value]="year.value">
+          {{ year.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="calendar-container">
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
   <div class="doctor-filter">
     <div class="testando">
       <div class="testando-medicos">
@@ -61,29 +84,6 @@
         [description2Value]="graph.description2Value"
         [totalValue]="graph.totalValue"
       ></app-dashboard>
-    </div>
-  </div>
-  <!-- calendar.component.html -->
-  <div class="calendar-container">
-    <!-- Lista de médicos com checkboxes -->
-
-    <!-- Filtros de mês e ano -->
-    <div #dateSelector class="date-selector">
-      <select [(ngModel)]="selectedMonth" (change)="onMonthYearChange()">
-        <option *ngFor="let month of monthOptions" [value]="month.value">
-          {{ month.label }}
-        </option>
-      </select>
-
-      <select [(ngModel)]="selectedYear" (change)="onMonthYearChange()">
-        <option *ngFor="let year of yearOptions" [value]="year.value">
-          {{ year.label }}
-        </option>
-      </select>
-    </div>
-
-    <div class="calendar-container">
-      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
     </div>
   </div>
 </div>

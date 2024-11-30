@@ -1,14 +1,21 @@
 .calendar-layout {
   display: flex;
-  align-items: flex-start; /* Alinha o topo de ambos */
-  gap: 20px; /* Espaçamento entre o filtro e o calendário */
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100vh; /* Faz o layout ocupar toda a altura da tela */
+  overflow: hidden; /* Previne rolagem vertical */
 }
 
 /* Define o tamanho da lista de médicos */
 .doctor-filter {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 250px; /* Aumentei um pouco a largura para não apertar os itens */
+  margin-right: 20px; /* Espaçamento entre a lista de médicos e o calendário */
+  justify-content: space-between;
+  height: 100%; /* Deixa o filtro dos médicos preencher toda a altura da tela */
+  overflow-y: auto; /* Permite rolagem no filtro caso a lista de médicos seja muito longa */
 }
 /*  */
 /* Define o tamanho do contêiner do calendário */
@@ -23,14 +30,10 @@
 full-calendar {
   height: 85vh;
 }
-
 .testando {
-  margin-top: 73px; /* Ajuste conforme necessário para alinhar com o calendário */
   height: 100%;
-  width: 100%;
   overflow: auto;
-
-  box-sizing: border-box;
+  padding: 10px;
 }
 
 .testando2 {
@@ -71,25 +74,32 @@ full-calendar {
   height: 20px;
 }
 
-.fc .fc-daygrid-day {
-  height: 100px; /* Ajuste o valor conforme necessário */
+.fc-daygrid-day-events {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* Para garantir que os eventos não ultrapassem a célula */
+}
+
+.fc-daygrid-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 100px; /* Altura mínima para cada célula */
+  height: auto; /* Permite que a célula se ajuste ao conteúdo */
 }
 
 .fc-daygrid-day-frame {
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 100%; /* Preenche toda a altura da célula */
-}
-
-.fc-daygrid-event-harness {
-  width: 70px !important; /* Define a largura fixa para os eventos */
-  max-width: 100%; /* Garante que os eventos não ultrapassem a largura da célula */
-}
-
-.fc-daygrid-day-events {
-  max-height: 80%; /* Ajuste para limitar a altura ocupada pelos eventos */
-  overflow: hidden; /* Esconde o overflow dos eventos */
+  align-items: center;
+  height: 100%; /* Garantir que o conteúdo da célula ocupe toda a altura */
+  width: 100%; /* Garantir que o conteúdo da célula ocupe toda a largura */
 }
 
 ::ng-deep .fc .fc-daygrid-day {
@@ -134,13 +144,19 @@ full-calendar {
 }
 
 .calendar-container {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Faz o calendário crescer para ocupar o restante do espaço */
+  overflow: hidden;
+  max-height: 100vh; /* Garantir que o calendário ocupe toda a altura disponível */
 }
 
+/* Estilos para o calendário */
 .fc {
   width: 100%;
-  min-width: 300px; /* Define um tamanho mínimo para não quebrar a exibição */
-  box-sizing: border-box;
+  height: 100%;
+  box-sizing: border-box; /* Inclui as bordas no cálculo do tamanho total */
+  overflow: hidden; /* Impede a rolagem interna do calendário */
 }
 
 /* .calendar-container {
@@ -148,37 +164,6 @@ full-calendar {
   max-height: 90vh;
 } */
 
-/* Ajuste para dispositivos móveis */
-@media (max-width: 1700px) {
-  .fc-toolbar-title {
-    font-size: 1rem; /* Reduz o tamanho do título em telas menores */
-
-    text-transform: capitalize;
-  }
-
-  full-calendar {
-    height: 90vh;
-  }
-  .fc-header-toolbar {
-    flex-direction: column; /* Empilha os botões do header em telas menores */
-  }
-
-  ::ng-deep .custom-event {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    font-size: 0.7rem;
-  }
-
-  .testando2 {
-    height: 100px;
-  }
-
-  .graficos {
-    gap: 19px;
-    margin-top: 10px;
-  }
-}
 /* Contêiner do checkbox */
 .checkbox-container {
   display: flex;
@@ -283,32 +268,57 @@ full-calendar {
 ::ng-deep .fc-toolbar-title {
   text-transform: uppercase;
 }
-.date-selector {
-  display: flex;
-  gap: 10px; /* Espaçamento entre os dois selects */
-  margin-bottom: 10px; /* Espaçamento inferior */
+/* Ajustes para a responsividade do calendário */
+
+@media (max-width: 768px) {
+  .doctor-filter {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .calendar-container {
+    height: 50vh; /* Reduz a altura do calendário em telas muito pequenas */
+  }
 }
 
-.date-selector select {
-  width: 130px; /* Ajuste da largura */
-  height: 36px; /* Altura fixa */
-  padding: 5px 30px 5px 10px; /* Padding ajustado para a seta e o texto */
-  font-size: 16px; /* Tamanho da fonte */
-  border-radius: 4px; /* Bordas arredondadas */
-  border: 1px solid #ccc; /* Cor da borda */
-  background-color: #fff; /* Fundo branco */
-  appearance: none; /* Remove o estilo padrão dos selects */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  position: relative;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="none" stroke="black" stroke-width=".5" d="M0 0l2 2.5L4 0"/></svg>');
-  background-position: right 8px center;
-  background-repeat: no-repeat;
-  background-size: 8px; /* Tamanho da seta */
+/* Ajustes para a responsividade do calendário */
+@media (max-width: 1200px) {
+  .calendar-layout {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .doctor-filter {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px; /* Adiciona espaço inferior entre o filtro e o calendário */
+  }
+
+  .calendar-container {
+    width: 100%;
+    height: 60vh; /* Ajuste a altura do calendário para que não ocupe toda a tela em telas menores */
+  }
+
+  .fc-toolbar-title {
+    font-size: 1rem;
+  }
+
+  .fc-header-toolbar {
+    flex-direction: column;
+  }
+
+  ::ng-deep .fc .fc-daygrid-day {
+    min-height: 100px; /* Altura mínima para cada célula */
+    height: auto; /* Deixa a altura das células se ajustar ao conteúdo */
+  }
 }
 
-.calendar-container .fc {
-  width: 100%;
-  min-width: 300px;
-  box-sizing: border-box;
+@media (max-width: 768px) {
+  .fc-daygrid-day {
+    min-width: 80px; /* Ajuste a largura mínima para telas pequenas */
+  }
+
+  .fc-daygrid-day-events {
+    padding: 2px; /* Ajuste o padding dos eventos para não sobrecarregar a célula */
+  }
 }

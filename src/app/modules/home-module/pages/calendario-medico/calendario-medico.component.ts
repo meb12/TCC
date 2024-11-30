@@ -116,9 +116,12 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
     if (userInfoString) {
       this.idMedico = JSON.parse(userInfoString);
     }
-    this.getAppointments();
-    this.updateAspectRatio();
+    this.getAppointments(); // Carrega as consultas
 
+    // Filtra as consultas para o dia atual
+    this.filterAppointmentsByToday();
+
+    this.updateAspectRatio();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -127,7 +130,6 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
       next: (response: any) => {
         // Mapeia consultas normais e de retorno
         this.appointments = response.flatMap((appointment) => {
-          // Define o título como "Consulta" para a consulta principal
           const mainAppointment = {
             title: 'Consulta',
             date: new Date(appointment.appointmentDate)
@@ -138,7 +140,6 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
             hora: appointment.appointmentDate.split('T')[1].slice(0, 5),
           };
 
-          // Define o título como "Retorno" para cada consulta de retorno
           const returnAppointments = appointment.appointmentsReturn.map(
             (returnAppt) => ({
               title: 'Retorno',
@@ -151,18 +152,30 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
             })
           );
 
-          // Combina a consulta principal com as consultas de retorno
           return [mainAppointment, ...returnAppointments];
         });
 
-        // Consolida e atualiza os eventos no calendário
-        this.calendarOptions.events = this.consolidateEvents(this.appointments);
-        if (this.calendarComponent) {
-          this.calendarComponent.getApi().refetchEvents();
-        }
+        // Mescla os eventos novos com os eventos existentes
+        this.updateCalendarEvents();
+
+        // Filtra as consultas para o dia atual
+        this.filterAppointmentsByToday();
       },
       error: (error) => console.error('Erro ao carregar consultas:', error),
     });
+  }
+
+  updateCalendarEvents() {
+    // Mescla os novos eventos com os antigos (não sobrescreve os anteriores)
+    this.calendarOptions.events = [
+      ...this.calendarOptions.events, // Mantém os eventos existentes
+      ...this.consolidateEvents(this.appointments), // Adiciona os eventos novos
+    ];
+
+    // Atualiza o calendário
+    if (this.calendarComponent) {
+      this.calendarComponent.getApi().refetchEvents();
+    }
   }
 
   getMedicos() {
@@ -243,6 +256,7 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
 
   consolidateEvents(appointments) {
     const eventsByDay = {};
+
     appointments.forEach((appointment) => {
       const date = appointment.date;
       if (!eventsByDay[date]) {
@@ -261,15 +275,25 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
         patientName: appointment.patient.name,
       });
     });
+
     return Object.values(eventsByDay);
   }
 
   customEventContent(arg) {
     const element = document.createElement('div');
     element.classList.add('custom-event');
+
+    // Verifica se o evento é do dia atual
+    const isToday =
+      arg.event.start.toISOString().split('T')[0] ===
+      new Date().toISOString().split('T')[0];
+    if (isToday) {
+      element.classList.add('today-event'); // Classe CSS para eventos de hoje
+    }
+
     element.innerHTML = `
-        <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="width: 16px; height: 16px; margin-right: 4px;">
-        <span>${arg.event._def.extendedProps.count} </span>
+      <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="display: flex; justify-content: center;width: 16px; height: 16px; margin-right: 4px;">
+      <span>${arg.event._def.extendedProps.count} </span>
     `;
     return { domNodes: [element] };
   }
@@ -301,12 +325,67 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // Ajusta os estilos dos eventos do calendário
     this.adjustCalendarEventStyles();
+
+    // Simula o clique no dia atual
+    const today = new Date();
+    const todayDateString = today.toISOString().split('T')[0]; // Formata a data para YYYY-MM-DD
+
+    // Verifica se a função dateClick está disponível e a chama manualmente
+    if (this.calendarComponent) {
+      const calendarApi = this.calendarComponent.getApi();
+      const dateClickHandler = this.calendarOptions.dateClick; // Obtém o manipulador de clique de data
+
+      if (dateClickHandler) {
+        // Chama a função de clique no dia atual
+        dateClickHandler({ dateStr: todayDateString });
+      }
+
+      // Garante que o calendário vá para o mês correto (se não estiver no mês atual)
+      calendarApi.gotoDate(today);
+
+      // Adiciona uma pequena pausa para garantir que o evento seja processado
+      setTimeout(() => {
+        this.filterAppointmentsByToday(); // Filtra as consultas do dia atual
+      }, 300);
+    }
+
+    // Movendo o selector de data
     const calendarToolbarRight = document.querySelector(
       '.fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:last-child'
     );
     if (calendarToolbarRight && this.dateSelector) {
       calendarToolbarRight.appendChild(this.dateSelector.nativeElement);
+    }
+  }
+
+  filterAppointmentsByToday() {
+    const today = new Date().toISOString().split('T')[0]; // Obtém a data no formato YYYY-MM-DD
+    this.selectedDate = today; // Define a data selecionada como hoje
+
+    // Filtra as consultas para o dia atual
+    this.displayedAppointments = this.appointments.filter(
+      (appointment) => appointment.date === today
+    );
+
+    // Consolida os eventos para o dia atual
+    const todayEvents = this.consolidateEvents(this.displayedAppointments);
+
+    // Remove os eventos duplicados do dia atual, caso já existam
+    this.calendarOptions.events = this.calendarOptions.events.filter(
+      (event: any) => event.start !== today // Remove eventos de hoje para não duplicar
+    );
+
+    // Mescla os eventos do dia atual com os eventos existentes
+    this.calendarOptions.events = [
+      ...this.calendarOptions.events, // Mantém os eventos de outros dias
+      ...todayEvents, // Adiciona os eventos do dia atual
+    ];
+
+    // Atualiza o calendário
+    if (this.calendarComponent) {
+      this.calendarComponent.getApi().refetchEvents();
     }
   }
 

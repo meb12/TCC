@@ -59,7 +59,8 @@ export class PacientesComponent implements OnInit {
         {
           label: 'Nova consulta',
           action: (item) => this.novaConsulta(item),
-          condition: (item) => item.isActive === true,
+          condition: (item) =>
+            this.isMedico() ? false : item.isActive === true,
           img: 'assets/img/icon-consulta.svg',
         },
         {
@@ -71,12 +72,22 @@ export class PacientesComponent implements OnInit {
         {
           label: 'Excluir',
           action: (item) => this.deleteItem(item),
-          condition: (item) => item.isActive === true,
+          condition: (item) =>
+            this.isMedico() ? false : item.isActive === true,
           img: 'assets/img/excluir.svg',
         },
       ],
     },
   ];
+
+  isMedico(): boolean {
+    const userInfoString = localStorage.getItem('userInfo');
+    if (userInfoString) {
+      const userInfo = JSON.parse(userInfoString);
+      return userInfo.userType.name === 'Médico'; // Ajuste essa comparação conforme a estrutura do seu objeto userInfo
+    }
+    return false;
+  }
 
   ngOnInit(): void {
     this.fetchPacientes(); // Carrega os dados dos pacientes
