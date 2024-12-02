@@ -115,6 +115,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     this.getMedicos();
     this.getPacientes();
     this.getFuncionario();
+    this.filterAppointmentsByToday();
     this.updateAspectRatio();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -123,7 +124,7 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     this.consultas.getData().subscribe({
       next: (response: any) => {
         console.log(response);
-        // Mapeia consultas normais e de retorno
+        // Mapeia consultas normais e de retorno, filtrando somente as ativas
         this.appointments = response.flatMap((appointment) => {
           // Define o título como "Consulta" para a consulta principal
           const mainAppointment = {
@@ -133,25 +134,44 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
               .split('T')[0],
             doctor: appointment.doctorData,
             patient: appointment.pacientData,
+            ativo: appointment.isActive,
+            id: appointment.id,
             hora: appointment.appointmentDate.split('T')[1].slice(0, 5),
           };
 
-          // Define o título como "Retorno" para cada consulta de retorno
-          const returnAppointments = appointment.appointmentsReturn.map(
-            (returnAppt) => ({
+          // Filtra as consultas de retorno ativas
+          const returnAppointments = appointment.appointmentsReturn
+            .filter((returnAppt) => returnAppt.isActive) // Filtra consultas de retorno ativas
+            .map((returnAppt) => ({
               title: 'Retorno',
               date: new Date(returnAppt.appointmentDate)
                 .toISOString()
                 .split('T')[0],
               doctor: returnAppt.doctorData,
               patient: appointment.pacientData,
+              ativo: returnAppt.isActive,
+              id: returnAppt.id,
               hora: returnAppt.appointmentDate.split('T')[1].slice(0, 5),
-            })
-          );
+            }));
 
-          // Combina a consulta principal com as consultas de retorno
+          // Inclui a consulta principal e as consultas de retorno ativas
           return [mainAppointment, ...returnAppointments];
         });
+
+        // Filtra somente as consultas ativas
+        this.appointments = this.appointments.filter(
+          (appointment) => appointment.ativo
+        );
+
+        // Ordena as consultas por data e horário
+        this.appointments.sort((a, b) => {
+          const dateA = new Date(a.date + ' ' + a.hora).getTime();
+          const dateB = new Date(b.date + ' ' + b.hora).getTime();
+          return dateA - dateB; // Ordena de forma crescente (ascendente)
+        });
+
+        // Filtra as consultas para o dia atual
+        this.filterAppointmentsByToday();
 
         // Consolida e atualiza os eventos no calendário
         this.calendarOptions.events = this.consolidateEvents(this.appointments);
@@ -163,11 +183,41 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
     });
   }
 
+  filterAppointmentsByToday() {
+    const today = new Date().toISOString().split('T')[0]; // Obtém a data no formato YYYY-MM-DD
+    this.selectedDate = today; // Define a data selecionada como hoje
+
+    // Filtra as consultas para o dia atual
+    this.displayedAppointments = this.appointments.filter(
+      (appointment) => appointment.date === today
+    );
+
+    // Consolida os eventos para o dia atual
+    const todayEvents = this.consolidateEvents(this.displayedAppointments);
+
+    // Remove os eventos duplicados do dia atual, caso já existam
+    this.calendarOptions.events = this.calendarOptions.events.filter(
+      (event: any) => event.start !== today // Remove eventos de hoje para não duplicar
+    );
+
+    // Mescla os eventos do dia atual com os eventos existentes
+    this.calendarOptions.events = [
+      ...this.calendarOptions.events, // Mantém os eventos de outros dias
+      ...todayEvents, // Adiciona os eventos do dia atual
+    ];
+
+    // Atualiza o calendário
+    if (this.calendarComponent) {
+      this.calendarComponent.getApi().refetchEvents();
+    }
+  }
+
   getMedicos() {
     this.medicos.getData().subscribe({
       next: (response) => {
+        // Filtra e mapeia os médicos com isActive true
         const mappedDoctors = response
-          .filter((medico: any) => medico.isActive === true)
+          .filter((medico: any) => medico.isActive)
           .map((medico: any) => ({
             id: medico.id,
             name: medico.name.split(' ')[0],
@@ -175,9 +225,11 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
             checked: false,
           }));
 
+        // Atualiza os valores no gráfico
         this.graphMedicosCadastrados.descriptionValue = mappedDoctors.length;
         this.graphMedicosCadastrados.totalValue = mappedDoctors.length;
 
+        // Atribui os médicos mapeados à variável
         this.doctors = mappedDoctors;
       },
       error: (error) => {
@@ -189,8 +241,15 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   getPacientes() {
     this.pacientes.getData().subscribe({
       next: (response) => {
-        this.graphPacientesCadastradas.descriptionValue = response.length;
-        this.graphPacientesCadastradas.totalValue = response.length;
+        // Filtra somente os pacientes com isActive true
+        const pacientesAtivos = response.filter(
+          (paciente) => paciente.isActive
+        );
+
+        // Atualiza os valores no gráfico
+        this.graphPacientesCadastradas.descriptionValue =
+          pacientesAtivos.length;
+        this.graphPacientesCadastradas.totalValue = pacientesAtivos.length;
       },
       error: (error) => console.error('Erro ao carregar pacientes:', error),
     });
@@ -199,8 +258,16 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   getFuncionario() {
     this.funcionarios.getData().subscribe({
       next: (response) => {
-        this.graphFuncionariosCadastrados.descriptionValue = response.length;
-        this.graphFuncionariosCadastrados.totalValue = response.length;
+        // Filtra somente os funcionários com isActive true
+        const funcionariosAtivos = response.filter(
+          (funcionario) => funcionario.isActive
+        );
+
+        // Atualiza os valores no gráfico
+        this.graphFuncionariosCadastrados.descriptionValue =
+          funcionariosAtivos.length;
+        this.graphFuncionariosCadastrados.totalValue =
+          funcionariosAtivos.length;
       },
       error: (error) => console.error('Erro ao carregar funcionários:', error),
     });
@@ -218,7 +285,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
         (selectedDoctors.length === 0 ||
           selectedDoctors.includes(appointment.doctor.id))
     );
-    console.log(this.displayedAppointments);
   }
 
   filterAppointments() {
@@ -299,7 +365,33 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // Ajusta os estilos dos eventos do calendário
     this.adjustCalendarEventStyles();
+
+    // Simula o clique no dia atual
+    const today = new Date();
+    const todayDateString = today.toISOString().split('T')[0]; // Formata a data para YYYY-MM-DD
+
+    // Verifica se a função dateClick está disponível e a chama manualmente
+    if (this.calendarComponent) {
+      const calendarApi = this.calendarComponent.getApi();
+      const dateClickHandler = this.calendarOptions.dateClick; // Obtém o manipulador de clique de data
+
+      if (dateClickHandler) {
+        // Chama a função de clique no dia atual
+        dateClickHandler({ dateStr: todayDateString });
+      }
+
+      // Garante que o calendário vá para o mês correto (se não estiver no mês atual)
+      calendarApi.gotoDate(today);
+
+      // Adiciona uma pequena pausa para garantir que o evento seja processado
+      setTimeout(() => {
+        this.filterAppointmentsByToday(); // Filtra as consultas do dia atual
+      }, 300);
+    }
+
+    // Movendo o selector de data
     const calendarToolbarRight = document.querySelector(
       '.fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:last-child'
     );

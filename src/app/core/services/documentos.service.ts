@@ -36,4 +36,13 @@ export class DocumentosService {
     const url = `${this.baseURL}/${id}?examOrPrescription=${examOrPrescription}`; // URL dinâmica
     return this.http.delete(url);
   }
+  putData(
+    id: any,
+    examOrPrescription: string,
+    body: string,
+    headers: any
+  ): Observable<any> {
+    const url = `${this.baseURL}/rename/${id}?examOrPrescription=${examOrPrescription}`;
+    return this.http.put(url, body, { headers, responseType: 'text' });
+  }
 }

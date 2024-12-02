@@ -28,12 +28,22 @@
       <div *ngFor="let appointment of displayedAppointments">
         <div class="consulta-card">
           <span class="consulta-title">
-            {{
-              (appointment.title === "Retorno"
-                ? "Retorno com "
-                : "Consulta com ") + appointment.patient.name
-            }}
+            <a
+              [routerLink]="
+                appointment.title === 'Retorno'
+                  ? '/pacientes/retorno/individual/' + appointment.id
+                  : '/pacientes/consulta/individual/' + appointment.id
+              "
+            >
+              {{
+                appointment.title === "Retorno"
+                  ? "Retorno com "
+                  : "Consulta com "
+              }}
+              {{ appointment.patient.name }}
+            </a>
           </span>
+
           <span class="consulta-subtitle">
             {{ "Código: " + appointment.patient.id }}
           </span>

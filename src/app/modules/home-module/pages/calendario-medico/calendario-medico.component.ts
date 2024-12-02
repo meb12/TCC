@@ -132,6 +132,8 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
         this.appointments = response.flatMap((appointment) => {
           const mainAppointment = {
             title: 'Consulta',
+            id: appointment.id,
+            ativo: appointment.isActive,
             date: new Date(appointment.appointmentDate)
               .toISOString()
               .split('T')[0],
@@ -147,12 +149,27 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
                 .toISOString()
                 .split('T')[0],
               doctor: returnAppt.doctorData,
+              ativo: returnAppt.isActive,
               patient: appointment.pacientData,
+              id: returnAppt.id, // Corrigido para usar o ID do retorno
               hora: returnAppt.appointmentDate.split('T')[1].slice(0, 5),
             })
           );
 
           return [mainAppointment, ...returnAppointments];
+        });
+
+        // Filtra as consultas para exibir apenas as ativas
+        this.appointments = this.appointments.filter(
+          (appointment) => appointment.ativo
+        );
+
+        // Ordena os compromissos por data e hora
+        this.appointments.sort((a, b) => {
+          // Compara as datas e horas
+          const dateA = new Date(a.date + 'T' + a.hora);
+          const dateB = new Date(b.date + 'T' + b.hora);
+          return dateA.getTime() - dateB.getTime();
         });
 
         // Mescla os eventos novos com os eventos existentes
@@ -233,7 +250,7 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
         (selectedDoctors.length === 0 ||
           selectedDoctors.includes(appointment.doctor.id))
     );
-    console.log(this.displayedAppointments);
+    console.log('consultas', this.displayedAppointments);
   }
 
   filterAppointments() {

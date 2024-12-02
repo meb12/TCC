@@ -129,5 +129,12 @@ export class ModalInformacaoPacienteComponent implements OnInit {
       // Se não houver filtro (status vazio), mostra todas as consultas
       this.consultasFiltradas = [...this.consultas];
     }
+
+    // Ordena as consultas pela data do agendamento (appointmentDate)
+    this.consultasFiltradas.sort((a, b) => {
+      const dateA = new Date(a.appointmentDate).getTime(); // Converte para timestamp numérico
+      const dateB = new Date(b.appointmentDate).getTime(); // Converte para timestamp numérico
+      return dateA - dateB; // Ordena do mais antigo para o mais recente
+    });
   }
 }

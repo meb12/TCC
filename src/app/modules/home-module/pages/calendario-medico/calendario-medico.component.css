@@ -322,3 +322,11 @@ full-calendar {
     padding: 2px; /* Ajuste o padding dos eventos para não sobrecarregar a célula */
   }
 }
+a {
+  color: black; /* Define a cor preta */
+  text-decoration: underline; /* Define o sublinhado */
+}
+
+a:hover {
+  text-decoration: underline; /* Garante que o sublinhado se mantenha ao passar o mouse */
+}

@@ -1,0 +1,73 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Garante que ocupe a altura total da tela */
+  margin: 0;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 20% 80%; /* Define a proporção de 20% para a foto e 80% para o conteúdo */
+  gap: 20px; /* Espaçamento entre as colunas */
+  margin-bottom: 20px;
+  width: 80%; /* Ajuste a largura da área de perfil */
+}
+
+.grid2 {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+}
+
+.user-photo img {
+  width: 90px; /* Ajuste o tamanho da imagem */
+  height: 90px;
+  border-radius: 50%; /* Deixa a imagem redonda */
+  border: 2px solid #e2e8f0;
+}
+
+.grid1 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+}
+
+.app-input {
+  width: 100%;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}

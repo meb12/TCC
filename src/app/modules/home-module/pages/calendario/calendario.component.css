@@ -40,8 +40,9 @@ full-calendar {
 .testando2 {
   display: flex;
   flex-direction: column;
+  justify-content: start;
   overflow: auto;
-  height: 250px;
+  height: 350px;
   margin-top: 10px;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -322,4 +323,12 @@ full-calendar {
   .fc-daygrid-day-events {
     padding: 2px; /* Ajuste o padding dos eventos para não sobrecarregar a célula */
   }
+}
+a {
+  color: black; /* Define a cor preta */
+  text-decoration: underline; /* Define o sublinhado */
+}
+
+a:hover {
+  text-decoration: underline; /* Garante que o sublinhado se mantenha ao passar o mouse */
 }

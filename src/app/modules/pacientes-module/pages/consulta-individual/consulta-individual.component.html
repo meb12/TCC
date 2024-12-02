@@ -103,7 +103,13 @@
 </div>
 
 <div class="consulta-header1">
-  <span class="consulta-title"> {{ "Consulta #" + data.id }}</span>
+  <span class="consulta-title">
+    {{
+      tipoConsulta == "consulta"
+        ? "Consulta #" + data.id
+        : "Retorno #" + data.id
+    }}</span
+  >
   <div class="especialidade-container">
     <div class="row">
       <span class="label">Especialidade:</span>
@@ -170,7 +176,7 @@
         </span>
         <div *ngIf="file.isEditing" class="edit-input-container">
           <input type="text" [(ngModel)]="file.newName" class="edit-input" />
-          <button (click)="saveFile(file)" class="save-icon">
+          <button (click)="saveFile(file, 'exam')" class="save-icon">
             <img src="assets/img/save.svg" alt="Save" />
           </button>
         </div>
@@ -230,7 +236,7 @@
         </span>
         <div *ngIf="file.isEditing" class="edit-input-container">
           <input type="text" [(ngModel)]="file.newName" class="edit-input" />
-          <button (click)="saveFile(file)" class="save-icon">
+          <button (click)="saveFile(file, 'prescription')" class="save-icon">
             <img src="assets/img/save.svg" alt="Save" />
           </button>
         </div>
@@ -314,6 +320,10 @@
       alt="Adicionar novo retorno"
     />
   </div>
+
+  <div *ngIf="this.medico === 'Médico' && data.appointmentsReturn.length == 0">
+    Não há nenhum retorno disponível.
+  </div>
 </div>
 }
 
@@ -329,12 +339,13 @@
   (closeModal)="closeModal()"
   *ngIf="showModalExclusao"
   [item]="item"
-  [tipo]="tipo"
+  [tipo]="tipoConsulta"
 ></app-exclusao-consulta>
 
 <app-modal-reagendamento
   *ngIf="isReagendamentoOpen"
   (close)="closeReagendamentoModal()"
   [data]="data"
-  [id]="this.consultaId"
+  [id]="tipoConsulta === 'consulta' ? consultaId : retornoId"
+  [tipoConsulta]="tipoConsulta"
 ></app-modal-reagendamento>

@@ -15,6 +15,8 @@ import { RetornosService } from '../../../../core/services/retornos.service';
 export class ConsultaIndividualComponent implements OnInit {
   data;
   consultaId: string | null = null;
+  retornoId: string | null = null;
+  medico: string | null = null;
   photo = '';
   isEditing: boolean = false; // Estado para alternar entre visualização e edição
   observationText: string = '';
@@ -51,8 +53,6 @@ export class ConsultaIndividualComponent implements OnInit {
     if (permissoesString) {
       this.permissoes1 = JSON.parse(permissoesString);
       this.permissoes = this.permissoes1.userType.permissions;
-    } else {
-      console.log('Nenhuma permissão encontrada no localStorage.');
     }
     if (this.tipoConsulta == 'consulta') {
       this.getConsultas();
@@ -96,36 +96,30 @@ export class ConsultaIndividualComponent implements OnInit {
         this.checkButtonState();
         this.checkButtonCancel();
         this.getFoto();
+
+        // Ordenando appointmentsReturn por appointmentDate
+        if (this.data.appointmentsReturn) {
+          this.data.appointmentsReturn.sort((a, b) => {
+            const dateA = new Date(a.appointmentDate).getTime();
+            const dateB = new Date(b.appointmentDate).getTime();
+            return dateA - dateB; // Ordena do mais antigo para o mais recente
+          });
+        }
       },
       error: (error) => {
         console.error('Erro ao carregar consultas:', error);
       },
     });
   }
+
   getRetorno() {
     this.retorno.getDataId(this.consultaId).subscribe({
       next: (response) => {
         // Combina os dados da API com os dados mockados
-        this.data = {
-          ...response, // Inclui todos os dados da resposta original
-          pacientData: {
-            id: 136,
-            name: 'paciente certo duda',
-            email: 'awi@gmail.com',
-            cellphone: '11111111111',
-            dateOfBirth: '2003-02-12T00:00:00',
-            cpf: '82706585021',
-            documentNumber: '438425546',
-            isActive: true,
-            gender: 'Feminino',
-            allergies: [
-              {
-                id: 5,
-                allergy: '1',
-              },
-            ],
-          },
-        };
+        this.data = response;
+        this.retornoId = response.fatherAppointmentId;
+        this.checkButtonState();
+        this.checkButtonCancel();
         this.getFoto(); // Chama o método getFoto
       },
       error: (error) => {
@@ -161,7 +155,7 @@ export class ConsultaIndividualComponent implements OnInit {
       this.router.navigate(['/pacientes/listagem']);
     } else {
       this.router.navigate([
-        `/pacientes/consulta/individual/${this.consultaId}`,
+        `/pacientes/consulta/individual/${this.retornoId}`,
       ]);
     }
   }
@@ -226,9 +220,7 @@ export class ConsultaIndividualComponent implements OnInit {
         // Obtém a extensão do arquivo e o tipo MIME correspondente
         const extension = file.fileExtension.replace('.', '').toLowerCase();
 
-        console.log('extanesao', extension);
         const mimeType = mimeTypeMap[extension]; // Padrão genérico
-        console.log(mimeType);
 
         // Cria um Blob para os dados do arquivo com o tipo MIME apropriado
         const blob = new Blob([response], { type: mimeType });
@@ -260,10 +252,27 @@ export class ConsultaIndividualComponent implements OnInit {
     file.newName = file.fileName;
   }
 
-  saveFile(file): void {
+  saveFile(file, tipo): void {
     if (file.newName.trim()) {
-      file.fileName = file.newName.trim();
+      file.fileName = `"${file.newName.trim()}"`;
     }
+
+    const token = localStorage.getItem('token'); // Recupera o token do localStorage
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    };
+
+    this.documentos.putData(file.id, tipo, file.fileName, headers).subscribe({
+      next: (response) => {
+        this.toastr.success('Arquivo renomeado com sucesso!');
+        this.getConsultas();
+      },
+      error: (error) => {
+        console.error('Erro ao renomear o arquivo', error);
+      },
+    });
+
     file.isEditing = false;
   }
 
@@ -347,7 +356,11 @@ export class ConsultaIndividualComponent implements OnInit {
 
   closeReagendamentoModal() {
     this.isReagendamentoOpen = false;
-    this.getConsultas();
+    if (this.tipoConsulta == 'consulta') {
+      this.getConsultas();
+    } else {
+      this.getRetorno();
+    }
   }
 
   abrirRetorno(id: number) {
@@ -365,7 +378,6 @@ export class ConsultaIndividualComponent implements OnInit {
     // Converte a diferença de milissegundos para horas
     const diffInHours = diffInTime / (1000 * 3600); // 1000ms * 3600s
 
-    console.log();
     // Se a diferença for maior ou igual a 24 horas, habilita o botão
     if (diffInHours >= 24) {
       this.isButtonEnabled = true;
@@ -388,7 +400,11 @@ export class ConsultaIndividualComponent implements OnInit {
 
   closeModal() {
     this.showModalExclusao = false;
-    this.getConsultas();
+    if (this.tipoConsulta == 'consulta') {
+      this.getConsultas();
+    } else {
+      this.getRetorno();
+    }
   }
 
   cancelarConsulta() {
@@ -414,7 +430,12 @@ export class ConsultaIndividualComponent implements OnInit {
 
     // Obtém o objeto userInfo do localStorage e extrai o ID do médico logado
     const userInfo = localStorage.getItem('userInfo');
+
     const loggedDoctorId = userInfo ? JSON.parse(userInfo).id : null;
+
+    this.medico = userInfo ? JSON.parse(userInfo).userType.name : null;
+
+    const isCancelled = this.data.status === 'Cancelada';
 
     // Verifica se o médico logado é o responsável pela consulta
     const isResponsibleDoctor = this.data.doctorData.id === loggedDoctorId;
@@ -423,6 +444,7 @@ export class ConsultaIndividualComponent implements OnInit {
     return (
       timeDifferenceInHours <= 24 &&
       isResponsibleDoctor &&
+      !isCancelled &&
       this.permissoes['canEditObsAppointment']
     );
   }

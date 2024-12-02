@@ -226,4 +226,15 @@ export class MenuLateralComponent implements OnInit {
     this.router.navigate(['login']);
     localStorage.clear();
   }
+
+  perfil() {
+    const userInfo = localStorage.getItem('userInfo'); // Obtenha o valor do localStorage
+    if (userInfo) {
+      const user = JSON.parse(userInfo);
+      this.router.navigate([`cadastro/perfil/${user.id}`]);
+    } else {
+      console.error('ID do usuário não encontrado no localStorage');
+      // Lidar com o caso em que o ID não está presente (opcional)
+    }
+  }
 }

@@ -1,0 +1,54 @@
+<div class="body">
+  <!-- Foto do usuário -->
+  <div class="grid2">
+    <div class="user-photo">
+      <img [src]="userPhoto" class="icone" />
+    </div>
+  </div>
+
+  <!-- Informações do perfil -->
+  <div class="grid1">
+    <div class="header">
+      <div class="column">
+        <h1>Perfil | {{ data.name }}</h1>
+        <span>Informações Pessoais</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <app-input
+        label="Email"
+        [(ngModel)]="data.email"
+        required="true"
+        width="100%"
+        type="readonly"
+        [readOnly]="true"
+      ></app-input>
+
+      <app-input
+        label="Telefone"
+        [(ngModel)]="data.cellphone"
+        required="true"
+        width="100%"
+        type="readonly"
+      ></app-input>
+
+      <app-input
+        label="Endereço"
+        [(ngModel)]="data.address"
+        required="true"
+        width="100%"
+        type="readonly"
+      ></app-input>
+
+      <app-input
+        label="Sobre"
+        [(ngModel)]="data.observation"
+        required="true"
+        type="textarea"
+        width="100%"
+        type="readonly"
+      ></app-input>
+    </div>
+  </div>
+</div>

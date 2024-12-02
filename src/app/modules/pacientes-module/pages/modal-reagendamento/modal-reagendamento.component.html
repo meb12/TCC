@@ -2,7 +2,14 @@
   <div class="modal">
     @if (step == 1 ) {
     <div class="consulta-container">
-      <h1>Reagendamento - Consulta #{{ data.id }}</h1>
+      <h1>
+        Reagendamento -
+        {{
+          tipoConsulta == "consulta"
+            ? "Consulta #" + data.id
+            : "Retorno #" + data.id
+        }}
+      </h1>
       <div class="grid">
         <div class="corpo">
           <div class="consulta-header">

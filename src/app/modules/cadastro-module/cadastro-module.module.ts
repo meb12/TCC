@@ -5,6 +5,7 @@ import { CadastroRoutingModule } from './cadastro-routing.module';
 import { CadastroComponent } from './pages/cadastro/cadastro.component';
 import { SharedModule } from '../../shared/shared.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { PerfilComponent } from './pages/perfil/perfil.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     SharedModule,
     HttpClientModule,
   ],
-  declarations: [CadastroComponent],
+  declarations: [CadastroComponent, PerfilComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CadastroModule {}

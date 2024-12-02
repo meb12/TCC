@@ -15,9 +15,9 @@
 
     <div class="div-subtitle">
       <p class="subtitle">
-        Você está prestes a cancelar a
+        Você está prestes a cancelar
         <span>
-          consulta
+          {{ this.tipo == "consulta" ? "a consulta" : " o retorno" }}
           {{
             this.item.sexo === "Feminino"
               ? "da paciente " + this.item.paciente
@@ -31,8 +31,8 @@
     </div>
 
     <div class="button-group">
-      <button (click)="voltar()" class="btn btn-secondary">Cancelar</button>
-      <button (click)="salvar()" class="btn btn-primary">Desativar</button>
+      <button (click)="voltar()" class="btn btn-secondary">Voltar</button>
+      <button (click)="salvar()" class="btn btn-primary">Sim</button>
     </div>
   </div>
 </div>

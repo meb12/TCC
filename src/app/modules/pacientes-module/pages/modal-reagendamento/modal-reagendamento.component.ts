@@ -15,14 +15,19 @@ import { RetornosService } from '../../../../core/services/retornos.service';
 })
 export class ModalReagendamentoComponent implements OnInit {
   @Input() data;
-
+  @Input() tipoConsulta;
   @Output() close = new EventEmitter<void>();
 
   closeModal() {
     this.close.emit(); // Emit the close event to the parent component
   }
   voltar() {
-    this.step = 1;
+    console.log();
+    if (this.step == 1) {
+      this.close.emit();
+    } else {
+      this.step = 1;
+    }
   }
   onBackdropClick(event: MouseEvent) {
     // Check if the click was outside the modal element
@@ -133,15 +138,27 @@ export class ModalReagendamentoComponent implements OnInit {
       isActive: true,
     };
 
-    this.consultas.putData(submitForm).subscribe({
-      next: (response) => {
-        this.toastr.success('Reagendamento realizado com sucesso!');
-        this.closeModal();
-      },
-      error: (error) => {
-        this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
-      },
-    });
+    if (this.tipoConsulta == 'consulta') {
+      this.consultas.putData(submitForm).subscribe({
+        next: (response) => {
+          this.toastr.success('Reagendamento realizado com sucesso!');
+          this.closeModal();
+        },
+        error: (error) => {
+          this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
+        },
+      });
+    } else {
+      this.retornos.putData(submitForm).subscribe({
+        next: (response) => {
+          this.toastr.success('Reagendamento realizado com sucesso!');
+          this.closeModal();
+        },
+        error: (error) => {
+          this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
+        },
+      });
+    }
   }
   getEspecialidades() {
     this.especialidades.getData().subscribe({

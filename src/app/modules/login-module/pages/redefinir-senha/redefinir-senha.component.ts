@@ -35,20 +35,22 @@ export class RedefinirSenhaComponent implements OnInit {
     this.login.postRedefinirSenha(this.form.value).subscribe({
       next: (response) => {
         if (response.status === 200) {
-          // Verifica se o status é 200
-          this.toastr.success('Email de redefinição de senha enviado');
+          this.toastr.success(
+            'Se o e-mail informado for encontrado em nosso sistema, um link para redefinir sua senha será enviado. Não se esqueça de conferir sua caixa de entrada.'
+          );
           this.router.navigateByUrl('/login');
         } else {
-          this.toastr.error(
-            'Erro ao enviar email de redefinição de senha. Tente novamente.'
+          this.toastr.success(
+            'Se o e-mail informado for encontrado em nosso sistema, um link para redefinir sua senha será enviado. Não se esqueça de conferir sua caixa de entrada.'
           );
+          this.router.navigateByUrl('/login');
         }
       },
       error: (error) => {
-        console.error('Error details:', error);
-        this.toastr.error(
-          'Erro ao enviar email de redefinição de senha. Tente novamente.'
+        this.toastr.success(
+          'Se o e-mail informado for encontrado em nosso sistema, um link para redefinir sua senha será enviado. Não se esqueça de conferir sua caixa de entrada.'
         );
+        this.router.navigateByUrl('/login');
       },
     });
   }
@@ -60,12 +62,10 @@ export class RedefinirSenhaComponent implements OnInit {
   }
 
   private _checkRoute() {
-    // Verifica se a rota contém "/esqueceuSenha"
     const currentRoute = this.activatedRoute.snapshot.routeConfig?.path;
 
-
     if (currentRoute === 'solicitarRedefinicaoSenha/esqueceuSenha') {
-      this.primeiroAcesso = false; // Define como false se a rota for /esqueceuSenha
+      this.primeiroAcesso = false;
     }
   }
 }

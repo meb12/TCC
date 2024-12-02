@@ -58,9 +58,24 @@
 
       <!-- Exit button aligned at the bottom -->
 
-      <div class="exit-button" (click)="sair()">
-        <img src="assets/img/sair.svg" class="img-exit" alt="Sair" />
-        <span>Sair</span>
+      <div
+        class="exit-button"
+        style="
+          display: flex;
+          align-items: start;
+          flex-direction: column;
+          gap: 5px;
+        "
+      >
+        <div class="exit-button" (click)="perfil()">
+          <img src="assets/img/perfil1.svg" alt="Sair" />
+          <span>Perfil</span>
+        </div>
+
+        <div class="exit-button" (click)="sair()">
+          <img src="assets/img/sair.svg" class="img-exit" alt="Sair" />
+          <span>Sair</span>
+        </div>
       </div>
     </div>
   </div>
