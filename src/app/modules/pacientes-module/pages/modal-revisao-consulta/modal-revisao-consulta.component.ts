@@ -85,10 +85,8 @@ export class ModalRevisaoConsultaComponent implements OnInit {
         this.toastr.error('Erro ao cadastrar paciente. Tente novamente.');
       },
     });
-
-
   }
   ngOnInit() {
-
+    console.log(this.data);
   }
 }

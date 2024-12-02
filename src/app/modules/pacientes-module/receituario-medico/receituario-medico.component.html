@@ -1,7 +1,9 @@
 <div id="pdf-content">
   <div class="header">
     <h1>{{ name }}</h1>
-    <h2>Médica - {{ especialidade }}</h2>
+    <h2>
+      {{ sexo === "Masculino" ? "Médico" : "Médica" }} - {{ especialidade }}
+    </h2>
   </div>
 
   <div class="prescription-area">

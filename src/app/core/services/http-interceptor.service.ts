@@ -76,11 +76,17 @@ export class HttpInterceptorService implements HttpInterceptor {
   private handleUnauthorized() {
     // Limpa o localStorage
     localStorage.clear();
-    // Exibe mensagem de erro
-    this.toastr.error(
-      'Sua sessão expirou. Faça login novamente.',
-      'Erro de Autenticação'
-    );
+
+    // Verifica se o usuário está tentando acessar uma rota diferente de `/login`
+    const currentRoute = this.router.url;
+    if (currentRoute !== '/login') {
+      // Exibe a mensagem de erro apenas se não estiver na rota de login
+      this.toastr.error(
+        'Sua sessão expirou. Faça login novamente.',
+        'Erro de Autenticação'
+      );
+    }
+
     // Redireciona para a página de login
     this.router.navigate(['/login']);
   }

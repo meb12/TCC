@@ -168,9 +168,13 @@ export class ConsultaIndividualComponent implements OnInit {
 
   handleFileUpload(event: Event, tipo: string): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files?.length) {
       const file = input.files[0];
       const examOrPrescription = tipo;
+
+      // Limpa o valor do input imediatamente para permitir reenvio do mesmo arquivo
+      input.value = '';
 
       // Chama o serviço para realizar o upload
       this.documentos
@@ -206,9 +210,28 @@ export class ConsultaIndividualComponent implements OnInit {
 
     this.documentos.getData(file.id, examOrPrescription).subscribe({
       next: (response: Blob) => {
-        // Força o tipo de conteúdo para PDF
-        const contentType = 'application/pdf'; // Defina manualmente como PDF
-        const blob = new Blob([response], { type: contentType });
+        // Mapeia extensões para tipos MIME
+        const mimeTypeMap: { [key: string]: string } = {
+          pdf: 'application/pdf',
+          txt: 'text/plain',
+          csv: 'text/csv',
+          png: 'image/png',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          zip: 'application/zip',
+        };
+
+        // Obtém a extensão do arquivo e o tipo MIME correspondente
+        const extension = file.fileExtension.replace('.', '').toLowerCase();
+
+        console.log('extanesao', extension);
+        const mimeType = mimeTypeMap[extension]; // Padrão genérico
+        console.log(mimeType);
+
+        // Cria um Blob para os dados do arquivo com o tipo MIME apropriado
+        const blob = new Blob([response], { type: mimeType });
 
         // Cria uma URL temporária para o arquivo
         const url = window.URL.createObjectURL(blob);
@@ -217,11 +240,11 @@ export class ConsultaIndividualComponent implements OnInit {
         const newTab = window.open(url, '_blank');
         if (!newTab) {
           console.error(
-            'Não foi possível abrir uma nova aba. Verifique permissões.'
+            'Não foi possível abrir uma nova aba. Verifique permissões do navegador.'
           );
         }
 
-        // Opcional: revoga a URL após algum tempo/
+        // Revoga a URL temporária após algum tempo
         setTimeout(() => {
           window.URL.revokeObjectURL(url);
         }, 10000); // 10 segundos
@@ -298,7 +321,7 @@ export class ConsultaIndividualComponent implements OnInit {
     switch (status) {
       case 'Concluída':
         return '#8CC738'; // Verde
-      case 'Finalizada':
+      case 'Cancelada':
         return '#EE404C'; // Vermelho
       case 'Agendada':
         return '#398FE2'; // Azul

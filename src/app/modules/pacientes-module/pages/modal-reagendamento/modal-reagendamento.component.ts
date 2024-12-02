@@ -128,7 +128,7 @@ export class ModalReagendamentoComponent implements OnInit {
 
     const submitForm = {
       id: this.data.id,
-      date: this.data.appointmentDate,
+      date: adjustedDate,
       observation: this.data.observation,
       isActive: true,
     };
@@ -251,16 +251,19 @@ export class ModalReagendamentoComponent implements OnInit {
       parseInt(especialidade.interval.split(':')[1]); // Intervalo em minutos
     let minutosTotais = inicio * 60; // Converter o horário de início em minutos
 
-    // Obter a data atual e a hora atual
+    // Obter a data atual e a hora atual (ajustada para o fuso horário local)
     const hoje = new Date();
+    const dataHoje = `${hoje.getFullYear()}-${String(
+      hoje.getMonth() + 1
+    ).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
     const horaAtual = hoje.getHours() * 60 + hoje.getMinutes(); // Hora atual em minutos
 
     // Verificar se a data selecionada é o dia de hoje
     const dataSelecionada = this.formatarDataParaDateTime(this.form.date).split(
       ' '
     )[0];
-    const dataHoje = hoje.toISOString().split('T')[0];
 
+    console.log(dataSelecionada, dataHoje);
     // Criar todos os horários disponíveis no intervalo de funcionamento
     while (minutosTotais < fim * 60) {
       const horas = Math.floor(minutosTotais / 60);
@@ -284,23 +287,16 @@ export class ModalReagendamentoComponent implements OnInit {
       const horarioMinuto =
         parseInt(horario.split(':')[0]) * 60 + parseInt(horario.split(':')[1]);
 
+      // Remover horários passados para o dia de hoje
+      if (dataSelecionada === dataHoje && horarioMinuto < horaAtual) {
+        return false;
+      }
+
+      // Verificar se o horário está na lista de indisponíveis
       if (unavailableTimes.includes(horario)) {
         return false;
       }
 
-      // Verificar se existe um horário que começa dentro do intervalo de indisponibilidade
-      for (let i = 0; i < unavailableTimes.length; i++) {
-        const unavailableMinuto =
-          parseInt(unavailableTimes[i].split(':')[0]) * 60 +
-          parseInt(unavailableTimes[i].split(':')[1]);
-
-        if (
-          horarioMinuto >= unavailableMinuto &&
-          horarioMinuto < unavailableMinuto + intervalo
-        ) {
-          return false;
-        }
-      }
       return true;
     });
 
@@ -314,12 +310,11 @@ export class ModalReagendamentoComponent implements OnInit {
 
     this.horarioOptions = horariosDisponiveisFormatados;
   }
-
   formatarDataParaDateTime(dataString: string): string {
-    const dia = parseInt(dataString.substring(0, 2));
-    const mes = parseInt(dataString.substring(2, 4)); // Meses começam do zero em JavaScript
-    const ano = parseInt(dataString.substring(4, 8));
-    return `${ano}-${mes}-${dia} `;
+    const dia = dataString.substring(0, 2).padStart(2, '0');
+    const mes = dataString.substring(2, 4).padStart(2, '0');
+    const ano = dataString.substring(4, 8);
+    return `${ano}-${mes}-${dia}`;
   }
 
   formValido(): boolean {

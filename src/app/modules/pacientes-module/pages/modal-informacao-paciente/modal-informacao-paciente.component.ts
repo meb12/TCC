@@ -99,7 +99,7 @@ export class ModalInformacaoPacienteComponent implements OnInit {
     switch (status) {
       case 'Concluída':
         return '#8CC738'; // Verde
-      case 'Finalizada':
+      case 'Cancelada':
         return '#EE404C'; // Vermelho
       case 'Agendada':
         return '#398FE2'; // Azul

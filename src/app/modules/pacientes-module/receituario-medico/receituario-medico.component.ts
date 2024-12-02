@@ -17,6 +17,7 @@ export class ReceituarioMedicoComponent implements OnInit {
   medicoId: string | null = null;
   name: string = '';
   especialidade: string = '';
+  sexo: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -66,6 +67,7 @@ export class ReceituarioMedicoComponent implements OnInit {
       next: (response) => {
         this.name = response.name;
         this.especialidade = response.doctorData.specialtyType.description;
+        this.sexo = response.gender;
       },
       error: (error) => {
         console.error('Erro ao carregar médicos:', error);
