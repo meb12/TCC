@@ -13,6 +13,7 @@ import { ReceituarioMedicoComponent } from './receituario-medico/receituario-med
 import { ModalRevisaoRetornoComponent } from './pages/modal-revisao-retorno/modal-revisao-retorno.component';
 import { ExclusaoConsultaComponent } from './pages/exclusao-consulta/exclusao-consulta.component';
 import { ModalReagendamentoComponent } from './pages/modal-reagendamento/modal-reagendamento.component';
+import { ExclusaoExameComponent } from './pages/exclusao-exame/exclusao-exame.component';
 
 @NgModule({
   imports: [CommonModule, PacientesRoutingModule, SharedModule],
@@ -27,6 +28,7 @@ import { ModalReagendamentoComponent } from './pages/modal-reagendamento/modal-r
     ModalRevisaoRetornoComponent,
     ExclusaoConsultaComponent,
     ModalReagendamentoComponent,
+    ExclusaoExameComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

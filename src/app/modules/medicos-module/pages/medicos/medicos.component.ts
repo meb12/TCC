@@ -122,10 +122,14 @@ export class MedicosComponent implements OnInit {
         );
 
         // Filtra a lista de médicos para remover o médico atual
-        this.tableData = response.filter(
+        let filteredMedicos = response.filter(
           (medico: any) => medico.id !== currentUser.id
         );
 
+        // Ordena a lista de médicos em ordem alfabética pelo nome
+        filteredMedicos.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+        this.tableData = filteredMedicos;
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os itens
         this.updatePaginatedData(); // Atualiza os dados paginados
       },

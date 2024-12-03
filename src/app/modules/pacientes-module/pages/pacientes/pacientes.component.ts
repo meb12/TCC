@@ -97,11 +97,19 @@ export class PacientesComponent implements OnInit {
     this.pacientesService.getData().subscribe({
       next: (response) => {
         // Mapeia a resposta para incluir o CPF e telefone formatados
-        this.tableData = response.map((item: any) => ({
+        let pacientes = response.map((item: any) => ({
           ...item,
           cpf: this.formatCpf(item.cpf),
           cellphone: this.formatPhone(item.cellphone),
         }));
+
+        // Ordena a lista de pacientes em ordem alfabética pelo nome
+        pacientes.sort(
+          (a: any, b: any) => a.name.localeCompare(b.name) // Substitua `name` por qualquer propriedade de nome
+        );
+
+        // Atribui os dados ordenados
+        this.tableData = pacientes;
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os dados
         this.updatePaginatedData(); // Atualiza os dados paginados
       },

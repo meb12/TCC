@@ -26,10 +26,13 @@ export class ConsultaIndividualComponent implements OnInit {
   tipoConsulta: string | null = null;
   permissoes: any;
   permissoes1: any;
+  exameOuReceita: any;
+  file: any;
 
   isButtonEnabled: boolean = false;
   isButtonCancelado: boolean = false;
   showModalExclusao: boolean = false;
+  showModalExclusaoExame: boolean = false;
   tipo = '';
   idPaciente = 0;
   item: any;
@@ -186,17 +189,9 @@ export class ConsultaIndividualComponent implements OnInit {
   }
 
   deleteFile(file, tipo: string): void {
-    const examOrPrescription = tipo;
-
-    this.documentos.deleteData(file.id, examOrPrescription).subscribe({
-      next: (response) => {
-        this.toastr.success('Arquivo excluído com sucesso!');
-        this.getConsultas();
-      },
-      error: (error) => {
-        console.error('Erro ao enviar o arquivo:', error);
-      },
-    });
+    this.file = file.id;
+    this.exameOuReceita = tipo;
+    this.showModalExclusaoExame = true;
   }
 
   download(file): void {
@@ -243,9 +238,18 @@ export class ConsultaIndividualComponent implements OnInit {
           <html>
             <head>
               <title>${fileName}</title>
+              <style>
+                body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                img { max-width: 100%; max-height: 100%; object-fit: contain; }
+                embed { width: 100%; height: 100%; }
+              </style>
             </head>
             <body>
-              <embed src="${url}" type="${mimeType}" width="100%" height="100%">
+              ${
+                mimeType.startsWith('image/')
+                  ? `<img src="${url}" alt="${fileName}" />`
+                  : `<embed src="${url}" type="${mimeType}" width="100%" height="100%" />`
+              }
             </body>
           </html>
         `;
@@ -416,6 +420,15 @@ export class ConsultaIndividualComponent implements OnInit {
 
   closeModal() {
     this.showModalExclusao = false;
+    if (this.tipoConsulta == 'consulta') {
+      this.getConsultas();
+    } else {
+      this.getRetorno();
+    }
+  }
+
+  closeModalExame() {
+    this.showModalExclusaoExame = false;
     if (this.tipoConsulta == 'consulta') {
       this.getConsultas();
     } else {

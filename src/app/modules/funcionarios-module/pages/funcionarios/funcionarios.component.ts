@@ -151,6 +151,9 @@ export class FuncionariosComponent implements OnInit, AfterViewInit {
           );
         }
 
+        // Ordena a lista de usuários em ordem alfabética pelo nome
+        filteredUsers.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
         this.tableData = filteredUsers;
         this.filteredData = [...this.tableData]; // Inicializa `filteredData` com todos os itens
         this.paginator.length = this.filteredData.length; // Define o `length` inicial do paginator

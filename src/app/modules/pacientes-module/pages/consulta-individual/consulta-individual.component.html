@@ -202,6 +202,7 @@
           id="file-upload"
           class="file-input"
           (change)="handleFileUpload($event, 'exam')"
+          accept=".pdf, .png, .jpeg, .jpg"
         />
       </div>
       <span class="attachment-name">Novo</span>
@@ -369,3 +370,10 @@
   [id]="tipoConsulta === 'consulta' ? consultaId : retornoId"
   [tipoConsulta]="tipoConsulta"
 ></app-modal-reagendamento>
+
+<app-exclusao-exame
+  (closeModal)="closeModalExame()"
+  *ngIf="showModalExclusaoExame"
+  [item]="file"
+  [tipo]="exameOuReceita"
+></app-exclusao-exame>
