@@ -333,7 +333,7 @@ export class ConsultaIndividualComponent implements OnInit {
         this.retorno.putData(submitForm).subscribe({
           next: (response) => {
             this.toastr.success('Observações salvas com sucesso!');
-            this.getConsultas();
+            this.getRetorno();
           },
           error: (error) => {
             this.toastr.error(error.error);
