@@ -274,7 +274,6 @@ export class ModalRevisaoRetornoComponent implements OnInit {
       ' '
     )[0];
 
-    console.log(dataSelecionada, dataHoje);
     // Criar todos os horários disponíveis no intervalo de funcionamento
     while (minutosTotais < fim * 60) {
       const horas = Math.floor(minutosTotais / 60);
