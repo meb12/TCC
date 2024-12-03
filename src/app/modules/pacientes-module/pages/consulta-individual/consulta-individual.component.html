@@ -162,7 +162,7 @@
           src="assets/img/pdf.svg"
           alt="PDF icon"
           class="attachment-icon"
-          (click)="download(file)"
+          (click)="download(file, 'exam')"
         />
       </div>
       <div class="attachment-name-container">
@@ -216,17 +216,21 @@
   <span class="consulta-title">{{ "Receitas" }}</span>
   <div class="attachment-list">
     <!-- Listar arquivos -->
-    <div *ngFor="let file of data.prescription" class="attachment-wrapper">
+    <div *ngFor="let file of data.prescriptions" class="attachment-wrapper">
       <div class="attachment-item">
         <!-- Ícone de exclusão -->
-        <button class="delete-icon" (click)="deleteFile(file, 'prescription')">
+        <button
+          class="delete-icon"
+          (click)="deleteFile(file, 'prescription')"
+          *ngIf="this.permissoes['canTakeExams'] && data.status !== 'Cancelada'"
+        >
           <img src="assets/img/excluir.svg" alt="Delete" />
         </button>
         <img
           src="assets/img/pdf.svg"
           alt="PDF icon"
           class="attachment-icon"
-          (click)="download(file)"
+          (click)="download(file, 'prescription')"
         />
       </div>
       <div class="attachment-name-container">
@@ -268,7 +272,9 @@
       </div>
       <span class="attachment-name">Novo</span>
     </div>
-    <div *ngIf="data.status == 'Cancelada'">Não há receitas disponíveis</div>
+    <div *ngIf="data.status == 'Cancelada' && data.prescriptions.length == 0">
+      Não há receitas disponíveis
+    </div>
   </div>
 </div>
 }

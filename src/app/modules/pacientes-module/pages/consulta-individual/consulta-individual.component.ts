@@ -194,8 +194,8 @@ export class ConsultaIndividualComponent implements OnInit {
     this.showModalExclusaoExame = true;
   }
 
-  download(file): void {
-    const examOrPrescription = 'exam';
+  download(file, tipo): void {
+    const examOrPrescription = tipo;
     const fileName = file.fileName; // Nome que aparecerá na aba
 
     this.documentos.getData(file.id, examOrPrescription).subscribe({
@@ -438,7 +438,7 @@ export class ConsultaIndividualComponent implements OnInit {
 
   cancelarConsulta() {
     this.showModalExclusao = true;
-    this.tipo = 'consulta';
+    this.tipo = this.tipoConsulta;
     this.item = {
       id: this.consultaId,
       date: this.data.appointmentDate,
@@ -447,6 +447,9 @@ export class ConsultaIndividualComponent implements OnInit {
       paciente: this.data.pacientData.name,
       dataConsulta: this.formatarValor('data', this.data.appointmentDate),
       sexo: this.data.pacientData.gender,
+      exames: this.data?.exams?.length,
+      receitas: this.data?.prescriptions?.length,
+      retornos: this.data?.appointmentsReturn?.length,
     };
   }
 

@@ -21,6 +21,9 @@ export class ExclusaoConsultaComponent implements OnInit {
     sexo: string;
     dataConsulta: string;
     paciente: string;
+    exames: number;
+    receitas: number;
+    retornos: number;
   };
 
   constructor(
@@ -31,7 +34,9 @@ export class ExclusaoConsultaComponent implements OnInit {
 
   formNovo = {};
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.item, this.tipo);
+  }
 
   salvar() {
     const formNovo = {
@@ -41,7 +46,15 @@ export class ExclusaoConsultaComponent implements OnInit {
       isActive: false,
     };
 
-    if (this.item.observation == '' || this.item.observation == null) {
+    if (
+      (this.tipo === 'consulta' &&
+        this.item.exames <= 0 &&
+        this.item.receitas <= 0 &&
+        this.item.retornos <= 0 &&
+        (this.item.observation === '' || this.item.observation === null)) ||
+      (this.tipo === 'retorno' &&
+        (this.item.observation === '' || this.item.observation === null))
+    ) {
       if (this.tipo == 'consulta') {
         this.consultas.putData(formNovo).subscribe({
           next: (response) => {
@@ -65,7 +78,7 @@ export class ExclusaoConsultaComponent implements OnInit {
       }
     } else {
       this.toastr.error(
-        'Não é possível cancelar uma consulta que já tenha uma observação preenchida'
+        'Não é possível cancelar esta operação, pois já foram feitas alterações ou registros associados.'
       );
     }
   }
