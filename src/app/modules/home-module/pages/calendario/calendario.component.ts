@@ -123,7 +123,6 @@ export class CalendarioComponent implements OnInit, AfterViewInit {
   getAppointments() {
     this.consultas.getData().subscribe({
       next: (response: any) => {
-        console.log(response);
         // Mapeia consultas normais e de retorno, filtrando somente as ativas
         this.appointments = response.flatMap((appointment) => {
           // Define o título como "Consulta" para a consulta principal

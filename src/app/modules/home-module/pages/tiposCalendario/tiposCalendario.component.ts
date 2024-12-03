@@ -14,6 +14,5 @@ export class TiposCalendarioComponent implements OnInit {
     if (storedUserType) {
       this.userType = JSON.parse(storedUserType);
     }
-    console.log('usuario', this.userType.userType.name);
   }
 }

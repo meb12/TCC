@@ -21,8 +21,10 @@ interface Country {
 })
 export class CadastroComponent implements OnInit {
   newAllergy: string = '';
+  previousSpecialtyTypeId: number;
   allergies: string[] = [];
   userTypesData: any[] = [];
+  warningShown: number = 0;
   acao: string = '';
   tipoAcao = '';
   opcoesSexo = [
@@ -88,10 +90,8 @@ export class CadastroComponent implements OnInit {
     if (permissoesString) {
       this.permissoes1 = JSON.parse(permissoesString);
       this.permissoes = this.permissoes1.userType.permissions;
-    } else {
-      console.log('Nenhuma permissão encontrada no localStorage.');
     }
-    console.log(this.permissoes);
+
     this.setupRouteListener();
     this.validateRouteOnLoad();
     this.getEspecialidades();
@@ -254,7 +254,6 @@ export class CadastroComponent implements OnInit {
   }
 
   handleConfirm() {
-    console.log(this.form.tipoCadastro);
     if (this.form.length > 0) {
       this.form.allergies = this.form.allergies.map((allergy) => {
         if (typeof allergy === 'object') {
@@ -270,7 +269,7 @@ export class CadastroComponent implements OnInit {
         const FormNovo = {
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           cellphone: this.form.cellphone,
@@ -308,7 +307,7 @@ export class CadastroComponent implements OnInit {
           id: parseInt(this.tipoAcao, 10),
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           cellphone: this.form.cellphone,
@@ -349,7 +348,7 @@ export class CadastroComponent implements OnInit {
         const FormNovo = {
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           login: this.form.email,
@@ -389,7 +388,7 @@ export class CadastroComponent implements OnInit {
           id: parseInt(this.tipoAcao, 10),
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           cellphone: this.form.cellphone,
@@ -409,9 +408,15 @@ export class CadastroComponent implements OnInit {
             observation: this.form.observation,
           },
         };
+
         if (this.hasPhoto()) {
           this.medicosService.putData(FormNovo).subscribe({
             next: (response) => {
+              // Exibir a mensagem de sucesso
+
+              // Verificar se a especialidade foi alterada e mostrar o alerta
+
+              // Enviar foto (se houver)
               this.enviarFoto(
                 response.id,
                 'Médico editado com sucesso!',
@@ -430,7 +435,7 @@ export class CadastroComponent implements OnInit {
         const FormNovo = {
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           cellphone: this.form.cellphone,
@@ -467,7 +472,7 @@ export class CadastroComponent implements OnInit {
           id: parseInt(this.tipoAcao, 10),
           cpf: this.form.cpf,
           documentNumber: this.form.documentNumber,
-          name: this.form.name,
+          name: this.capitalizeFirstLetter(this.form.name),
           dateOfBirth: this.formatarDataBack(this.form.dateOfBirth),
           email: this.form.email,
           cellphone: this.form.cellphone,
@@ -607,6 +612,8 @@ export class CadastroComponent implements OnInit {
           if (response.photo) {
             this.exibirFotoBase64(response.photo);
           }
+
+          this.previousSpecialtyTypeId = response.doctorData.specialtyType.id;
         },
         error: (error) => {
           console.error('Erro ao carregar especialidades:', error);
@@ -644,6 +651,28 @@ export class CadastroComponent implements OnInit {
           console.error('Erro ao carregar especialidades:', error);
         },
       });
+    }
+  }
+
+  onSpecialtyChange(newSpecialtyId: any): void {
+    this.warningShown++;
+
+    // Verifica se a especialidade foi alterada para um valor diferente do valor inicial
+    if (
+      newSpecialtyId !== this.previousSpecialtyTypeId &&
+      this.warningShown == 2
+    ) {
+      // Exibe o toastr de aviso (warning) se a especialidade foi alterada
+      this.toastr.warning(
+        'A especialidade será alterada. Essa mudança pode impactar as consultas já agendadas para este médico. Por favor, verifique as consultas existentes e, se necessário, cancele-as para evitar conflitos.',
+        'Aviso'
+      );
+      this.warningShown = 0;
+      // Marca que o toastr de aviso foi mostrado
+    }
+
+    if (newSpecialtyId == this.previousSpecialtyTypeId) {
+      this.warningShown = 0;
     }
   }
 
@@ -797,6 +826,7 @@ export class CadastroComponent implements OnInit {
       this.funcionariosService.putFoto(id, formData).subscribe({
         next: (response) => {
           this.toastr.success(mensagem);
+
           if (tipo == 'medico') {
             this.router.navigateByUrl('/medicos/listagem');
           }
@@ -994,5 +1024,15 @@ export class CadastroComponent implements OnInit {
         fileInput.files = dataTransfer.files;
       }
     }
+  }
+
+  capitalizeFirstLetter(name: string): string {
+    if (!name) return name; // Verifica se o nome não está vazio ou nulo
+    return name
+      .split(' ') // Divide o nome em palavras
+      .map(
+        (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Capitaliza a primeira letra de cada palavra
+      )
+      .join(' '); // Junta as palavras de volta com espaços
   }
 }

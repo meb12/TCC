@@ -250,7 +250,6 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
         (selectedDoctors.length === 0 ||
           selectedDoctors.includes(appointment.doctor.id))
     );
-    console.log('consultas', this.displayedAppointments);
   }
 
   filterAppointments() {

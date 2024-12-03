@@ -321,6 +321,7 @@
         [selectData]="especialidadesData"
         [requiredInput]="true"
         [(ngModel)]="form.specialtyTypeId"
+        (ngModelChange)="onSpecialtyChange($event)"
         [placeholder]="'Selecione a especialidade'"
         [displayField]="'name'"
         [valueField]="'id'"

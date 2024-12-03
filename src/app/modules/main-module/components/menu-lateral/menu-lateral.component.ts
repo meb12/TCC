@@ -85,8 +85,6 @@ export class MenuLateralComponent implements OnInit {
     if (permissoesString) {
       this.permissoes1 = JSON.parse(permissoesString);
       this.permissoes = this.permissoes1.userType.permissions;
-    } else {
-      console.log('Nenhuma permissão encontrada no localStorage.');
     }
 
     // Chama o scroll no topo ao carregar a página

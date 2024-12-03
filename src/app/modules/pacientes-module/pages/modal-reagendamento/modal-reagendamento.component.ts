@@ -22,7 +22,6 @@ export class ModalReagendamentoComponent implements OnInit {
     this.close.emit(); // Emit the close event to the parent component
   }
   voltar() {
-    console.log();
     if (this.step == 1) {
       this.close.emit();
     } else {
@@ -195,7 +194,6 @@ export class ModalReagendamentoComponent implements OnInit {
     this.horarioOptions = [];
     this.form.horario = null;
 
-    console.log(this.form.date.length);
     // Validar se a data é válida e se está no presente ou futuro
     if (this.form.date.length !== 8) {
       return; // Data incompleta ou inválida, não faz a requisição
@@ -226,7 +224,6 @@ export class ModalReagendamentoComponent implements OnInit {
       return; // Data no passado, não faz a requisição
     }
 
-    console.log('this.medico', this.form.medico);
     // Faz a requisição apenas se a data for hoje ou no futuro
     if (this.form.medico) {
       this.consultas
@@ -280,7 +277,6 @@ export class ModalReagendamentoComponent implements OnInit {
       ' '
     )[0];
 
-    console.log(dataSelecionada, dataHoje);
     // Criar todos os horários disponíveis no intervalo de funcionamento
     while (minutosTotais < fim * 60) {
       const horas = Math.floor(minutosTotais / 60);
@@ -379,14 +375,10 @@ export class ModalReagendamentoComponent implements OnInit {
     return true;
   }
   ngOnInit() {
-    console.log('data', this.data);
     this.form.especialidades = this.data.doctorData.specialtyType.id;
     this.form.especialidadeNome =
       this.data.doctorData.specialtyType.specialtyName;
     this.form.medico = this.data.doctorData.id;
     this.form.nomeMedico = this.data.doctorData.name;
-
-    console.log(this.data);
-    console.log(this.form);
   }
 }
