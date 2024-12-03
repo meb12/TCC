@@ -151,7 +151,11 @@
     <div *ngFor="let file of data.exams" class="attachment-wrapper">
       <div class="attachment-item">
         <!-- Ícone de exclusão -->
-        <button class="delete-icon" (click)="deleteFile(file, 'exam')">
+        <button
+          class="delete-icon"
+          (click)="deleteFile(file, 'exam')"
+          *ngIf="this.permissoes['canTakeExams'] && data.status !== 'Cancelada'"
+        >
           <img src="assets/img/excluir.svg" alt="Delete" />
         </button>
         <img
@@ -184,7 +188,7 @@
     </div>
 
     <!-- Botão de upload -->
-    <div *ngIf="this.permissoes['canTakeExams']">
+    <div *ngIf="this.permissoes['canTakeExams'] && data.status !== 'Cancelada'">
       <div class="attachment-item">
         <label for="file-upload" class="attachment-label">
           <img
@@ -201,6 +205,9 @@
         />
       </div>
       <span class="attachment-name">Novo</span>
+    </div>
+    <div *ngIf="data.status == 'Cancelada' && data.exams.length == 0">
+      Não há exames disponíveis
     </div>
   </div>
 </div>
@@ -244,7 +251,11 @@
     </div>
 
     <!-- Botão de upload -->
-    <div *ngIf="this.permissoes['canTakeExams']">
+    <div
+      *ngIf="
+        this.permissoes['canTakePrescription'] && data.status !== 'Cancelada'
+      "
+    >
       <div class="attachment-item">
         <label class="attachment-label" (click)="receita()">
           <img
@@ -256,6 +267,7 @@
       </div>
       <span class="attachment-name">Novo</span>
     </div>
+    <div *ngIf="data.status == 'Cancelada'">Não há receitas disponíveis</div>
   </div>
 </div>
 }
@@ -279,6 +291,9 @@
         (click)="saveObservation()"
       />
     </ng-container>
+  </div>
+  <div *ngIf="data.status == 'Cancelada' && !data.observation">
+    Não há nenhuma observação disponível
   </div>
 
   <div *ngIf="!isEditing" class="observation-view">
@@ -311,7 +326,7 @@
   <div
     class="return-item"
     (click)="adicionarNovoRetorno()"
-    *ngIf="this.permissoes['makeAppointment']"
+    *ngIf="this.permissoes['makeAppointment'] && data.status !== 'Cancelada'"
   >
     <span>Novo retorno</span>
     <img
@@ -321,7 +336,12 @@
     />
   </div>
 
-  <div *ngIf="this.medico === 'Médico' && data.appointmentsReturn.length == 0">
+  <div
+    *ngIf="
+      (this.medico === 'Médico' && data.appointmentsReturn.length == 0) ||
+      (data.status == 'Cancelada' && data.appointmentsReturn.length == 0)
+    "
+  >
     Não há nenhum retorno disponível.
   </div>
 </div>

@@ -201,6 +201,7 @@ export class ConsultaIndividualComponent implements OnInit {
 
   download(file): void {
     const examOrPrescription = 'exam';
+    const fileName = file.fileName; // Nome que aparecerá na aba
 
     this.documentos.getData(file.id, examOrPrescription).subscribe({
       next: (response: Blob) => {
@@ -219,8 +220,7 @@ export class ConsultaIndividualComponent implements OnInit {
 
         // Obtém a extensão do arquivo e o tipo MIME correspondente
         const extension = file.fileExtension.replace('.', '').toLowerCase();
-
-        const mimeType = mimeTypeMap[extension]; // Padrão genérico
+        const mimeType = mimeTypeMap[extension];
 
         // Cria um Blob para os dados do arquivo com o tipo MIME apropriado
         const blob = new Blob([response], { type: mimeType });
@@ -228,13 +228,27 @@ export class ConsultaIndividualComponent implements OnInit {
         // Cria uma URL temporária para o arquivo
         const url = window.URL.createObjectURL(blob);
 
-        // Abre o arquivo em uma nova aba
-        const newTab = window.open(url, '_blank');
-        if (!newTab) {
+        // Cria um documento HTML temporário com o nome do arquivo
+        const newWindow = window.open('', '_blank');
+        if (!newWindow) {
           console.error(
             'Não foi possível abrir uma nova aba. Verifique permissões do navegador.'
           );
+          return;
         }
+
+        // Insere o conteúdo e o nome da aba
+        newWindow.document.title = fileName; // Nome que aparecerá na aba
+        newWindow.document.body.innerHTML = `
+          <html>
+            <head>
+              <title>${fileName}</title>
+            </head>
+            <body>
+              <embed src="${url}" type="${mimeType}" width="100%" height="100%">
+            </body>
+          </html>
+        `;
 
         // Revoga a URL temporária após algum tempo
         setTimeout(() => {
@@ -248,8 +262,10 @@ export class ConsultaIndividualComponent implements OnInit {
   }
 
   editFile(file): void {
-    file.isEditing = true;
-    file.newName = file.fileName;
+    if (this.permissoes['canTakeExams'] && this.data.status !== 'Cancelada') {
+      file.isEditing = true;
+      file.newName = file.fileName;
+    }
   }
 
   saveFile(file, tipo): void {

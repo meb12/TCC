@@ -134,7 +134,7 @@ export class ConsultaComponent implements OnInit {
             this.getHorariosDisponiveis();
           },
           error: (error) => {
-            console.error('Erro ao carregar especialidades:', error);
+            console.error('Erro ao carregar horários', error);
           },
         });
     }
@@ -162,7 +162,6 @@ export class ConsultaComponent implements OnInit {
       ' '
     )[0];
 
-    console.log(dataSelecionada, dataHoje);
     // Criar todos os horários disponíveis no intervalo de funcionamento
     while (minutosTotais < fim * 60) {
       const horas = Math.floor(minutosTotais / 60);
