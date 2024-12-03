@@ -10,7 +10,7 @@
   <div class="grid1">
     <div class="header">
       <div class="column">
-        <h1>Perfil | {{ data.name }}</h1>
+        <span class="h1">Perfil | {{ data.name }}</span>
         <span>Informações Pessoais</span>
       </div>
     </div>
@@ -37,15 +37,6 @@
         label="Endereço"
         [(ngModel)]="data.address"
         required="true"
-        width="100%"
-        type="readonly"
-      ></app-input>
-
-      <app-input
-        label="Sobre"
-        [(ngModel)]="data.observation"
-        required="true"
-        type="textarea"
         width="100%"
         type="readonly"
       ></app-input>
