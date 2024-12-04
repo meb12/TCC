@@ -82,6 +82,9 @@
               {{ allergy.allergy }}
             </div>
           </ng-container>
+          <div *ngIf="data.pacientData.allergies.length == 0">
+            Nenhuma alergia informada pelo paciente.
+          </div>
         </div>
       </div>
     </div>

@@ -655,24 +655,26 @@ export class CadastroComponent implements OnInit {
   }
 
   onSpecialtyChange(newSpecialtyId: any): void {
-    this.warningShown++;
+    if (this.tipoAcao) {
+      this.warningShown++;
 
-    // Verifica se a especialidade foi alterada para um valor diferente do valor inicial
-    if (
-      newSpecialtyId !== this.previousSpecialtyTypeId &&
-      this.warningShown == 2
-    ) {
-      // Exibe o toastr de aviso (warning) se a especialidade foi alterada
-      this.toastr.warning(
-        'A especialidade será alterada. Essa mudança pode impactar as consultas já agendadas para este médico. Por favor, verifique as consultas existentes e, se necessário, cancele-as para evitar conflitos.',
-        'Aviso'
-      );
-      this.warningShown = 0;
-      // Marca que o toastr de aviso foi mostrado
-    }
+      // Verifica se a especialidade foi alterada para um valor diferente do valor inicial
+      if (
+        newSpecialtyId !== this.previousSpecialtyTypeId &&
+        this.warningShown == 2
+      ) {
+        // Exibe o toastr de aviso (warning) se a especialidade foi alterada
+        this.toastr.warning(
+          'A especialidade será alterada. Essa mudança pode impactar as consultas já agendadas para este médico. Por favor, verifique as consultas existentes e, se necessário, cancele-as para evitar conflitos.',
+          'Aviso'
+        );
+        this.warningShown = 0;
+        // Marca que o toastr de aviso foi mostrado
+      }
 
-    if (newSpecialtyId == this.previousSpecialtyTypeId) {
-      this.warningShown = 0;
+      if (newSpecialtyId == this.previousSpecialtyTypeId) {
+        this.warningShown = 0;
+      }
     }
   }
 

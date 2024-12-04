@@ -28,21 +28,30 @@
 }
 
 .prescription-area {
-  /* margin-top: 40mm; */
+  /* Define a largura do campo editável */
+  border: 1px solid #1a7f5a;
+  width: 100%;
+  max-width: 600px; /* Limita a largura a 600px */
+  margin: 0 auto; /* Centraliza a área */
 }
 
-.prescription-area textarea {
+.prescription-area .editable-div {
   width: 100%;
-  height: 140mm;
+  max-width: 600px; /* Limita a largura da div editável */
+  max-height: 600px; /* Limita a altura máxima da div editável */
+  min-height: 140mm; /* Define altura mínima */
   font-size: 14pt;
   padding: 10px;
   box-sizing: border-box;
   border: none; /* Remove a borda por padrão */
   background-color: transparent; /* Fundo transparente */
   outline: none; /* Remove o contorno padrão */
+  white-space: pre-wrap; /* Garante que as quebras de linha sejam respeitadas */
+  overflow-wrap: break-word; /* Permite que as palavras longas se quebrem para a próxima linha */
+  overflow: auto; /* Adiciona rolagem caso o conteúdo ultrapasse a altura máxima */
 }
 
-.prescription-area textarea:focus {
+.prescription-area .editable-div:focus {
   border: 1px solid black; /* Mostra a borda ao focar */
 }
 
@@ -75,13 +84,14 @@
   max-width: 30mm; /* Tamanho da imagem ajustado para caber no layout */
   max-height: 30mm;
 }
+
 .button-group {
   display: flex;
   justify-content: end;
   gap: 10px;
   margin-top: 20px;
 }
-/* Estilos para os botões */
+
 .btn {
   padding: 10px 20px;
   border: none;

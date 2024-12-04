@@ -100,6 +100,7 @@ export class PacientesComponent implements OnInit {
         let pacientes = response.map((item: any) => ({
           ...item,
           cpf: this.formatCpf(item.cpf),
+          cpfCompleto: item.cpf,
           cellphone: this.formatPhone(item.cellphone),
         }));
 
@@ -127,13 +128,13 @@ export class PacientesComponent implements OnInit {
       // Critérios de busca
       const name = item.name?.toLowerCase() || '';
       const id = item.id?.toString() || '';
-      const cpf = item.cpf?.toLowerCase() || '';
+      const cpf = item.cpfCompleto?.toLowerCase() || ''; // Comparação com CPF completo
       const phone = item.cellphone?.toLowerCase() || '';
       const matchesSearch =
         lowerSearchValue === '' || // Se não houver busca, considera tudo
         name.includes(lowerSearchValue) ||
         id.includes(lowerSearchValue) ||
-        cpf.includes(lowerSearchValue) ||
+        cpf.includes(lowerSearchValue) || // Busca pelo CPF completo
         phone.includes(lowerSearchValue);
 
       // Critérios de seleção
@@ -145,7 +146,6 @@ export class PacientesComponent implements OnInit {
       return matchesSearch && matchesSelect;
     });
 
-    // Atualiza a paginação
     this.paginator.length = this.filteredData.length;
     this.currentPage = 0;
     this.paginator.pageIndex = this.currentPage;
@@ -210,7 +210,12 @@ export class PacientesComponent implements OnInit {
 
   formatCpf(cpf: string): string {
     if (!cpf) return '';
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    const cpfStr = cpf.toString().replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (cpfStr.length === 11) {
+      return cpfStr.replace(/(\d{3})\d{3}(\d{3})(\d{2})/, '$1.***.$2-$3');
+    }
+    return cpf; // Retorna o CPF sem formatação se não tiver 11 dígitos
   }
 
   formatPhone(phone: string): string {

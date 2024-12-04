@@ -7,10 +7,12 @@
   </div>
 
   <div class="prescription-area">
-    <textarea
+    <div
+      class="editable-div"
       [(ngModel)]="prescription"
+      contenteditable="true"
       placeholder="Escreva a prescrição médica aqui"
-    ></textarea>
+    ></div>
   </div>
 
   <div class="footer">
@@ -22,10 +24,5 @@
 <!-- <button (click)="generatePDF()">Gerar PDF</button> -->
 <div class="button-group">
   <button class="btn btn-secondary" (click)="voltar()">Voltar</button>
-  <button
-    class="btn btn-primary"
-    (click)="generateAndUploadPDF('prescription')"
-  >
-    Salvar
-  </button>
+  <button class="btn btn-primary" (click)="generatePDF()">Salvar</button>
 </div>

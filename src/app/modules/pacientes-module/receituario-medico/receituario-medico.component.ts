@@ -95,7 +95,7 @@ export class ReceituarioMedicoComponent implements OnInit {
         });
 
         // Chama o método handleFileUpload com o arquivo gerado
-        this.handleFileUpload(file, tipo);
+        // this.handleFileUpload(file, tipo);
       });
   }
 
