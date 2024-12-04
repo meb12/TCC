@@ -4,6 +4,7 @@ import html2pdf from 'html2pdf.js';
 import { MedicosService } from '../../../core/services/medicos.service';
 import { DocumentosService } from '../../../core/services/documentos.service';
 import { ToastrService } from 'ngx-toastr';
+import { PacientesService } from '../../../core/services/pacientes.service';
 
 @Component({
   selector: 'app-receituario-medico',
@@ -15,6 +16,7 @@ export class ReceituarioMedicoComponent implements OnInit {
   currentDate: string = ''; // Data atual
   idConsulta: string | null = null;
   medicoId: string | null = null;
+  pacientId: string | null = null;
   name: string = '';
   especialidade: string = '';
   sexo: string = '';
@@ -23,6 +25,7 @@ export class ReceituarioMedicoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private medicos: MedicosService,
+    private pacientes: PacientesService,
     private router: Router,
     private documentos: DocumentosService,
     private toastr: ToastrService
@@ -72,6 +75,33 @@ export class ReceituarioMedicoComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar médicos:', error);
+      },
+    });
+  }
+  getPaciente() {
+    this.pacientes.getDataId(this.pacientId).subscribe({
+      next: (response) => {
+        console.log(response);
+
+        // Verificar se o paciente tem alergias
+        if (
+          response.pacientData &&
+          response.pacientData.allergies &&
+          response.pacientData.allergies.length > 0
+        ) {
+          // Extrair o nome das alergias
+          const allergies = response.pacientData.allergies
+            .map((a) => a.allergy)
+            .join(', ');
+
+          // Exibir o Toastr com as alergias do paciente
+          this.toastr.warning(
+            `Paciente com alergia a ${allergies}. Cuidado ao prescrever a receita.`
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao carregar paciente:', error);
       },
     });
   }
@@ -138,6 +168,9 @@ export class ReceituarioMedicoComponent implements OnInit {
     // Extrair o medicoId dos parâmetros da query string
     this.medicoId = this.route.snapshot.queryParamMap.get('medicoId');
 
+    this.pacientId = this.route.snapshot.queryParamMap.get('pacienteId');
+
     this.getMedicos();
+    this.getPaciente();
   }
 }

@@ -298,7 +298,7 @@ export class ConsultaIndividualComponent implements OnInit {
 
   receita() {
     this.router.navigateByUrl(
-      `pacientes/consulta/receita/${this.consultaId}?medicoId=${this.data.doctorData.id}`
+      `pacientes/consulta/receita/${this.consultaId}?medicoId=${this.data.doctorData.id}&pacienteId=${this.data.pacientData.id}`
     );
   }
 
