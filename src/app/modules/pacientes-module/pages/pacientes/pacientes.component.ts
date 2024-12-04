@@ -21,6 +21,7 @@ export class PacientesComponent implements OnInit {
   item: any;
   tipo = '';
   data = '';
+  userType = '';
 
   selectData = [
     { value: 60, name: 'Ativos' },
@@ -90,6 +91,10 @@ export class PacientesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    this.userType = userInfo?.userType?.name;
+
+    console.log(this.userType);
     this.fetchPacientes(); // Carrega os dados dos pacientes
   }
 

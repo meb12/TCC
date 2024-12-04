@@ -15,7 +15,7 @@
         [selectedLabel]="'Todos'"
       ></app-input>
     </div>
-    <div class="header-buttons">
+    <div class="header-buttons" *ngIf="userType !== 'Médico'">
       <button
         class="segundario"
         [style.width]="'100%'"
