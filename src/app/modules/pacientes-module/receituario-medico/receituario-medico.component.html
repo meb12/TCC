@@ -6,7 +6,7 @@
     </h2>
   </div>
 
-  <div class="prescription-area">
+  <div class="prescription-area" [ngClass]="{ borda: borderVisible }">
     <div
       class="editable-div"
       [(ngModel)]="prescription"
@@ -24,5 +24,10 @@
 <!-- <button (click)="generatePDF()">Gerar PDF</button> -->
 <div class="button-group">
   <button class="btn btn-secondary" (click)="voltar()">Voltar</button>
-  <button class="btn btn-primary" (click)="generatePDF()">Salvar</button>
+  <button
+    class="btn btn-primary"
+    (click)="generateAndUploadPDF('prescription')"
+  >
+    Salvar
+  </button>
 </div>

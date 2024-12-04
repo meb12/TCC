@@ -18,6 +18,7 @@ export class ReceituarioMedicoComponent implements OnInit {
   name: string = '';
   especialidade: string = '';
   sexo: string = '';
+  borderVisible: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +51,7 @@ export class ReceituarioMedicoComponent implements OnInit {
 
   generatePDF() {
     const element = document.getElementById('pdf-content');
-
+    this.borderVisible = false;
     const opt = {
       margin: 0, // Sem margens adicionais para o PDF
       filename: 'receita-medica.pdf',
@@ -76,6 +77,7 @@ export class ReceituarioMedicoComponent implements OnInit {
   }
 
   generateAndUploadPDF(tipo: string): void {
+    this.borderVisible = false;
     const element = document.getElementById('pdf-content');
     const opt = {
       margin: 0,
@@ -94,8 +96,7 @@ export class ReceituarioMedicoComponent implements OnInit {
           type: 'application/pdf',
         });
 
-        // Chama o método handleFileUpload com o arquivo gerado
-        // this.handleFileUpload(file, tipo);
+        this.handleFileUpload(file, tipo);
       });
   }
 
@@ -109,13 +110,10 @@ export class ReceituarioMedicoComponent implements OnInit {
           // Cria uma URL de objeto para o arquivo gerado
           const fileURL = URL.createObjectURL(file);
 
-          // Abre o arquivo gerado em uma nova aba
-          window.open(fileURL, '_blank');
+          // Abre o arquivo gerado em uma nova aba com o nome "receita_medica"
+          window.open(fileURL, 'receita_medica'); // 'receita_medica' é o nome da aba
 
           // Após abrir a nova aba, redireciona o usuário
-          this.router.navigateByUrl(
-            `/pacientes/consulta/individual/${this.idConsulta}`
-          );
           this.router.navigateByUrl(
             `/pacientes/consulta/individual/${this.idConsulta}`
           );

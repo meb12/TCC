@@ -29,7 +29,7 @@
 
 .prescription-area {
   /* Define a largura do campo editável */
-  border: 1px solid #1a7f5a;
+
   width: 100%;
   max-width: 600px; /* Limita a largura a 600px */
   margin: 0 auto; /* Centraliza a área */
@@ -120,4 +120,8 @@
 
 .btn-secondary:hover {
   background-color: #d6d6d6;
+}
+
+.borda {
+  border: 1px solid #1a7f5a;
 }

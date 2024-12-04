@@ -68,7 +68,7 @@ export class CadastroComponent implements OnInit {
   especialidadesData: any[] = [];
   cadastroOptions = [];
   isFormValid: boolean = true;
-
+  usuario = '';
   permissoes: any;
   permissoes1: any;
   constructor(
@@ -139,7 +139,7 @@ export class CadastroComponent implements OnInit {
     if (urlSegments.length > 2) {
       const tipoCadastroSegment = urlSegments[2].toLowerCase();
       this.tipoAcao = urlSegments[3];
-
+      this.usuario = tipoCadastroSegment;
       switch (tipoCadastroSegment) {
         case 'paciente':
           this.form.tipoCadastro = 1;
@@ -506,7 +506,17 @@ export class CadastroComponent implements OnInit {
     }
   }
   handleCancel() {
-    this.router.navigateByUrl('/home');
+    console.log(this.usuario);
+
+    if (this.usuario?.trim() === 'medico') {
+      this.router.navigateByUrl('/medicos/listagem');
+    } else if (this.usuario?.trim() === 'funcionario') {
+      this.router.navigateByUrl('/funcionarios/listagem');
+    } else if (this.usuario?.trim() === 'paciente') {
+      this.router.navigateByUrl('/pacientes/listagem');
+    } else {
+      this.router.navigateByUrl('/home');
+    }
   }
 
   formatarData(date1: any) {

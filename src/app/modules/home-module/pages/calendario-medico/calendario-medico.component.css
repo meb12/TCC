@@ -125,6 +125,7 @@ full-calendar {
   display: flex !important;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .consulta-card {

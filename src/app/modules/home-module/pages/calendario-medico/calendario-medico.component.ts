@@ -299,21 +299,29 @@ export class CalendarioMedicoComponent implements OnInit, AfterViewInit {
     const element = document.createElement('div');
     element.classList.add('custom-event');
 
-    // Verifica se o evento é do dia atual
-    const isToday =
-      arg.event.start.toISOString().split('T')[0] ===
-      new Date().toISOString().split('T')[0];
-    if (isToday) {
-      element.classList.add('today-event'); // Classe CSS para eventos de hoje
-    }
+    // Adiciona um evento de clique ao elemento
+    element.addEventListener('click', () => {
+      // Quando o evento é clicado, dispara o clique na data
+      const clickedDate = arg.event.startStr.split('T')[0]; // Pega a data do evento
+      this.selectedDate = clickedDate; // Define a data selecionada
+
+      // Chama a função handleDateClick passando o evento com a data
+      this.handleDateClick({ dateStr: clickedDate });
+
+      // Simula a navegação para o dia clicado no calendário
+      if (this.calendarComponent) {
+        const calendarApi = this.calendarComponent.getApi();
+        calendarApi.gotoDate(clickedDate); // Vai para a data no calendário
+      }
+    });
 
     element.innerHTML = `
-      <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="display: flex; justify-content: center;width: 16px; height: 16px; margin-right: 4px;">
+      <img src="${arg.event._def.extendedProps.icon}" alt="Icone Médico" style="width: 16px; height: 16px; cursor:pointer; margin-right: 4px;">
       <span>${arg.event._def.extendedProps.count} </span>
     `;
+
     return { domNodes: [element] };
   }
-
   updateCalendar() {
     const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, 1);
     this.calendarComponent.getApi().gotoDate(selectedDate);
